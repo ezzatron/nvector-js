@@ -1,0 +1,16 @@
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    # TODO
+    # reviewers:
+    #   - org/team
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+    # TODO
+    # reviewers:
+    #   - org/team

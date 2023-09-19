@@ -1,0 +1,36 @@
+name: Publish package
+
+on:
+  push:
+    tags:
+      - "v[0-9]+.[0-9]+.[0-9]+"
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    name: Publish package
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "20"
+          registry-url: "https://registry.npmjs.org"
+
+      - name: Install dependencies
+        run: make link-dependencies
+
+      - name: Make
+        run: make ci
+
+      - name: Set package version
+        run: make set-package-version
+
+      - name: Publish package
+        if: success()
+        run: npm publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

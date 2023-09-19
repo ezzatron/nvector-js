@@ -1,0 +1,31 @@
+name: CI (scheduled)
+
+on:
+  schedule:
+    - cron: 0 14 * * 0 # Sunday 2PM UTC = Monday 12AM AEST
+
+jobs:
+  ci:
+    name: CI
+    runs-on: ubuntu-latest
+
+    services:
+      nvector-test-api:
+        image: ghcr.io/ezzatron/nvector-test-api
+        ports:
+          - 17357:8000
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "20"
+
+      - name: Install dependencies
+        run: make link-dependencies
+
+      - name: Make
+        run: make ci

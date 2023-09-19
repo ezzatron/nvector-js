@@ -1,0 +1,23 @@
+name: Publish release
+
+on:
+  push:
+    tags:
+      - "*"
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    name: Publish release
+
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Publish release
+        uses: ghalactic/github-release-from-tag@v5
+        with:
+          reactions: hooray,heart,rocket
