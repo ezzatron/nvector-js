@@ -1,5 +1,5 @@
 import { it } from "@fast-check/jest";
-import { lat_lon2n_E } from "../../src/lat_lon2n_E.js";
+import { lat_lon2n_E } from "../../src/index.js";
 import { arbitraryLatLon } from "../arbitrary.js";
 import {
   NvectorTestClient,
