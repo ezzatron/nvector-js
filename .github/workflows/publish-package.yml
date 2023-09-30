@@ -10,6 +10,12 @@ jobs:
     runs-on: ubuntu-latest
     name: Publish package
 
+    services:
+      nvector-test-api:
+        image: ghcr.io/ezzatron/nvector-test-api
+        ports:
+          - 17357:8000
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
