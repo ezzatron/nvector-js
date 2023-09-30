@@ -1,9 +1,16 @@
 {
   "name": "nvector",
   "version": "0.0.0",
-  "description": "TODO",
+  "description": "A suite of tools for solving geographical position calculations",
   "keywords": [
-    "TODO"
+    "distance",
+    "geodesy",
+    "geodetic",
+    "geodesic",
+    "geography",
+    "nvector",
+    "vector",
+    "wgs84"
   ],
   "repository": "ezzatron/nvector",
   "bugs": "https://github.com/ezzatron/nvector/issues",
