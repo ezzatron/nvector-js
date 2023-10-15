@@ -1,0 +1,13 @@
+# DO NOT EDIT - This file is managed by ezzatron/repos.
+name: CI
+
+on:
+  push:
+    tags:
+      - "v[0-9]+.[0-9]+.[0-9]+"
+
+jobs:
+  ci:
+    name: ezzatron
+    uses: ezzatron/repos/.github/workflows/shared-publish-package-npm.yml@main
+    secrets: inherit
