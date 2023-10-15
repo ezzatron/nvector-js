@@ -1,0 +1,22 @@
+# DO NOT EDIT - This file is managed by ezzatron/repos.
+name: Publish release (manual)
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: The tag to publish
+        type: string
+        required: true
+
+jobs:
+  publish:
+    name: ezzatron
+    uses: ezzatron/repos/.github/workflows/shared-publish-release.yml@main
+    secrets: inherit
+    permissions:
+      contents: write
+      discussions: write
+    with:
+      discussionCategory: Releases
+      tag: ${{ github.event.inputs.tag }}
