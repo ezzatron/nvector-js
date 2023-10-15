@@ -1,3 +1,4 @@
+# DO NOT EDIT - This file is managed by ezzatron/repos.
 name: Publish release
 
 on:
@@ -7,17 +8,12 @@ on:
 
 jobs:
   publish:
-    runs-on: ubuntu-latest
-    name: Publish release
-
+    name: ezzatron
+    uses: ezzatron/repos/.github/workflows/shared-publish-release.yml@main
+    secrets: inherit
     permissions:
       contents: write
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Publish release
-        uses: ghalactic/github-release-from-tag@v5
-        with:
-          reactions: hooray,heart,rocket
+      discussions: write
+    with:
+      discussionCategory: Releases
+      tag: ${{ github.ref_name }}
