@@ -2,15 +2,15 @@ import { WebSocket } from "ws";
 
 export type NvectorTestClient = {
   lat_lon2n_E: (
-    lat: number,
-    lon: number,
+    latitude: number,
+    longitude: number,
   ) => Promise<[x: number, y: number, z: number]>;
 
   n_E2lat_lon: (
     x: number,
     y: number,
     z: number,
-  ) => Promise<[lat: number, lon: number]>;
+  ) => Promise<[latitude: number, longitude: number]>;
 
   close: () => void;
 };
@@ -25,10 +25,10 @@ export async function createNvectorTestClient(): Promise<NvectorTestClient> {
   });
 
   return {
-    async lat_lon2n_E(lat, lon) {
+    async lat_lon2n_E(latitude, longitude) {
       const [[x], [y], [z]] = await call<[[number], [number], [number]]>(
         "lat_lon2n_E",
-        { latitude: lat, longitude: lon },
+        { latitude, longitude },
       );
 
       return [x, y, z];
