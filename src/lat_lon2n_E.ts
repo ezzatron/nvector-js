@@ -1,7 +1,6 @@
-export function lat_lon2n_E(
-  latitude: number,
-  longitude: number,
-): [x: number, y: number, z: number] {
+import type { Vector3 } from "./vector.js";
+
+export function lat_lon2n_E(latitude: number, longitude: number): Vector3 {
   const sinLat = Math.sin(latitude);
   const cosLat = Math.cos(latitude);
   const sinLon = Math.sin(longitude);

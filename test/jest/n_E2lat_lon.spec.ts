@@ -22,11 +22,11 @@ describe("n_E2lat_lon()", () => {
   })("matches the Python implementation", async ([latitude, longitude]) => {
     const [x, y, z] = lat_lon2n_E(latitude, longitude);
 
-    const expected = await nvectorTestClient.n_E2lat_lon(x, y, z);
+    const expected = await nvectorTestClient.n_E2lat_lon([x, y, z]);
 
     expect(expected).toMatchObject([expect.any(Number), expect.any(Number)]);
 
-    const actual = n_E2lat_lon(x, y, z);
+    const actual = n_E2lat_lon([x, y, z]);
 
     expect(actual).toMatchObject([expect.any(Number), expect.any(Number)]);
     expect(actual[0]).toBeCloseTo(expected[0], 10);

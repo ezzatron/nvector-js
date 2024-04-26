@@ -1,4 +1,5 @@
 import { WebSocket } from "ws";
+import type { Vector3 } from "../src/vector.js";
 
 export type NvectorTestClient = {
   lat_lon2n_E: (
@@ -6,11 +7,7 @@ export type NvectorTestClient = {
     longitude: number,
   ) => Promise<[x: number, y: number, z: number]>;
 
-  n_E2lat_lon: (
-    x: number,
-    y: number,
-    z: number,
-  ) => Promise<[latitude: number, longitude: number]>;
+  n_E2lat_lon: (n_E: Vector3) => Promise<[latitude: number, longitude: number]>;
 
   close: () => void;
 };
@@ -34,7 +31,7 @@ export async function createNvectorTestClient(): Promise<NvectorTestClient> {
       return [x, y, z];
     },
 
-    async n_E2lat_lon(x, y, z) {
+    async n_E2lat_lon([x, y, z]) {
       const { latitude, longitude } = await call<{
         latitude: number;
         longitude: number;
