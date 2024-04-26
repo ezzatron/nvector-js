@@ -1,13 +1,18 @@
 import { WebSocket } from "ws";
+import type { Matrix3x3 } from "../src/matrix.js";
 import type { Vector3 } from "../src/vector.js";
 
 export type NvectorTestClient = {
   lat_lon2n_E: (
     latitude: number,
     longitude: number,
+    R_Ee?: Matrix3x3,
   ) => Promise<[x: number, y: number, z: number]>;
 
-  n_E2lat_lon: (n_E: Vector3) => Promise<[latitude: number, longitude: number]>;
+  n_E2lat_lon: (
+    n_E: Vector3,
+    R_Ee?: Matrix3x3,
+  ) => Promise<[latitude: number, longitude: number]>;
 
   close: () => void;
 };
@@ -22,21 +27,22 @@ export async function createNvectorTestClient(): Promise<NvectorTestClient> {
   });
 
   return {
-    async lat_lon2n_E(latitude, longitude) {
+    async lat_lon2n_E(latitude, longitude, R_Ee) {
       const [[x], [y], [z]] = await call<[[number], [number], [number]]>(
         "lat_lon2n_E",
-        { latitude, longitude },
+        { latitude, longitude, R_Ee },
       );
 
       return [x, y, z];
     },
 
-    async n_E2lat_lon([x, y, z]) {
+    async n_E2lat_lon([x, y, z], R_Ee) {
       const { latitude, longitude } = await call<{
         latitude: number;
         longitude: number;
       }>("n_E2lat_lon", {
         n_E: [[x], [y], [z]],
+        R_Ee,
       });
 
       return [latitude, longitude];

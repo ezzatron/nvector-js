@@ -1,6 +1,6 @@
-import { it } from "@fast-check/jest";
+import { fc, it } from "@fast-check/jest";
 import { lat_lon2n_E, n_E2lat_lon } from "../../src/index.js";
-import { arbitraryLatLon } from "../arbitrary.js";
+import { arbitrary3dRotationMatrix, arbitraryLatLon } from "../arbitrary.js";
 import {
   NvectorTestClient,
   createNvectorTestClient,
@@ -17,19 +17,26 @@ describe("n_E2lat_lon()", () => {
     nvectorTestClient?.close();
   });
 
-  it.prop([arbitraryLatLon()], {
-    numRuns: Infinity,
-  })("matches the Python implementation", async ([latitude, longitude]) => {
-    const [x, y, z] = lat_lon2n_E(latitude, longitude);
+  it.prop(
+    [
+      arbitraryLatLon(),
+      fc.option(arbitrary3dRotationMatrix(), { nil: undefined }),
+    ],
+    { numRuns: Infinity },
+  )(
+    "matches the Python implementation",
+    async ([latitude, longitude], R_Ee) => {
+      const [x, y, z] = lat_lon2n_E(latitude, longitude);
 
-    const expected = await nvectorTestClient.n_E2lat_lon([x, y, z]);
+      const expected = await nvectorTestClient.n_E2lat_lon([x, y, z], R_Ee);
 
-    expect(expected).toMatchObject([expect.any(Number), expect.any(Number)]);
+      expect(expected).toMatchObject([expect.any(Number), expect.any(Number)]);
 
-    const actual = n_E2lat_lon([x, y, z]);
+      const actual = n_E2lat_lon([x, y, z], R_Ee);
 
-    expect(actual).toMatchObject([expect.any(Number), expect.any(Number)]);
-    expect(actual[0]).toBeCloseTo(expected[0], 10);
-    expect(actual[1]).toBeCloseTo(expected[1], 10);
-  });
+      expect(actual).toMatchObject([expect.any(Number), expect.any(Number)]);
+      expect(actual[0]).toBeCloseTo(expected[0], 10);
+      expect(actual[1]).toBeCloseTo(expected[1], 10);
+    },
+  );
 });
