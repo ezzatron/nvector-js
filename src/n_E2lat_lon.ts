@@ -10,7 +10,7 @@ export function n_E2lat_lon(
   const [x, y, z] = n_E;
   const [[n00, n01, n02], [n10, n11, n12], [n20, n21, n22]] = R_Ee;
 
-  // flattened multiply(R_Ee, [x, y, z])
+  // flattened multiply(R_Ee, n_E)
   const rx = n00 * x + n01 * y + n02 * z;
   const ry = n10 * x + n11 * y + n12 * z;
   const rz = n20 * x + n21 * y + n22 * z;
