@@ -1,4 +1,4 @@
-import { fc } from "@fast-check/jest";
+import { fc } from "@fast-check/vitest";
 import type { Matrix3x3 } from "../src/matrix.js";
 import type { Vector3, Vector4 } from "../src/vector.js";
 

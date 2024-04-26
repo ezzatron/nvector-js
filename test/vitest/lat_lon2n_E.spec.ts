@@ -1,4 +1,5 @@
-import { fc, it } from "@fast-check/jest";
+import { fc, it } from "@fast-check/vitest";
+import { afterAll, beforeAll, describe, expect } from "vitest";
 import { lat_lon2n_E } from "../../src/index.js";
 import { arbitrary3dRotationMatrix, arbitraryLatLon } from "../arbitrary.js";
 import {
@@ -22,7 +23,7 @@ describe("lat_lon2n_E()", () => {
       arbitraryLatLon(),
       fc.option(arbitrary3dRotationMatrix(), { nil: undefined }),
     ],
-    { numRuns: Infinity },
+    { interruptAfterTimeLimit: 5000, numRuns: Infinity },
   )(
     "matches the Python implementation",
     async ([latitude, longitude], R_Ee) => {
@@ -49,5 +50,6 @@ describe("lat_lon2n_E()", () => {
       expect(actual[1]).toBeCloseTo(expected[1], 10);
       expect(actual[2]).toBeCloseTo(expected[2], 10);
     },
+    6000,
   );
 });
