@@ -1,6 +1,6 @@
 import { fc } from "@fast-check/jest";
 import type { Matrix3x3 } from "../src/matrix.js";
-import type { Vector4 } from "../src/vector.js";
+import type { Vector3, Vector4 } from "../src/vector.js";
 
 const RADIAN = Math.PI / 180;
 
@@ -23,6 +23,22 @@ export function arbitrary3dRotationMatrix(): fc.Arbitrary<Matrix3x3> {
       [2 * (xz - wy), 2 * (yz + wx), 1 - 2 * (xx + yy)],
     ];
   });
+}
+
+export function arbitrary3dUnitVector(): fc.Arbitrary<Vector3> {
+  // based on https://github.com/mrdoob/three.js/blob/a2e9ee8204b67f9dca79f48cf620a34a05aa8126/src/math/Vector3.js#L695
+  // https://mathworld.wolfram.com/SpherePointPicking.html
+
+  return fc
+    .tuple(
+      fc.double({ min: 0, max: Math.PI * 2, noNaN: true }),
+      fc.double({ min: -1, max: 1, noNaN: true }),
+    )
+    .map(([theta, u]) => {
+      const c = Math.sqrt(1 - u * u);
+
+      return [c * Math.cos(theta), u, c * Math.sin(theta)];
+    });
 }
 
 export function arbitraryLatLon(): fc.Arbitrary<[number, number]> {
