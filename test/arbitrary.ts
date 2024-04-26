@@ -4,6 +4,27 @@ import type { Vector4 } from "../src/vector.js";
 
 const RADIAN = Math.PI / 180;
 
+export function arbitrary3dRotationMatrix(): fc.Arbitrary<Matrix3x3> {
+  return arbitraryQuaternion().map(([x, y, z, w]) => {
+    // based on https://github.com/rawify/Quaternion.js/blob/c3834673b502e64e1866dbbf13568c0be93e52cc/quaternion.js#L791
+    const wx = w * x;
+    const wy = w * y;
+    const wz = w * z;
+    const xx = x * x;
+    const xy = x * y;
+    const xz = x * z;
+    const yy = y * y;
+    const yz = y * z;
+    const zz = z * z;
+
+    return [
+      [1 - 2 * (yy + zz), 2 * (xy - wz), 2 * (xz + wy)],
+      [2 * (xy + wz), 1 - 2 * (xx + zz), 2 * (yz - wx)],
+      [2 * (xz - wy), 2 * (yz + wx), 1 - 2 * (xx + yy)],
+    ];
+  });
+}
+
 export function arbitraryLatLon(): fc.Arbitrary<[number, number]> {
   return fc.tuple(
     fc.double({
@@ -19,7 +40,7 @@ export function arbitraryLatLon(): fc.Arbitrary<[number, number]> {
   );
 }
 
-export function arbitraryQuaternion(): fc.Arbitrary<Vector4> {
+function arbitraryQuaternion(): fc.Arbitrary<Vector4> {
   // based on https://github.com/mrdoob/three.js/blob/a2e9ee8204b67f9dca79f48cf620a34a05aa8126/src/math/Quaternion.js#L592
   // Ken Shoemake
   // Uniform random rotations
@@ -42,25 +63,4 @@ export function arbitraryQuaternion(): fc.Arbitrary<Vector4> {
 
       return [x, y, z, w];
     });
-}
-
-export function arbitrary3dRotationMatrix(): fc.Arbitrary<Matrix3x3> {
-  return arbitraryQuaternion().map(([x, y, z, w]) => {
-    // based on https://github.com/rawify/Quaternion.js/blob/c3834673b502e64e1866dbbf13568c0be93e52cc/quaternion.js#L791
-    const wx = w * x;
-    const wy = w * y;
-    const wz = w * z;
-    const xx = x * x;
-    const xy = x * y;
-    const xz = x * z;
-    const yy = y * y;
-    const yz = y * z;
-    const zz = z * z;
-
-    return [
-      [1 - 2 * (yy + zz), 2 * (xy - wz), 2 * (xz + wy)],
-      [2 * (xy + wz), 1 - 2 * (xx + zz), 2 * (yz - wx)],
-      [2 * (xz - wy), 2 * (yz + wx), 1 - 2 * (xx + yy)],
-    ];
-  });
 }
