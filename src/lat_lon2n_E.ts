@@ -7,6 +7,7 @@ export function lat_lon2n_E(
   longitude: number,
   R_Ee: Matrix3x3 = ROTATION_MATRIX_e,
 ): Vector3 {
+  // based on https://github.com/pbrod/nvector/blob/b8afd89a860a4958d499789607aacb4168dcef87/src/nvector/core.py#L53
   const [[n00, n01, n02], [n10, n11, n12], [n20, n21, n22]] = R_Ee;
 
   const sinLat = Math.sin(latitude);

@@ -6,6 +6,7 @@ export function n_E2lat_lon(
   n_E: Vector3,
   R_Ee: Matrix3x3 = ROTATION_MATRIX_e,
 ): [latitude: number, longitude: number] {
+  // based on https://github.com/pbrod/nvector/blob/b8afd89a860a4958d499789607aacb4168dcef87/src/nvector/rotation.py#L406
   const [x, y, z] = n_E;
   const [[n00, n01, n02], [n10, n11, n12], [n20, n21, n22]] = R_Ee;
 
