@@ -2,6 +2,15 @@ import type { Matrix3x3 } from "./matrix.js";
 import { ROTATION_MATRIX_e } from "./rotation.js";
 import type { Vector3 } from "./vector.js";
 
+/**
+ * Converts latitude and longitude to n-vector
+ *
+ * @param latitude - Geodetic latitude and longitude given in radians
+ * @param longitude - Geodetic latitude and longitude given in radians
+ * @param R_Ee - Rotation matrix defining the axes of the coordinate frame E
+ *
+ * @returns n-vector decomposed in E
+ */
 export function lat_lon2n_E(
   latitude: number,
   longitude: number,
