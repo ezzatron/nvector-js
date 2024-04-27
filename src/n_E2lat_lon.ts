@@ -16,12 +16,12 @@ export function n_E2lat_lon(
 ): [latitude: number, longitude: number] {
   // based on https://github.com/pbrod/nvector/blob/b8afd89a860a4958d499789607aacb4168dcef87/src/nvector/rotation.py#L406
   const [x, y, z] = n_E;
-  const [[n00, n01, n02], [n10, n11, n12], [n20, n21, n22]] = R_Ee;
+  const [[r00, r01, r02], [r10, r11, r12], [r20, r21, r22]] = R_Ee;
 
   // flattened multiply(R_Ee, n_E)
-  const rx = n00 * x + n01 * y + n02 * z;
-  const ry = n10 * x + n11 * y + n12 * z;
-  const rz = n20 * x + n21 * y + n22 * z;
+  const rx = r00 * x + r01 * y + r02 * z;
+  const ry = r10 * x + r11 * y + r12 * z;
+  const rz = r20 * x + r21 * y + r22 * z;
 
   const sinLat = rx;
   const cosLat = Math.sqrt(ry ** 2 + rz ** 2);
