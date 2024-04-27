@@ -1,5 +1,5 @@
 import type { Matrix3x3 } from "./matrix.js";
-import { ROTATION_MATRIX_e } from "./rotation.js";
+import { ROTATION_MATRIX_e, unrotate } from "./rotation.js";
 import type { Vector3 } from "./vector.js";
 
 /**
@@ -17,8 +17,6 @@ export function lat_lon2n_E(
   R_Ee: Matrix3x3 = ROTATION_MATRIX_e,
 ): Vector3 {
   // based on https://github.com/pbrod/nvector/blob/b8afd89a860a4958d499789607aacb4168dcef87/src/nvector/core.py#L53
-  const [[r00, r01, r02], [r10, r11, r12], [r20, r21, r22]] = R_Ee;
-
   const sinLat = Math.sin(latitude);
   const cosLat = Math.cos(latitude);
   const sinLon = Math.sin(longitude);
@@ -28,10 +26,5 @@ export function lat_lon2n_E(
   const y = cosLat * sinLon;
   const z = -cosLat * cosLon;
 
-  // flattened multiply(transpose(R_Ee), [x, y, z])
-  return [
-    r00 * x + r10 * y + r20 * z,
-    r01 * x + r11 * y + r21 * z,
-    r02 * x + r12 * y + r22 * z,
-  ];
+  return unrotate(R_Ee, [x, y, z]);
 }
