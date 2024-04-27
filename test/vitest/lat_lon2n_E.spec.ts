@@ -48,9 +48,9 @@ describe("lat_lon2n_E()", () => {
         expect.any(Number),
         expect.any(Number),
       ]);
-      expect(actual[0]).toBeCloseTo(expected[0], 10);
-      expect(actual[1]).toBeCloseTo(expected[1], 10);
-      expect(actual[2]).toBeCloseTo(expected[2], 10);
+      expect(actual[0]).toBeCloseTo(expected[0], 15);
+      expect(actual[1]).toBeCloseTo(expected[1], 15);
+      expect(actual[2]).toBeCloseTo(expected[2], 15);
     },
     TEST_DURATION + 1000,
   );

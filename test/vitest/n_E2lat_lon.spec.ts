@@ -39,8 +39,8 @@ describe("n_E2lat_lon()", () => {
       const actual = n_E2lat_lon(n_E, R_Ee);
 
       expect(actual).toMatchObject([expect.any(Number), expect.any(Number)]);
-      expect(actual[0]).toBeCloseTo(expected[0], 10);
-      expect(actual[1]).toBeCloseTo(expected[1], 10);
+      expect(actual[0]).toBeCloseTo(expected[0], 15);
+      expect(actual[1]).toBeCloseTo(expected[1], 15);
     },
     TEST_DURATION + 1000,
   );
