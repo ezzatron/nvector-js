@@ -11,6 +11,14 @@ export type NvectorTestClient = {
 
   n_E2lat_lon: (n_E: Vector3, R_Ee?: Matrix3x3) => Promise<LatLonTuple>;
 
+  n_EB_E2p_EB_E: (
+    n_EB_E: Vector3,
+    depth?: number,
+    a?: number,
+    f?: number,
+    R_Ee?: Matrix3x3,
+  ) => Promise<Vector3>;
+
   close: () => void;
 };
 
@@ -38,6 +46,18 @@ export async function createNvectorTestClient(): Promise<NvectorTestClient> {
       return latLonObjectToTuple(
         await call<LatLonObject>("n_E2lat_lon", {
           n_E: wrapVector3(n_E),
+          R_Ee,
+        }),
+      );
+    },
+
+    async n_EB_E2p_EB_E(n_EB_E, depth, a, f, R_Ee) {
+      return unwrapVector3(
+        await call<WrappedVector3>("n_EB_E2p_EB_E", {
+          n_EB_E: wrapVector3(n_EB_E),
+          depth,
+          a,
+          f,
           R_Ee,
         }),
       );
