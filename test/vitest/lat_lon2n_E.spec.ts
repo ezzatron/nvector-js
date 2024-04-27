@@ -7,6 +7,8 @@ import {
   createNvectorTestClient,
 } from "../nvector-test-api.js";
 
+const TEST_DURATION = 5000;
+
 describe("lat_lon2n_E()", () => {
   let nvectorTestClient: NvectorTestClient;
 
@@ -23,7 +25,7 @@ describe("lat_lon2n_E()", () => {
       arbitraryLatLon(),
       fc.option(arbitrary3dRotationMatrix(), { nil: undefined }),
     ],
-    { interruptAfterTimeLimit: 5000, numRuns: Infinity },
+    { interruptAfterTimeLimit: TEST_DURATION, numRuns: Infinity },
   )(
     "matches the Python implementation",
     async ([latitude, longitude], R_Ee) => {
@@ -50,6 +52,6 @@ describe("lat_lon2n_E()", () => {
       expect(actual[1]).toBeCloseTo(expected[1], 10);
       expect(actual[2]).toBeCloseTo(expected[2], 10);
     },
-    6000,
+    TEST_DURATION + 1000,
   );
 });

@@ -10,6 +10,8 @@ import {
   createNvectorTestClient,
 } from "../nvector-test-api.js";
 
+const TEST_DURATION = 5000;
+
 describe("n_E2lat_lon()", () => {
   let nvectorTestClient: NvectorTestClient;
 
@@ -26,7 +28,7 @@ describe("n_E2lat_lon()", () => {
       arbitrary3dUnitVector(),
       fc.option(arbitrary3dRotationMatrix(), { nil: undefined }),
     ],
-    { interruptAfterTimeLimit: 5000, numRuns: Infinity },
+    { interruptAfterTimeLimit: TEST_DURATION, numRuns: Infinity },
   )(
     "matches the Python implementation",
     async (n_E, R_Ee) => {
@@ -40,6 +42,6 @@ describe("n_E2lat_lon()", () => {
       expect(actual[0]).toBeCloseTo(expected[0], 10);
       expect(actual[1]).toBeCloseTo(expected[1], 10);
     },
-    6000,
+    TEST_DURATION + 1000,
   );
 });
