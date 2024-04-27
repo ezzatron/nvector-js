@@ -25,6 +25,14 @@ export function arbitrary3dRotationMatrix(): fc.Arbitrary<Matrix3x3> {
   });
 }
 
+export function arbitrary3dVector(
+  magnitudeConstraints: fc.DoubleConstraints,
+): fc.Arbitrary<Vector3> {
+  return fc
+    .tuple(arbitrary3dUnitVector(), fc.double(magnitudeConstraints))
+    .map(([[x, y, z], m]) => [x * m, y * m, z * m]);
+}
+
 export function arbitrary3dUnitVector(): fc.Arbitrary<Vector3> {
   // based on https://github.com/mrdoob/three.js/blob/a2e9ee8204b67f9dca79f48cf620a34a05aa8126/src/math/Vector3.js#L695
   // https://mathworld.wolfram.com/SpherePointPicking.html
