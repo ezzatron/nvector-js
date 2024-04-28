@@ -1,23 +1,11 @@
 import { WebSocket } from "ws";
-import type { Matrix3x3 } from "../src/matrix.js";
+import type { lat_lon2n_E, n_E2lat_lon, n_EB_E2p_EB_E } from "../src/index.js";
 import type { Vector3 } from "../src/vector.js";
 
 export type NvectorTestClient = {
-  lat_lon2n_E: (
-    latitude: number,
-    longitude: number,
-    R_Ee?: Matrix3x3,
-  ) => Promise<Vector3>;
-
-  n_E2lat_lon: (n_E: Vector3, R_Ee?: Matrix3x3) => Promise<LatLonTuple>;
-
-  n_EB_E2p_EB_E: (
-    n_EB_E: Vector3,
-    depth?: number,
-    a?: number,
-    f?: number,
-    R_Ee?: Matrix3x3,
-  ) => Promise<Vector3>;
+  lat_lon2n_E: Async<typeof lat_lon2n_E>;
+  n_E2lat_lon: Async<typeof n_E2lat_lon>;
+  n_EB_E2p_EB_E: Async<typeof n_EB_E2p_EB_E>;
 
   close: () => void;
 };
@@ -43,12 +31,15 @@ export async function createNvectorTestClient(): Promise<NvectorTestClient> {
     },
 
     async n_E2lat_lon(n_E, R_Ee) {
-      return latLonObjectToTuple(
-        await call<LatLonObject>("n_E2lat_lon", {
-          n_E: wrapVector3(n_E),
-          R_Ee,
-        }),
-      );
+      const { latitude, longitude } = await call<{
+        latitude: number;
+        longitude: number;
+      }>("n_E2lat_lon", {
+        n_E: wrapVector3(n_E),
+        R_Ee,
+      });
+
+      return [latitude, longitude];
     },
 
     async n_EB_E2p_EB_E(n_EB_E, depth, a, f, R_Ee) {
@@ -104,19 +95,6 @@ type ErrorMessage = {
   result: undefined;
 };
 
-type LatLonTuple = [latitude: number, longitude: number];
-type LatLonObject = {
-  latitude: number;
-  longitude: number;
-};
-
-function latLonObjectToTuple({
-  latitude,
-  longitude,
-}: LatLonObject): LatLonTuple {
-  return [latitude, longitude];
-}
-
 type WrappedVector3 = [[x: number], [y: number], [z: number]];
 
 function wrapVector3([x, y, z]: Vector3): WrappedVector3 {
@@ -126,3 +104,7 @@ function wrapVector3([x, y, z]: Vector3): WrappedVector3 {
 function unwrapVector3([[x], [y], [z]]: WrappedVector3): Vector3 {
   return [x, y, z];
 }
+
+type Async<T> = T extends (...args: infer A) => infer R
+  ? (...args: A) => Promise<R>
+  : never;
