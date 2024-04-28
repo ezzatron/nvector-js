@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## [v0.3.0] - 2024-04-28
+
+[v0.3.0]: https://github.com/ezzatron/nvector-js/releases/tag/v0.3.0
+
+### Added
+
+- Added the `n_E2R_EN` function.
+- Added the `n_EA_E_and_n_EB_E2p_AB_E` function.
+- Added the `n_EA_E_and_p_AB_E2n_EB_E` function.
+- Added the `n_EB_E2p_EB_E` function.
+- Added the `p_EB_E2n_EB_E` function.
+- Added the `rotateVector3` function.
+- Added the `unrotateVector3` function.
+
 ## [v0.2.0] - 2024-04-26
 
 [v0.2.0]: https://github.com/ezzatron/nvector-js/releases/tag/v0.2.0
