@@ -4,18 +4,18 @@ import { ROTATION_MATRIX_e, rotate, unrotate } from "./rotation.js";
 import type { Vector3 } from "./vector.js";
 
 /**
- * Converts n-vector to Cartesian position vector in meters
+ * Converts an n-vector to a Cartesian position vector.
  *
  * Defaults to the WGS-84 ellipsoid. If `f` is `0`, then spherical Earth with
  * radius `a` is used instead of WGS-84.
  *
- * @param n_EB_E - n-vector of position B, decomposed in E
- * @param depth - Depth in meters of system B, relative to the ellipsoid
- * @param a - Semi-major axis of the Earth ellipsoid given in meters
- * @param f - Flattening of the Earth ellipsoid
- * @param R_Ee - Rotation matrix defining the axes of the coordinate frame E
+ * @param n_EB_E - An n-vector of position B, decomposed in E.
+ * @param depth - The depth in meters of system B, relative to the ellipsoid.
+ * @param a - The semi-major axis of the Earth ellipsoid given in meters.
+ * @param f - The flattening of the Earth ellipsoid.
+ * @param R_Ee - A rotation matrix defining the axes of the coordinate frame E.
  *
- * @returns Cartesian position vector from E to B, decomposed in E
+ * @returns A Cartesian position vector in meters from E to B, decomposed in E.
  */
 export function n_EB_E2p_EB_E(
   n_EB_E: Vector3,
@@ -24,13 +24,13 @@ export function n_EB_E2p_EB_E(
   f: number = WGS_84.f,
   R_Ee: Matrix3x3 = ROTATION_MATRIX_e,
 ): Vector3 {
-  // based on https://github.com/pbrod/nvector/blob/b8afd89a860a4958d499789607aacb4168dcef87/src/nvector/core.py#L108
+  // Based on https://github.com/pbrod/nvector/blob/b8afd89a860a4958d499789607aacb4168dcef87/src/nvector/core.py#L108
   const [x, y, z] = rotate(R_Ee, n_EB_E);
 
-  // semi-minor axis
+  // Semi-minor axis
   const b = a * (1 - f);
 
-  // scale vector
+  // Scale vector
   const sx = 1;
   const sy = 1 - f;
   const sz = 1 - f;
@@ -45,8 +45,8 @@ export function n_EB_E2p_EB_E(
   const p_EL_e_z = p_EL_e_ratio * (z / sz ** 2);
 
   // p_EL_e (vector) - n_EB_e (vector) * depth (scalar)
-  // guessing a name of p_EB_e (lowercase) is appropriate
-  // this is an unnamed expression in the original code
+  // Guessing a name of p_EB_e (lowercase) is appropriate
+  // This is an unnamed expression in the original code
   const p_EB_e: Vector3 = [
     p_EL_e_x - x * depth,
     p_EL_e_y - y * depth,

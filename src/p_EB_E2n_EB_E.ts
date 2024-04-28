@@ -4,17 +4,17 @@ import { ROTATION_MATRIX_e, rotate, unrotate } from "./rotation.js";
 import type { Vector3 } from "./vector.js";
 
 /**
- * Converts Cartesian position vector in meters to n-vector
+ * Converts a Cartesian position vector to an n-vector.
  *
  * Defaults to the WGS-84 ellipsoid. If `f` is `0`, then spherical Earth with
  * radius `a` is used instead of WGS-84.
  *
- * @param p_EB_E - Cartesian position vector from E to B, decomposed in E
- * @param a - Semi-major axis of the Earth ellipsoid given in meters
- * @param f - Flattening of the Earth ellipsoid
- * @param R_Ee - Rotation matrix defining the axes of the coordinate frame E
+ * @param p_EB_E - A Cartesian position vector in meters from E to B, decomposed in E.
+ * @param a - The semi-major axis of the Earth ellipsoid given in meters.
+ * @param f - The flattening of the Earth ellipsoid.
+ * @param R_Ee - A rotation matrix defining the axes of the coordinate frame E.
  *
- * @returns n-vector of position B, decomposed in E, and depth in meters of system B, relative to the ellipsoid
+ * @returns An n-vector of position B, decomposed in E, and the depth in meters of system B, relative to the ellipsoid.
  */
 export function p_EB_E2n_EB_E(
   p_EB_E: Vector3,
@@ -22,10 +22,10 @@ export function p_EB_E2n_EB_E(
   f: number = WGS_84.f,
   R_Ee: Matrix3x3 = ROTATION_MATRIX_e,
 ): [n_EB_E: Vector3, depth: number] {
-  // based on https://github.com/pbrod/nvector/blob/b8afd89a860a4958d499789607aacb4168dcef87/src/nvector/core.py#L212
+  // Based on https://github.com/pbrod/nvector/blob/b8afd89a860a4958d499789607aacb4168dcef87/src/nvector/core.py#L212
   const p_EB_e = rotate(R_Ee, p_EB_E);
 
-  // equation (23) from Gade (2010)
+  // Equation (23) from Gade (2010)
   const Ryz_2 = p_EB_e[1] ** 2 + p_EB_e[2] ** 2;
   const Rx_2 = p_EB_e[0] ** 2;
   const e_2 = (2.0 - f) * f;
@@ -54,7 +54,7 @@ export function p_EB_E2n_EB_E(
 
   const [x, y, z] = unrotate(R_Ee, n_EB_e);
 
-  // ensure unit length
+  // Ensure unit length
   const norm = Math.hypot(x, y, z);
   const n_EB_E: Vector3 = [x / norm, y / norm, z / norm];
 
