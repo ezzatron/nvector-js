@@ -36,7 +36,7 @@ export function n_EB_E2p_EB_E(
   const sz = 1 - f;
 
   // denominator = normalize(n_EB_e (vector) / scale (vector))
-  const denominator = Math.sqrt((x / sx) ** 2 + (y / sy) ** 2 + (z / sz) ** 2);
+  const denominator = Math.hypot(x / sx, y / sy, z / sz);
 
   // p_EL_e = b (scalar) / denominator (scalar) * n_EB_e (vector) / scale (vector) ** 2
   const p_EL_e_ratio = b / denominator;

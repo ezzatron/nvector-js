@@ -18,7 +18,7 @@ export function n_E2lat_lon(
   const [x, y, z] = rotate(R_Ee, n_E);
 
   const sinLat = x;
-  const cosLat = Math.sqrt(y ** 2 + z ** 2);
+  const cosLat = Math.hypot(y, z);
   const sinLonCosLat = y;
   const cosLonCosLat = -z;
 
