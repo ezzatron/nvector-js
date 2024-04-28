@@ -2,6 +2,7 @@ import { WebSocket } from "ws";
 import type {
   lat_lon2n_E,
   n_E2lat_lon,
+  n_EA_E_and_n_EB_E2p_AB_E,
   n_EB_E2p_EB_E,
   p_EB_E2n_EB_E,
 } from "../src/index.js";
@@ -10,6 +11,7 @@ import type { Vector3 } from "../src/vector.js";
 export type NvectorTestClient = {
   lat_lon2n_E: Async<typeof lat_lon2n_E>;
   n_E2lat_lon: Async<typeof n_E2lat_lon>;
+  n_EA_E_and_n_EB_E2p_AB_E: Async<typeof n_EA_E_and_n_EB_E2p_AB_E>;
   n_EB_E2p_EB_E: Async<typeof n_EB_E2p_EB_E>;
   p_EB_E2n_EB_E: Async<typeof p_EB_E2n_EB_E>;
 
@@ -46,6 +48,20 @@ export async function createNvectorTestClient(): Promise<NvectorTestClient> {
       });
 
       return [latitude, longitude];
+    },
+
+    async n_EA_E_and_n_EB_E2p_AB_E(n_EA_E, n_EB_E, z_EA, z_EB, a, f, R_Ee) {
+      return unwrapVector3(
+        await call<WrappedVector3>("n_EA_E_and_n_EB_E2p_AB_E", {
+          n_EA_E: wrapVector3(n_EA_E),
+          n_EB_E: wrapVector3(n_EB_E),
+          z_EA,
+          z_EB,
+          a,
+          f,
+          R_Ee,
+        }),
+      );
     },
 
     async n_EB_E2p_EB_E(n_EB_E, depth, a, f, R_Ee) {
