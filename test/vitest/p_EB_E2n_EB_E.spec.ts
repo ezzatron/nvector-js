@@ -86,9 +86,9 @@ describe("p_EB_E2n_EB_E()", () => {
         expect.any(Number),
         expect.any(Number),
       ]);
-      expect(actualVector[0]).toBeCloseTo(expectedVector[0], 8);
-      expect(actualVector[1]).toBeCloseTo(expectedVector[1], 8);
-      expect(actualVector[2]).toBeCloseTo(expectedVector[2], 8);
+      expect(actualVector[0]).toBeCloseTo(expectedVector[0], 15);
+      expect(actualVector[1]).toBeCloseTo(expectedVector[1], 15);
+      expect(actualVector[2]).toBeCloseTo(expectedVector[2], 15);
       expect(actualDepth).toBeCloseTo(expectedDepth, 8);
     },
     TEST_DURATION + 1000,
