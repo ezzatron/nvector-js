@@ -23,11 +23,11 @@ export function p_EB_E2n_EB_E(
   R_Ee: Matrix3x3 = ROTATION_MATRIX_e,
 ): [n_EB_E: Vector3, depth: number] {
   // Based on https://github.com/pbrod/nvector/blob/b8afd89a860a4958d499789607aacb4168dcef87/src/nvector/core.py#L212
-  const p_EB_e = rotate(R_Ee, p_EB_E);
+  const [p_EB_e_x, p_EB_e_y, p_EB_e_z] = rotate(R_Ee, p_EB_E);
 
   // Equation (23) from Gade (2010)
-  const Ryz_2 = p_EB_e[1] ** 2 + p_EB_e[2] ** 2;
-  const Rx_2 = p_EB_e[0] ** 2;
+  const Ryz_2 = p_EB_e_y ** 2 + p_EB_e_z ** 2;
+  const Rx_2 = p_EB_e_x ** 2;
   const e_2 = (2.0 - f) * f;
   const q = ((1 - e_2) / a ** 2) * Rx_2;
   const Ryz = Math.sqrt(Ryz_2);
@@ -47,9 +47,9 @@ export function p_EB_E2n_EB_E(
   const depth = -height;
 
   const n_EB_e: Vector3 = [
-    x_scale * p_EB_e[0],
-    yz_scale * p_EB_e[1],
-    yz_scale * p_EB_e[2],
+    x_scale * p_EB_e_x,
+    yz_scale * p_EB_e_y,
+    yz_scale * p_EB_e_z,
   ];
 
   const [x, y, z] = unrotate(R_Ee, n_EB_e);
