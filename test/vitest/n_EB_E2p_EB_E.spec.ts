@@ -1,10 +1,11 @@
 import { fc, it } from "@fast-check/vitest";
 import { afterAll, beforeAll, describe, expect } from "vitest";
-import { GRS_80, WGS_72, WGS_84, WGS_84_SPHERE } from "../../src/ellipsoid.js";
 import { n_EB_E2p_EB_E } from "../../src/index.js";
 import {
   arbitrary3dRotationMatrix,
   arbitrary3dUnitVector,
+  arbitraryEllipsoid,
+  arbitraryEllipsoidDepth,
 } from "../arbitrary.js";
 import {
   NvectorTestClient,
@@ -27,25 +28,13 @@ describe("n_EB_E2p_EB_E()", () => {
   it.prop(
     [
       arbitrary3dUnitVector(),
-      fc
-        .oneof(
-          fc.constant(WGS_84),
-          fc.constant(WGS_84_SPHERE),
-          fc.constant(WGS_72),
-          fc.constant(GRS_80),
-        )
-        .chain(({ a, f }) => {
-          // semi-minor axis
-          const b = a * (1 - f);
-
-          return fc.tuple(
-            fc.option(fc.double({ min: -b, max: b, noNaN: true }), {
-              nil: undefined,
-            }),
-            fc.option(fc.constant(a), { nil: undefined }),
-            fc.option(fc.constant(f), { nil: undefined }),
-          );
-        }),
+      arbitraryEllipsoid().chain((ellipsoid) => {
+        return fc.tuple(
+          arbitraryEllipsoidDepth(ellipsoid),
+          fc.option(fc.constant(ellipsoid.a), { nil: undefined }),
+          fc.option(fc.constant(ellipsoid.f), { nil: undefined }),
+        );
+      }),
       fc.option(arbitrary3dRotationMatrix(), { nil: undefined }),
     ],
     { interruptAfterTimeLimit: TEST_DURATION, numRuns: Infinity },

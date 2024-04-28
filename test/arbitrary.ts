@@ -1,4 +1,11 @@
 import { fc } from "@fast-check/vitest";
+import {
+  GRS_80,
+  WGS_72,
+  WGS_84,
+  WGS_84_SPHERE,
+  type Ellipsoid,
+} from "../src/ellipsoid.js";
 import type { Matrix3x3 } from "../src/matrix.js";
 import type { Vector3, Vector4 } from "../src/vector.js";
 
@@ -47,6 +54,35 @@ export function arbitrary3dUnitVector(): fc.Arbitrary<Vector3> {
 
       return [c * Math.cos(theta), u, c * Math.sin(theta)];
     });
+}
+
+export function arbitraryEllipsoid(): fc.Arbitrary<Ellipsoid> {
+  return fc.oneof(
+    fc.constant(WGS_84),
+    fc.constant(WGS_84_SPHERE),
+    fc.constant(WGS_72),
+    fc.constant(GRS_80),
+  );
+}
+
+export function arbitraryEllipsoidDepth({
+  a,
+  f,
+}: Ellipsoid): fc.Arbitrary<number> {
+  // semi-minor axis
+  const b = a * (1 - f);
+
+  return fc.double({ min: -b, max: b, noNaN: true });
+}
+
+export function arbitraryEllipsoidECEFVector({
+  a,
+  f,
+}: Ellipsoid): fc.Arbitrary<Vector3> {
+  // semi-minor axis
+  const b = a * (1 - f);
+
+  return arbitrary3dVector({ min: a - b, max: a + b, noNaN: true });
 }
 
 export function arbitraryLatLon(): fc.Arbitrary<[number, number]> {
