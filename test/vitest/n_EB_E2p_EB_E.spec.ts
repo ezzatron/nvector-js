@@ -30,7 +30,7 @@ describe("n_EB_E2p_EB_E()", () => {
       arbitrary3dUnitVector(),
       arbitraryEllipsoid().chain((ellipsoid) => {
         return fc.tuple(
-          arbitraryEllipsoidDepth(ellipsoid),
+          fc.option(arbitraryEllipsoidDepth(ellipsoid), { nil: undefined }),
           fc.option(fc.constant(ellipsoid.a), { nil: undefined }),
           fc.option(fc.constant(ellipsoid.f), { nil: undefined }),
         );
