@@ -1,5 +1,5 @@
 import type { Matrix3x3 } from "./matrix.js";
-import { ROTATION_MATRIX_e, unrotate } from "./rotation.js";
+import { ROTATION_MATRIX_e, unrotateVector3 } from "./rotation.js";
 import type { Vector3 } from "./vector.js";
 
 /**
@@ -26,5 +26,5 @@ export function lat_lon2n_E(
   const y = cosLat * sinLon;
   const z = -cosLat * cosLon;
 
-  return unrotate(R_Ee, [x, y, z]);
+  return unrotateVector3(R_Ee, [x, y, z]);
 }

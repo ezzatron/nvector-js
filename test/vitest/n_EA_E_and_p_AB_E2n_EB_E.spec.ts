@@ -2,7 +2,7 @@ import { fc, it } from "@fast-check/vitest";
 import { afterAll, beforeAll, describe, expect } from "vitest";
 import { WGS_84 } from "../../src/ellipsoid.js";
 import { n_EA_E_and_p_AB_E2n_EB_E, n_EB_E2p_EB_E } from "../../src/index.js";
-import { ROTATION_MATRIX_e, rotate } from "../../src/rotation.js";
+import { ROTATION_MATRIX_e, rotateVector3 } from "../../src/rotation.js";
 import type { Vector3 } from "../../src/vector.js";
 import {
   arbitrary3dRotationMatrix,
@@ -64,7 +64,7 @@ describe("n_EA_E_and_p_AB_E2n_EB_E()", () => {
               p_EA_E_z + p_AB_E[2],
             ];
 
-            const p_EB_e = rotate(R_Ee, p_EB_E);
+            const p_EB_e = rotateVector3(R_Ee, p_EB_E);
 
             // filter vectors where the x or yz components are zero after
             // rotation

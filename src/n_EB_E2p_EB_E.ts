@@ -1,6 +1,10 @@
 import { WGS_84 } from "./ellipsoid.js";
 import type { Matrix3x3 } from "./matrix.js";
-import { ROTATION_MATRIX_e, rotate, unrotate } from "./rotation.js";
+import {
+  ROTATION_MATRIX_e,
+  rotateVector3,
+  unrotateVector3,
+} from "./rotation.js";
 import type { Vector3 } from "./vector.js";
 
 /**
@@ -25,7 +29,7 @@ export function n_EB_E2p_EB_E(
   R_Ee: Matrix3x3 = ROTATION_MATRIX_e,
 ): Vector3 {
   // Based on https://github.com/pbrod/nvector/blob/b8afd89a860a4958d499789607aacb4168dcef87/src/nvector/core.py#L108
-  const [x, y, z] = rotate(R_Ee, n_EB_E);
+  const [x, y, z] = rotateVector3(R_Ee, n_EB_E);
 
   // Semi-minor axis
   const b = a * (1 - f);
@@ -53,5 +57,5 @@ export function n_EB_E2p_EB_E(
     p_EL_e_z - z * depth,
   ];
 
-  return unrotate(R_Ee, p_EB_e);
+  return unrotateVector3(R_Ee, p_EB_e);
 }

@@ -1,6 +1,10 @@
 import { WGS_84 } from "./ellipsoid.js";
 import type { Matrix3x3 } from "./matrix.js";
-import { ROTATION_MATRIX_e, rotate, unrotate } from "./rotation.js";
+import {
+  ROTATION_MATRIX_e,
+  rotateVector3,
+  unrotateVector3,
+} from "./rotation.js";
 import type { Vector3 } from "./vector.js";
 
 /**
@@ -23,7 +27,7 @@ export function p_EB_E2n_EB_E(
   R_Ee: Matrix3x3 = ROTATION_MATRIX_e,
 ): [n_EB_E: Vector3, depth: number] {
   // Based on https://github.com/pbrod/nvector/blob/b8afd89a860a4958d499789607aacb4168dcef87/src/nvector/core.py#L212
-  const [p_EB_e_x, p_EB_e_y, p_EB_e_z] = rotate(R_Ee, p_EB_E);
+  const [p_EB_e_x, p_EB_e_y, p_EB_e_z] = rotateVector3(R_Ee, p_EB_E);
 
   // Equation (23) from Gade (2010)
   const Ryz_2 = p_EB_e_y ** 2 + p_EB_e_z ** 2;
@@ -52,7 +56,7 @@ export function p_EB_E2n_EB_E(
     yz_scale * p_EB_e_z,
   ];
 
-  const [x, y, z] = unrotate(R_Ee, n_EB_e);
+  const [x, y, z] = unrotateVector3(R_Ee, n_EB_e);
 
   // Ensure unit length
   const norm = Math.hypot(x, y, z);
