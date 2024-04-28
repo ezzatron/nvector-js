@@ -3,6 +3,7 @@ import type {
   lat_lon2n_E,
   n_E2lat_lon,
   n_EA_E_and_n_EB_E2p_AB_E,
+  n_EA_E_and_p_AB_E2n_EB_E,
   n_EB_E2p_EB_E,
   p_EB_E2n_EB_E,
 } from "../src/index.js";
@@ -12,6 +13,7 @@ export type NvectorTestClient = {
   lat_lon2n_E: Async<typeof lat_lon2n_E>;
   n_E2lat_lon: Async<typeof n_E2lat_lon>;
   n_EA_E_and_n_EB_E2p_AB_E: Async<typeof n_EA_E_and_n_EB_E2p_AB_E>;
+  n_EA_E_and_p_AB_E2n_EB_E: Async<typeof n_EA_E_and_p_AB_E2n_EB_E>;
   n_EB_E2p_EB_E: Async<typeof n_EB_E2p_EB_E>;
   p_EB_E2n_EB_E: Async<typeof p_EB_E2n_EB_E>;
 
@@ -62,6 +64,22 @@ export async function createNvectorTestClient(): Promise<NvectorTestClient> {
           R_Ee,
         }),
       );
+    },
+
+    async n_EA_E_and_p_AB_E2n_EB_E(n_EA_E, p_AB_E, z_EA, a, f, R_Ee) {
+      const { n_EB_E, z_EB } = await call<{
+        n_EB_E: WrappedVector3;
+        z_EB: number;
+      }>("n_EA_E_and_p_AB_E2n_EB_E", {
+        n_EA_E: wrapVector3(n_EA_E),
+        p_AB_E: wrapVector3(p_AB_E),
+        z_EA,
+        a,
+        f,
+        R_Ee,
+      });
+
+      return [unwrapVector3(n_EB_E), z_EB];
     },
 
     async n_EB_E2p_EB_E(n_EB_E, depth, a, f, R_Ee) {
