@@ -34,16 +34,18 @@ describe("n_EB_E2p_EB_E()", () => {
           fc.constant(WGS_72),
           fc.constant(GRS_80),
         )
-        .chain(({ a, f }) =>
-          fc.tuple(
-            // center of spheroid to 2X max radius
-            fc.option(fc.double({ min: -a, max: a, noNaN: true }), {
+        .chain(({ a, f }) => {
+          // semi-minor axis
+          const b = a * (1 - f);
+
+          return fc.tuple(
+            fc.option(fc.double({ min: -b, max: b, noNaN: true }), {
               nil: undefined,
             }),
             fc.option(fc.constant(a), { nil: undefined }),
             fc.option(fc.constant(f), { nil: undefined }),
-          ),
-        ),
+          );
+        }),
       fc.option(arbitrary3dRotationMatrix(), { nil: undefined }),
     ],
     { interruptAfterTimeLimit: TEST_DURATION, numRuns: Infinity },
