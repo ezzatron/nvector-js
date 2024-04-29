@@ -3,9 +3,9 @@ import {
   lat_lon2n_E,
   n_E2R_EN,
   n_EA_E_and_n_EB_E2p_AB_E,
+  rad,
   unrotateVector3,
 } from "../../../src/index.js";
-import { radians } from "../../util.js";
 
 /**
  * Example 1: A and B to delta
@@ -25,12 +25,12 @@ import { radians } from "../../util.js";
  */
 test("Example 1", () => {
   // >>> lat_EA, lon_EA, z_EA = rad(1), rad(2), 3
-  const lat_EA = radians(1);
-  const lon_EA = radians(2);
+  const lat_EA = rad(1);
+  const lon_EA = rad(2);
   const z_EA = 3;
   // >>> lat_EB, lon_EB, z_EB = rad(4), rad(5), 6
-  const lat_EB = radians(4);
-  const lon_EB = radians(5);
+  const lat_EB = rad(4);
+  const lon_EB = rad(5);
   const z_EB = 6;
 
   // Step 1: Convert to n-vectors:
@@ -63,7 +63,7 @@ test("Example 1", () => {
   const azimuth = Math.atan2(y, x);
   // >>> 'azimuth = {0:4.2f} deg'.format(deg(azimuth))
   // 'azimuth = 45.11 deg'
-  expect(azimuth).toBeCloseTo(radians(45.11), 2);
+  expect(azimuth).toBeCloseTo(rad(45.11), 2);
 
   // >>> distance = np.linalg.norm(p_AB_N)
   const distance = Math.hypot(x, y, z);
@@ -71,7 +71,7 @@ test("Example 1", () => {
   const elevation = Math.asin(z / distance);
   // >>> 'elevation = {0:4.2f} deg'.format(deg(elevation))
   // 'elevation = 2.12 deg'
-  expect(elevation).toBeCloseTo(radians(2.12), 2);
+  expect(elevation).toBeCloseTo(rad(2.12), 2);
 
   // >>> 'distance = {0:4.2f} m'.format(distance)
   // 'distance = 470356.72 m'

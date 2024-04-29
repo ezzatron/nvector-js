@@ -1,16 +1,17 @@
 import { expect, test } from "vitest";
 import { WGS_72 } from "../../../src/ellipsoid.js";
 import {
+  deg,
   n_E2R_EN,
   n_E2lat_lon,
   n_EA_E_and_p_AB_E2n_EB_E,
+  rad,
   rotateVector3,
   unitVector3,
   zyx2R,
 } from "../../../src/index.js";
 import { multiply } from "../../../src/matrix.js";
 import type { Vector3 } from "../../../src/vector.js";
-import { degrees, radians } from "../../util.js";
 
 /**
  * Example 2: B and delta to C
@@ -27,9 +28,9 @@ test("Example 2", () => {
   // >>> z_EB = -400
   const z_EB = -400;
   // >>> yaw, pitch, roll = rad(10), rad(20), rad(30)
-  const yaw = radians(10);
-  const pitch = radians(20);
-  const roll = radians(30);
+  const yaw = rad(10);
+  const pitch = rad(20);
+  const roll = rad(30);
   // >>> R_NB = nv.zyx2R(yaw, pitch, roll)
   const R_NB = zyx2R(yaw, pitch, roll);
 
@@ -62,8 +63,8 @@ test("Example 2", () => {
   // >>> lat_EC, lon_EC = nv.n_E2lat_lon(n_EC_E)
   const [lat_EC, lon_EC] = n_E2lat_lon(n_EC_E);
   // >>> lat, lon, z = deg(lat_EC), deg(lon_EC), z_EC
-  const lat = degrees(lat_EC);
-  const lon = degrees(lon_EC);
+  const lat = deg(lat_EC);
+  const lon = deg(lon_EC);
   const z = z_EC;
   // >>> msg = 'Ex2: PosC: lat, lon = {:4.2f}, {:4.2f} deg,  height = {:4.2f} m'
   // >>> msg.format(lat[0], lon[0], -z[0])
