@@ -33,17 +33,21 @@ test("Example 1", () => {
   const lon_EB = radians(5);
   const z_EB = 6;
 
+  // Step 1: Convert to n-vectors:
   // >>> n_EA_E = nv.lat_lon2n_E(lat_EA, lon_EA)
   const n_EA_E = lat_lon2n_E(lat_EA, lon_EA);
   // >>> n_EB_E = nv.lat_lon2n_E(lat_EB, lon_EB)
   const n_EB_E = lat_lon2n_E(lat_EB, lon_EB);
 
+  // Step 2: Find p_AB_E (delta decomposed in E).WGS-84 ellipsoid is default:
   // >>> p_AB_E = nv.n_EA_E_and_n_EB_E2p_AB_E(n_EA_E, n_EB_E, z_EA, z_EB)
   const p_AB_E = n_EA_E_and_n_EB_E2p_AB_E(n_EA_E, n_EB_E, z_EA, z_EB);
 
+  // Step 3: Find R_EN for position A:
   // >>> R_EN = nv.n_E2R_EN(n_EA_E)
   const R_EN = n_E2R_EN(n_EA_E);
 
+  // Step 4: Find p_AB_N (delta decomposed in N):
   // >>> p_AB_N = np.dot(R_EN.T, p_AB_E).ravel()
   const p_AB_N = unrotateVector3(R_EN, p_AB_E);
   // >>> x, y, z = p_AB_N
@@ -54,6 +58,7 @@ test("Example 1", () => {
   expect(y).toBeCloseTo(332997.87, 2);
   expect(z).toBeCloseTo(17404.27, 2);
 
+  // Step 5: Also find the direction (azimuth) to B, relative to north:
   // >>> azimuth = np.arctan2(y, x)
   const azimuth = Math.atan2(y, x);
   // >>> 'azimuth = {0:4.2f} deg'.format(deg(azimuth))
