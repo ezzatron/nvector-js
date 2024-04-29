@@ -1,6 +1,6 @@
 import { expect, test } from "vitest";
-import { WGS_72 } from "../../../src/ellipsoid.js";
 import {
+  WGS_72,
   deg,
   multiplyMatrix3x3,
   n_E2R_EN,
