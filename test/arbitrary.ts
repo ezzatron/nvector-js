@@ -6,8 +6,7 @@ import {
   WGS_84_SPHERE,
   type Ellipsoid,
 } from "../src/ellipsoid.js";
-import type { Matrix3x3 } from "../src/matrix.js";
-import type { Vector3, Vector4 } from "../src/vector.js";
+import type { Matrix3x3, Vector3 } from "../src/index.js";
 
 const RADIAN = Math.PI / 180;
 
@@ -100,7 +99,9 @@ export function arbitraryLatLon(): fc.Arbitrary<[number, number]> {
   );
 }
 
-function arbitraryQuaternion(): fc.Arbitrary<Vector4> {
+function arbitraryQuaternion(): fc.Arbitrary<
+  [x: number, y: number, z: number, w: number]
+> {
   // based on https://github.com/mrdoob/three.js/blob/a2e9ee8204b67f9dca79f48cf620a34a05aa8126/src/math/Quaternion.js#L592
   // Ken Shoemake
   // Uniform random rotations

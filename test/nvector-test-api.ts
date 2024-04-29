@@ -1,6 +1,7 @@
 import { WebSocket } from "ws";
 import type {
   lat_lon2n_E,
+  Matrix3x3,
   n_E2lat_lon,
   n_E2R_EN,
   n_EA_E_and_n_EB_E2p_AB_E,
@@ -9,11 +10,10 @@ import type {
   p_EB_E2n_EB_E,
   R2xyz,
   R2zyx,
+  Vector3,
   xyz2R,
   zyx2R,
 } from "../src/index.js";
-import type { Matrix3x3 } from "../src/matrix.js";
-import type { Vector3 } from "../src/vector.js";
 
 export type NvectorTestClient = {
   lat_lon2n_E: Async<typeof lat_lon2n_E>;

@@ -10,8 +10,8 @@ import {
   rotateVector3,
   unitVector3,
   zyx2R,
+  type Vector3,
 } from "../../../src/index.js";
-import type { Vector3 } from "../../../src/vector.js";
 
 /**
  * Example 2: B and delta to C
