@@ -5,7 +5,7 @@ import {
   rotateVector3,
   unrotateVector3,
 } from "./rotation.js";
-import type { Vector3 } from "./vector.js";
+import { unitVector3, type Vector3 } from "./vector.js";
 
 /**
  * Converts a Cartesian position vector to an n-vector.
@@ -56,11 +56,7 @@ export function p_EB_E2n_EB_E(
     yz_scale * p_EB_e_z,
   ];
 
-  const [x, y, z] = unrotateVector3(R_Ee, n_EB_e);
-
-  // Ensure unit length
-  const norm = Math.hypot(x, y, z);
-  const n_EB_E: Vector3 = [x / norm, y / norm, z / norm];
+  const n_EB_E = unitVector3(unrotateVector3(R_Ee, n_EB_e));
 
   return [n_EB_E, depth];
 }
