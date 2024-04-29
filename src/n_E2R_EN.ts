@@ -1,4 +1,4 @@
-import { multiplyTransposed, type Matrix3x3 } from "./matrix.js";
+import { multiplyTransposedMatrix3x3, type Matrix3x3 } from "./matrix.js";
 import { ROTATION_MATRIX_e, rotateVector3 } from "./rotation.js";
 import type { Vector3 } from "./vector.js";
 
@@ -41,7 +41,7 @@ export function n_E2R_EN(
 
   // Use each component as a column vector, then multiply by the transpose of
   // R_Ee to get the rotation matrix R_EN
-  return multiplyTransposed(R_Ee, [
+  return multiplyTransposedMatrix3x3(R_Ee, [
     [Nx_e_x, 0, Nz_e_x],
     [Nx_e_y, Ny_e_y, Nz_e_y],
     [Nx_e_z, Ny_e_z, Nz_e_z],

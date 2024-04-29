@@ -2,6 +2,7 @@ export { R2xyz } from "./R2xyz.js";
 export { R2zyx } from "./R2zyx.js";
 export { deg } from "./deg.js";
 export { lat_lon2n_E } from "./lat_lon2n_E.js";
+export { multiplyMatrix3x3 } from "./matrix.js";
 export { n_E2R_EN } from "./n_E2R_EN.js";
 export { n_E2lat_lon } from "./n_E2lat_lon.js";
 export { n_EA_E_and_n_EB_E2p_AB_E } from "./n_EA_E_and_n_EB_E2p_AB_E.js";

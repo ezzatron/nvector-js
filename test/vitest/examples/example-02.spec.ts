@@ -2,6 +2,7 @@ import { expect, test } from "vitest";
 import { WGS_72 } from "../../../src/ellipsoid.js";
 import {
   deg,
+  multiplyMatrix3x3,
   n_E2R_EN,
   n_E2lat_lon,
   n_EA_E_and_p_AB_E2n_EB_E,
@@ -10,7 +11,6 @@ import {
   unitVector3,
   zyx2R,
 } from "../../../src/index.js";
-import { multiply } from "../../../src/matrix.js";
 import type { Vector3 } from "../../../src/vector.js";
 
 /**
@@ -44,7 +44,7 @@ test("Example 2", () => {
 
   // Step 4: Find R_EB, from R_EN and R_NB:
   // >>> R_EB = np.dot(R_EN, R_NB)  # Note: closest frames cancel
-  const R_EB = multiply(R_EN, R_NB);
+  const R_EB = multiplyMatrix3x3(R_EN, R_NB);
 
   // Step 5: Decompose the delta BC vector in E:
   // >>> p_BC_E = np.dot(R_EB, p_BC_B)

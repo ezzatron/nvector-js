@@ -4,7 +4,15 @@ export type Matrix3x3 = [
   [n20: number, n21: number, n22: number],
 ];
 
-export function multiply(a: Matrix3x3, b: Matrix3x3): Matrix3x3 {
+/**
+ * Multiplies two 3x3 matrices.
+ *
+ * @param a - The first matrix.
+ * @param b - The second matrix.
+ *
+ * @returns The resulting matrix.
+ */
+export function multiplyMatrix3x3(a: Matrix3x3, b: Matrix3x3): Matrix3x3 {
   const [[a00, a01, a02], [a10, a11, a12], [a20, a21, a22]] = a;
   const [[b00, b01, b02], [b10, b11, b12], [b20, b21, b22]] = b;
 
@@ -27,7 +35,10 @@ export function multiply(a: Matrix3x3, b: Matrix3x3): Matrix3x3 {
   ];
 }
 
-export function multiplyTransposed(a: Matrix3x3, b: Matrix3x3): Matrix3x3 {
+export function multiplyTransposedMatrix3x3(
+  a: Matrix3x3,
+  b: Matrix3x3,
+): Matrix3x3 {
   const [[a00, a01, a02], [a10, a11, a12], [a20, a21, a22]] = a;
   const [[b00, b01, b02], [b10, b11, b12], [b20, b21, b22]] = b;
 
