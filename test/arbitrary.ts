@@ -124,3 +124,7 @@ function arbitraryQuaternion(): fc.Arbitrary<Vector4> {
       return [x, y, z, w];
     });
 }
+
+export function arbitraryRadians(): fc.Arbitrary<number> {
+  return fc.double({ min: -Math.PI, max: Math.PI, noNaN: true });
+}

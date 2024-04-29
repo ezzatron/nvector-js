@@ -7,6 +7,10 @@ import type {
   n_EA_E_and_p_AB_E2n_EB_E,
   n_EB_E2p_EB_E,
   p_EB_E2n_EB_E,
+  R2xyz,
+  R2zyx,
+  xyz2R,
+  zyx2R,
 } from "../src/index.js";
 import type { Matrix3x3 } from "../src/matrix.js";
 import type { Vector3 } from "../src/vector.js";
@@ -19,6 +23,10 @@ export type NvectorTestClient = {
   n_EA_E_and_p_AB_E2n_EB_E: Async<typeof n_EA_E_and_p_AB_E2n_EB_E>;
   n_EB_E2p_EB_E: Async<typeof n_EB_E2p_EB_E>;
   p_EB_E2n_EB_E: Async<typeof p_EB_E2n_EB_E>;
+  R2xyz: Async<typeof R2xyz>;
+  R2zyx: Async<typeof R2zyx>;
+  xyz2R: Async<typeof xyz2R>;
+  zyx2R: Async<typeof zyx2R>;
 
   close: () => void;
 };
@@ -116,6 +124,32 @@ export async function createNvectorTestClient(): Promise<NvectorTestClient> {
       });
 
       return [unwrapVector3(n_EB_E), depth];
+    },
+
+    async R2xyz(R_AB) {
+      const { x, y, z } = await call<{ x: number; y: number; z: number }>(
+        "R2xyz",
+        { R_AB },
+      );
+
+      return [x, y, z];
+    },
+
+    async R2zyx(R_AB) {
+      const { z, y, x } = await call<{ z: number; y: number; x: number }>(
+        "R2zyx",
+        { R_AB },
+      );
+
+      return [z, y, x];
+    },
+
+    async xyz2R(x, y, z) {
+      return await call<Matrix3x3>("xyz2R", { x, y, z });
+    },
+
+    async zyx2R(z, y, x) {
+      return await call<Matrix3x3>("zyx2R", { z, y, x });
     },
 
     close: () => ws.close(),

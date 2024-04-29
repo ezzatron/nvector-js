@@ -26,3 +26,13 @@ export function multiplyTransposed(a: Matrix3x3, b: Matrix3x3): Matrix3x3 {
     ],
   ];
 }
+
+export function transpose(a: Matrix3x3): Matrix3x3 {
+  const [[a00, a01, a02], [a10, a11, a12], [a20, a21, a22]] = a;
+
+  return [
+    [a00, a10, a20],
+    [a01, a11, a21],
+    [a02, a12, a22],
+  ];
+}
