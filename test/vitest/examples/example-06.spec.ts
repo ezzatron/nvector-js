@@ -21,7 +21,7 @@ test.each`
   ${"Enter elements directly:"}     | ${unit([1, 0, -2])}                   | ${unit([-1, -2, 0])}                 | ${-33.3288}        | ${-99.4623}
   ${"or input as lat/long in deg:"} | ${lat_long2n_E(rad(89.9), rad(-150))} | ${lat_long2n_E(rad(89.9), rad(150))} | ${89.9128}         | ${173.4132}
 `(
-  "Example 5 ($label)",
+  "Example 6 ($label)",
   // Position B is given at time t0 as n_EB_E_t0 and at time t1 as n_EB_E_t1:
   ({
     n_EB_E_t0,
