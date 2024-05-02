@@ -2,10 +2,8 @@ import { it } from "@fast-check/vitest";
 import { afterAll, beforeAll, describe, expect } from "vitest";
 import { R2xyz } from "../../src/index.js";
 import { arbitrary3dRotationMatrix } from "../arbitrary.js";
-import {
-  NvectorTestClient,
-  createNvectorTestClient,
-} from "../nvector-test-api.js";
+import type { NvectorTestClient } from "../nvector-test-api.js";
+import { createNvectorTestClient } from "../nvector-test-api.js";
 import { angleDelta } from "../util.js";
 
 const TEST_DURATION = 5000;

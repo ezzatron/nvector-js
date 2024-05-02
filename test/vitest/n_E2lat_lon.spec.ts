@@ -5,10 +5,8 @@ import {
   arbitrary3dRotationMatrix,
   arbitrary3dUnitVector,
 } from "../arbitrary.js";
-import {
-  NvectorTestClient,
-  createNvectorTestClient,
-} from "../nvector-test-api.js";
+import type { NvectorTestClient } from "../nvector-test-api.js";
+import { createNvectorTestClient } from "../nvector-test-api.js";
 
 const TEST_DURATION = 5000;
 

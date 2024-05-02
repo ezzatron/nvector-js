@@ -55,6 +55,13 @@ module.exports = {
         ],
         // this rule gets in the way of designing APIs
         "@typescript-eslint/require-await": "off",
+        "@typescript-eslint/consistent-type-imports": [
+          "error",
+          {
+            fixStyle: "separate-type-imports",
+            prefer: "type-imports",
+          },
+        ],
       },
     },
     {

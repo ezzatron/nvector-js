@@ -2,10 +2,8 @@ import { fc, it } from "@fast-check/vitest";
 import { afterAll, beforeAll, describe, expect } from "vitest";
 import { lat_lon2n_E } from "../../src/index.js";
 import { arbitrary3dRotationMatrix, arbitraryLatLon } from "../arbitrary.js";
-import {
-  NvectorTestClient,
-  createNvectorTestClient,
-} from "../nvector-test-api.js";
+import type { NvectorTestClient } from "../nvector-test-api.js";
+import { createNvectorTestClient } from "../nvector-test-api.js";
 
 const TEST_DURATION = 5000;
 
