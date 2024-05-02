@@ -43,7 +43,7 @@ describe("n_EA_E_and_n_EB_E2p_AB_E()", () => {
     ],
     { interruptAfterTimeLimit: TEST_DURATION, numRuns: Infinity },
   )(
-    "matches the Python implementation",
+    "matches the reference implementation",
     async (n_EA_E, n_EB_E, [z_EA, z_EB, a, f], R_Ee) => {
       const expected = await nvectorTestClient.n_EA_E_and_n_EB_E2p_AB_E(
         n_EA_E,

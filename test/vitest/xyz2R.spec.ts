@@ -22,7 +22,7 @@ describe("xyz2R()", () => {
     interruptAfterTimeLimit: TEST_DURATION,
     numRuns: Infinity,
   })(
-    "matches the Python implementation",
+    "matches the reference implementation",
     async (x, y, z) => {
       const expected = await nvectorTestClient.xyz2R(x, y, z);
 

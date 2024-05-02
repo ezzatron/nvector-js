@@ -1,6 +1,6 @@
 import { fc, it } from "@fast-check/vitest";
 import { afterAll, beforeAll, describe, expect } from "vitest";
-import { n_E2lat_lon } from "../../src/index.js";
+import { n_E2lat_long } from "../../src/index.js";
 import {
   arbitrary3dRotationMatrix,
   arbitrary3dUnitVector,
@@ -10,7 +10,7 @@ import { createNvectorTestClient } from "../nvector-test-api.js";
 
 const TEST_DURATION = 5000;
 
-describe("n_E2lat_lon()", () => {
+describe("n_E2lat_long()", () => {
   let nvectorTestClient: NvectorTestClient;
 
   beforeAll(async () => {
@@ -28,13 +28,13 @@ describe("n_E2lat_lon()", () => {
     ],
     { interruptAfterTimeLimit: TEST_DURATION, numRuns: Infinity },
   )(
-    "matches the Python implementation",
+    "matches the reference implementation",
     async (n_E, R_Ee) => {
-      const expected = await nvectorTestClient.n_E2lat_lon(n_E, R_Ee);
+      const expected = await nvectorTestClient.n_E2lat_long(n_E, R_Ee);
 
       expect(expected).toMatchObject([expect.any(Number), expect.any(Number)]);
 
-      const actual = n_E2lat_lon(n_E, R_Ee);
+      const actual = n_E2lat_long(n_E, R_Ee);
 
       expect(actual).toMatchObject([expect.any(Number), expect.any(Number)]);
       expect(actual[0]).toBeCloseTo(expected[0], 15);

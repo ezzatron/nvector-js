@@ -2,7 +2,7 @@ import { fc, it } from "@fast-check/vitest";
 import { afterAll, beforeAll, describe, expect } from "vitest";
 import { WGS_84 } from "../../src/ellipsoid.js";
 import { p_EB_E2n_EB_E } from "../../src/index.js";
-import { ROTATION_MATRIX_e, rotateVector3 } from "../../src/rotation.js";
+import { R_Ee_NP_Z, rotate } from "../../src/rotation.js";
 import {
   arbitrary3dRotationMatrix,
   arbitraryEllipsoid,
@@ -35,37 +35,35 @@ describe("p_EB_E2n_EB_E()", () => {
             fc.option(arbitrary3dRotationMatrix(), { nil: undefined }),
           );
         })
-        .filter(
-          ([p_EB_E, a = WGS_84.a, f = WGS_84.f, R_Ee = ROTATION_MATRIX_e]) => {
-            const p_EB_e = rotateVector3(R_Ee, p_EB_E);
+        .filter(([p_EB_E, a = WGS_84.a, f = WGS_84.f, R_Ee = R_Ee_NP_Z]) => {
+          const p_EB_e = rotate(R_Ee, p_EB_E);
 
-            // filter vectors where the x or yz components are zero after
-            // rotation
-            // this causes a division by zero in the Python implementation
-            if (p_EB_e[0] === 0 || p_EB_e[1] + p_EB_e[2] === 0) return false;
+          // filter vectors where the x or yz components are zero after
+          // rotation
+          // this causes a division by zero in the Python implementation
+          if (p_EB_e[0] === 0 || p_EB_e[1] + p_EB_e[2] === 0) return false;
 
-            // filter a case that makes the Python implementation try to find
-            // the square root of a negative number
-            // not sure why this happens, the math is beyond me
-            const s = (() => {
-              const Ryz_2 = p_EB_E[1] ** 2 + p_EB_E[2] ** 2;
-              const Rx_2 = p_EB_E[0] ** 2;
-              const e_2 = (2.0 - f) * f;
-              const q = ((1 - e_2) / a ** 2) * Rx_2;
-              const p = Ryz_2 / a ** 2;
-              const r = (p + q - e_2 ** 2) / 6;
+          // filter a case that makes the Python implementation try to find
+          // the square root of a negative number
+          // not sure why this happens, the math is beyond me
+          const s = (() => {
+            const Ryz_2 = p_EB_E[1] ** 2 + p_EB_E[2] ** 2;
+            const Rx_2 = p_EB_E[0] ** 2;
+            const e_2 = (2.0 - f) * f;
+            const q = ((1 - e_2) / a ** 2) * Rx_2;
+            const p = Ryz_2 / a ** 2;
+            const r = (p + q - e_2 ** 2) / 6;
 
-              return (e_2 ** 2 * p * q) / (4 * r ** 3);
-            })();
-            if (Number.isNaN(s) || s <= 0) return false;
+            return (e_2 ** 2 * p * q) / (4 * r ** 3);
+          })();
+          if (Number.isNaN(s) || s <= 0) return false;
 
-            return true;
-          },
-        ),
+          return true;
+        }),
     ],
     { interruptAfterTimeLimit: TEST_DURATION, numRuns: Infinity },
   )(
-    "matches the Python implementation",
+    "matches the reference implementation",
     async ([p_EB_E, a, f, R_Ee]) => {
       const [expectedVector, expectedDepth] =
         await nvectorTestClient.p_EB_E2n_EB_E(p_EB_E, a, f, R_Ee);

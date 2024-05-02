@@ -6,7 +6,7 @@ import {
   n_EB_E2p_EB_E,
   type Vector3,
 } from "../../src/index.js";
-import { ROTATION_MATRIX_e, rotateVector3 } from "../../src/rotation.js";
+import { R_Ee_NP_Z, rotate } from "../../src/rotation.js";
 import {
   arbitrary3dRotationMatrix,
   arbitrary3dUnitVector,
@@ -50,7 +50,7 @@ describe("n_EA_E_and_p_AB_E2n_EB_E()", () => {
             z_EA,
             a = WGS_84.a,
             f = WGS_84.f,
-            R_Ee = ROTATION_MATRIX_e,
+            R_Ee = R_Ee_NP_Z,
           ]) => {
             const [p_EA_E_x, p_EA_E_y, p_EA_E_z] = n_EB_E2p_EB_E(
               n_EA_E,
@@ -65,7 +65,7 @@ describe("n_EA_E_and_p_AB_E2n_EB_E()", () => {
               p_EA_E_z + p_AB_E[2],
             ];
 
-            const p_EB_e = rotateVector3(R_Ee, p_EB_E);
+            const p_EB_e = rotate(R_Ee, p_EB_E);
 
             // filter vectors where the x or yz components are zero after
             // rotation
@@ -93,7 +93,7 @@ describe("n_EA_E_and_p_AB_E2n_EB_E()", () => {
     ],
     { interruptAfterTimeLimit: TEST_DURATION, numRuns: Infinity },
   )(
-    "matches the Python implementation",
+    "matches the reference implementation",
     async ([n_EA_E, p_AB_E, z_EA, a, f, R_Ee]) => {
       const [expectedVector, expectedDepth] =
         await nvectorTestClient.n_EA_E_and_p_AB_E2n_EB_E(

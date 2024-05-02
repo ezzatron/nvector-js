@@ -1,8 +1,8 @@
 import { WebSocket } from "ws";
 import type {
-  lat_lon2n_E,
+  lat_long2n_E,
   Matrix3x3,
-  n_E2lat_lon,
+  n_E2lat_long,
   n_E2R_EN,
   n_EA_E_and_n_EB_E2p_AB_E,
   n_EA_E_and_p_AB_E2n_EB_E,
@@ -16,8 +16,8 @@ import type {
 } from "../src/index.js";
 
 export type NvectorTestClient = {
-  lat_lon2n_E: Async<typeof lat_lon2n_E>;
-  n_E2lat_lon: Async<typeof n_E2lat_lon>;
+  lat_long2n_E: Async<typeof lat_long2n_E>;
+  n_E2lat_long: Async<typeof n_E2lat_long>;
   n_E2R_EN: Async<typeof n_E2R_EN>;
   n_EA_E_and_n_EB_E2p_AB_E: Async<typeof n_EA_E_and_n_EB_E2p_AB_E>;
   n_EA_E_and_p_AB_E2n_EB_E: Async<typeof n_EA_E_and_p_AB_E2n_EB_E>;
@@ -41,7 +41,7 @@ export async function createNvectorTestClient(): Promise<NvectorTestClient> {
   });
 
   return {
-    async lat_lon2n_E(latitude, longitude, R_Ee) {
+    async lat_long2n_E(latitude, longitude, R_Ee) {
       return unwrapVector3(
         await call<WrappedVector3>("lat_lon2n_E", {
           latitude,
@@ -51,7 +51,7 @@ export async function createNvectorTestClient(): Promise<NvectorTestClient> {
       );
     },
 
-    async n_E2lat_lon(n_E, R_Ee) {
+    async n_E2lat_long(n_E, R_Ee) {
       const { latitude, longitude } = await call<{
         latitude: number;
         longitude: number;

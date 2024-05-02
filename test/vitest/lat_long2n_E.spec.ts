@@ -1,13 +1,13 @@
 import { fc, it } from "@fast-check/vitest";
 import { afterAll, beforeAll, describe, expect } from "vitest";
-import { lat_lon2n_E } from "../../src/index.js";
+import { lat_long2n_E } from "../../src/index.js";
 import { arbitrary3dRotationMatrix, arbitraryLatLon } from "../arbitrary.js";
 import type { NvectorTestClient } from "../nvector-test-api.js";
 import { createNvectorTestClient } from "../nvector-test-api.js";
 
 const TEST_DURATION = 5000;
 
-describe("lat_lon2n_E()", () => {
+describe("lat_long2n_E()", () => {
   let nvectorTestClient: NvectorTestClient;
 
   beforeAll(async () => {
@@ -25,9 +25,9 @@ describe("lat_lon2n_E()", () => {
     ],
     { interruptAfterTimeLimit: TEST_DURATION, numRuns: Infinity },
   )(
-    "matches the Python implementation",
+    "matches the reference implementation",
     async ([latitude, longitude], R_Ee) => {
-      const expected = await nvectorTestClient.lat_lon2n_E(
+      const expected = await nvectorTestClient.lat_long2n_E(
         latitude,
         longitude,
         R_Ee,
@@ -39,7 +39,7 @@ describe("lat_lon2n_E()", () => {
         expect.any(Number),
       ]);
 
-      const actual = lat_lon2n_E(latitude, longitude, R_Ee);
+      const actual = lat_long2n_E(latitude, longitude, R_Ee);
 
       expect(actual).toMatchObject([
         expect.any(Number),

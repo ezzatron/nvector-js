@@ -1,7 +1,7 @@
 import { fc, it } from "@fast-check/vitest";
 import { afterAll, beforeAll, describe, expect } from "vitest";
 import { n_E2R_EN } from "../../src/index.js";
-import { ROTATION_MATRIX_e, rotateVector3 } from "../../src/rotation.js";
+import { R_Ee_NP_Z, rotate } from "../../src/rotation.js";
 import {
   arbitrary3dRotationMatrix,
   arbitrary3dUnitVector,
@@ -29,12 +29,12 @@ describe("n_E2R_EN()", () => {
           arbitrary3dUnitVector(),
           fc.option(arbitrary3dRotationMatrix(), { nil: undefined }),
         )
-        .filter(([n_E, R_Ee = ROTATION_MATRIX_e]) => {
+        .filter(([n_E, R_Ee = R_Ee_NP_Z]) => {
           // Avoid situations where very close to poles
           // Python implementation rounds to zero in these cases, which causes
           // the Y axis to be [0, 1, 0] instead of the calculated value,
           // producing very different results.
-          const [, n_e_y, n_e_z] = rotateVector3(R_Ee, n_E);
+          const [, n_e_y, n_e_z] = rotate(R_Ee, n_E);
           const Ny_e_direction_norm = Math.hypot(-n_e_z, n_e_y);
           if (Ny_e_direction_norm > 0 && Ny_e_direction_norm <= 1e-100) {
             return false;
@@ -45,7 +45,7 @@ describe("n_E2R_EN()", () => {
     ],
     { interruptAfterTimeLimit: TEST_DURATION, numRuns: Infinity },
   )(
-    "matches the Python implementation",
+    "matches the reference implementation",
     async ([n_E, R_Ee]) => {
       const expected = await nvectorTestClient.n_E2R_EN(n_E, R_Ee);
 

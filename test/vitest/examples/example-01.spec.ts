@@ -1,10 +1,11 @@
 import { expect, test } from "vitest";
 import {
-  lat_lon2n_E,
+  lat_long2n_E,
   n_E2R_EN,
   n_EA_E_and_n_EB_E2p_AB_E,
   rad,
-  unrotateVector3,
+  rotate,
+  transpose,
 } from "../../../src/index.js";
 
 /**
@@ -24,56 +25,47 @@ import {
  * @see https://www.ffi.no/en/research/n-vector/#example_1
  */
 test("Example 1", () => {
-  // >>> lat_EA, lon_EA, z_EA = rad(1), rad(2), 3
-  const lat_EA = rad(1);
-  const lon_EA = rad(2);
+  // Positions A and B are given in (decimal) degrees and depths:
+
+  // Position A:
+  const lat_EA_deg = 1;
+  const long_EA_deg = 2;
   const z_EA = 3;
-  // >>> lat_EB, lon_EB, z_EB = rad(4), rad(5), 6
-  const lat_EB = rad(4);
-  const lon_EB = rad(5);
+
+  // Position B:
+  const lat_EB_deg = 4;
+  const long_EB_deg = 5;
   const z_EB = 6;
 
-  // Step 1: Convert to n-vectors:
-  // >>> n_EA_E = nv.lat_lon2n_E(lat_EA, lon_EA)
-  const n_EA_E = lat_lon2n_E(lat_EA, lon_EA);
-  // >>> n_EB_E = nv.lat_lon2n_E(lat_EB, lon_EB)
-  const n_EB_E = lat_lon2n_E(lat_EB, lon_EB);
+  // Find the exact vector between the two positions, given in meters north,
+  // east, and down, i.e. find p_AB_N.
 
-  // Step 2: Find p_AB_E (delta decomposed in E).WGS-84 ellipsoid is default:
-  // >>> p_AB_E = nv.n_EA_E_and_n_EB_E2p_AB_E(n_EA_E, n_EB_E, z_EA, z_EB)
+  // SOLUTION:
+
+  // Step1: Convert to n-vectors (rad() converts to radians):
+  const n_EA_E = lat_long2n_E(rad(lat_EA_deg), rad(long_EA_deg));
+  const n_EB_E = lat_long2n_E(rad(lat_EB_deg), rad(long_EB_deg));
+
+  // Step2: Find p_AB_E (delta decomposed in E). WGS-84 ellipsoid is default:
   const p_AB_E = n_EA_E_and_n_EB_E2p_AB_E(n_EA_E, n_EB_E, z_EA, z_EB);
 
-  // Step 3: Find R_EN for position A:
-  // >>> R_EN = nv.n_E2R_EN(n_EA_E)
+  // Step3: Find R_EN for position A:
   const R_EN = n_E2R_EN(n_EA_E);
 
-  // Step 4: Find p_AB_N (delta decomposed in N):
-  // >>> p_AB_N = np.dot(R_EN.T, p_AB_E).ravel()
-  const p_AB_N = unrotateVector3(R_EN, p_AB_E);
-  // >>> x, y, z = p_AB_N
-  const [x, y, z] = p_AB_N;
-  // >>> 'Ex1: delta north, east, down = {0:8.2f}, {1:8.2f}, {2:8.2f}'.format(x, y, z)
-  // 'Ex1: delta north, east, down = 331730.23, 332997.87, 17404.27'
-  expect(x).toBeCloseTo(331730.23, 2);
-  expect(y).toBeCloseTo(332997.87, 2);
-  expect(z).toBeCloseTo(17404.27, 2);
+  // Step4: Find p_AB_N
+  const p_AB_N = rotate(transpose(R_EN), p_AB_E);
+  // (Note the transpose of R_EN: The "closest-rule" says that when decomposing,
+  // the frame in the subscript of the rotation matrix that is closest to the
+  // vector, should equal the frame where the vector is decomposed. Thus the
+  // calculation R_NE*p_AB_E is correct, since the vector is decomposed in E,
+  // and E is closest to the vector. In the above example we only had R_EN, and
+  // thus we must transpose it: R_EN' = R_NE)
 
-  // Step 5: Also find the direction (azimuth) to B, relative to north:
-  // >>> azimuth = np.arctan2(y, x)
-  const azimuth = Math.atan2(y, x);
-  // >>> 'azimuth = {0:4.2f} deg'.format(deg(azimuth))
-  // 'azimuth = 45.11 deg'
-  expect(azimuth).toBeCloseTo(rad(45.11), 2);
+  // Step5: Also find the direction (azimuth) to B, relative to north:
+  const azimuth = Math.atan2(p_AB_N[1], p_AB_N[0]);
 
-  // >>> distance = np.linalg.norm(p_AB_N)
-  const distance = Math.hypot(x, y, z);
-  // >>> elevation = np.arcsin(z / distance)
-  const elevation = Math.asin(z / distance);
-  // >>> 'elevation = {0:4.2f} deg'.format(deg(elevation))
-  // 'elevation = 2.12 deg'
-  expect(elevation).toBeCloseTo(rad(2.12), 2);
-
-  // >>> 'distance = {0:4.2f} m'.format(distance)
-  // 'distance = 470356.72 m'
-  expect(distance).toBeCloseTo(470356.72, 2);
+  expect(p_AB_N[0]).toBeCloseTo(331730.2348, 4);
+  expect(p_AB_N[1]).toBeCloseTo(332997.875, 4);
+  expect(p_AB_N[2]).toBeCloseTo(17404.2714, 4);
+  expect(azimuth).toBeCloseTo(rad(45.1093), 4);
 });
