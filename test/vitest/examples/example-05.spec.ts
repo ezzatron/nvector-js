@@ -20,8 +20,8 @@ import {
  */
 test.each`
   label                             | n_EA_E                           | n_EB_E                              | s_AB_expected | d_AB_expected
-  ${"or input as lat/long in deg:"} | ${lat_long2n_E(rad(88), rad(0))} | ${lat_long2n_E(rad(89), rad(-170))} | ${332.4564}   | ${332.4187}
   ${"Enter elements directly:"}     | ${unit([1, 0, -2])}              | ${unit([-1, -2, 0])}                | ${11290.3947} | ${9869.9108}
+  ${"or input as lat/long in deg:"} | ${lat_long2n_E(rad(88), rad(0))} | ${lat_long2n_E(rad(89), rad(-170))} | ${332.4564}   | ${332.4187}
 `(
   "Example 5 ($label)",
   // Position A and B are given as n_EA_E and n_EB_E:
