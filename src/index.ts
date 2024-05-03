@@ -10,6 +10,7 @@ export { n_E2lat_long } from "./n_E2lat_long.js";
 export { n_EA_E_and_n_EB_E2p_AB_E } from "./n_EA_E_and_n_EB_E2p_AB_E.js";
 export { n_EA_E_and_p_AB_E2n_EB_E } from "./n_EA_E_and_p_AB_E2n_EB_E.js";
 export { n_EB_E2p_EB_E } from "./n_EB_E2p_EB_E.js";
+export { n_E_and_wa2R_EL } from "./n_E_and_wa2R_EL.js";
 export { p_EB_E2n_EB_E } from "./p_EB_E2n_EB_E.js";
 export { rad } from "./rad.js";
 export { R_Ee_NP_X, R_Ee_NP_Z, rotate } from "./rotation.js";

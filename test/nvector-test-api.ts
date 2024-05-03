@@ -1,22 +1,24 @@
 import { WebSocket } from "ws";
 import type {
-  lat_long2n_E,
   Matrix3x3,
-  n_E2lat_long,
-  n_E2R_EN,
-  n_EA_E_and_n_EB_E2p_AB_E,
-  n_EA_E_and_p_AB_E2n_EB_E,
-  n_EB_E2p_EB_E,
-  p_EB_E2n_EB_E,
   R2xyz,
   R2zyx,
   Vector3,
+  lat_long2n_E,
+  n_E2R_EN,
+  n_E2lat_long,
+  n_EA_E_and_n_EB_E2p_AB_E,
+  n_EA_E_and_p_AB_E2n_EB_E,
+  n_EB_E2p_EB_E,
+  n_E_and_wa2R_EL,
+  p_EB_E2n_EB_E,
   xyz2R,
   zyx2R,
 } from "../src/index.js";
 
 export type NvectorTestClient = {
   lat_long2n_E: Async<typeof lat_long2n_E>;
+  n_E_and_wa2R_EL: Async<typeof n_E_and_wa2R_EL>;
   n_E2lat_long: Async<typeof n_E2lat_long>;
   n_E2R_EN: Async<typeof n_E2R_EN>;
   n_EA_E_and_n_EB_E2p_AB_E: Async<typeof n_EA_E_and_n_EB_E2p_AB_E>;
@@ -49,6 +51,14 @@ export async function createNvectorTestClient(): Promise<NvectorTestClient> {
           R_Ee,
         }),
       );
+    },
+
+    async n_E_and_wa2R_EL(n_E, wander_azimuth, R_Ee) {
+      return await call<Matrix3x3>("n_E_and_wa2R_EL", {
+        n_E: wrapVector3(n_E),
+        wander_azimuth,
+        R_Ee,
+      });
     },
 
     async n_E2lat_long(n_E, R_Ee) {
