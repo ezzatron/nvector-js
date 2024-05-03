@@ -1,5 +1,11 @@
 import { expect, test } from "vitest";
-import { lat_long2n_E, rad, unit, type Vector3 } from "../../../src/index.js";
+import {
+  apply,
+  lat_long2n_E,
+  rad,
+  unit,
+  type Vector3,
+} from "../../../src/index.js";
 
 /**
  * Example 7: Mean position/center
@@ -27,11 +33,14 @@ test.each`
     n_EM_E_expected: Vector3;
   }) => {
     // Find the horizontal mean position, M:
-    const n_EM_E = unit([
-      n_EA_E[0] + n_EB_E[0] + n_EC_E[0],
-      n_EA_E[1] + n_EB_E[1] + n_EC_E[1],
-      n_EA_E[2] + n_EB_E[2] + n_EC_E[2],
-    ]);
+    const n_EM_E = unit(
+      apply(
+        (n_EA_E, n_EB_E, n_EC_E) => n_EA_E + n_EB_E + n_EC_E,
+        n_EA_E,
+        n_EB_E,
+        n_EC_E,
+      ),
+    );
 
     expect(n_EM_E[0]).toBeCloseTo(n_EM_E_expected[0], 4);
     expect(n_EM_E[1]).toBeCloseTo(n_EM_E_expected[1], 4);

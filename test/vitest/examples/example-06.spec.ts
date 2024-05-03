@@ -1,5 +1,6 @@
 import { expect, test } from "vitest";
 import {
+  apply,
   deg,
   lat_long2n_E,
   n_E2lat_long,
@@ -44,9 +45,14 @@ test.each`
     // SOLUTION:
 
     // Using standard interpolation:
-    const lerp = (a: number) =>
-      n_EB_E_t0[a] + ((ti - t0) * (n_EB_E_t1[a] - n_EB_E_t0[a])) / (t1 - t0);
-    const n_EB_E_ti = unit([lerp(0), lerp(1), lerp(2)]);
+    const n_EB_E_ti = unit(
+      apply(
+        (n_EB_E_t0, n_EB_E_t1) =>
+          n_EB_E_t0 + ((ti - t0) * (n_EB_E_t1 - n_EB_E_t0)) / (t1 - t0),
+        n_EB_E_t0,
+        n_EB_E_t1,
+      ),
+    );
 
     // When displaying the resulting position for humans, it is more convenient
     // to see lat, long:
