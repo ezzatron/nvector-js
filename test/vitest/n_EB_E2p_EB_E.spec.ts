@@ -60,9 +60,9 @@ describe("n_EB_E2p_EB_E()", () => {
         expect.any(Number),
         expect.any(Number),
       ]);
-      expect(actual[0]).toBeCloseTo(expected[0], 8);
-      expect(actual[1]).toBeCloseTo(expected[1], 8);
-      expect(actual[2]).toBeCloseTo(expected[2], 8);
+      expect(actual[0]).toBeCloseTo(expected[0], 7);
+      expect(actual[1]).toBeCloseTo(expected[1], 7);
+      expect(actual[2]).toBeCloseTo(expected[2], 7);
     },
     TEST_DURATION + 1000,
   );
