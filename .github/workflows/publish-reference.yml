@@ -5,10 +5,14 @@ on:
     branches:
       - main
 
+permissions:
+  contents: write
+
 jobs:
   publish:
     name: Publish reference
     runs-on: ubuntu-latest
+    concurrency: publish-reference-${{ github.ref }}
 
     steps:
       - name: Checkout
