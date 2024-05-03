@@ -1,9 +1,7 @@
 /**
- * Values from https://github.com/chrisveness/geodesy/blob/761587cd748bd9f7c9825195eba4a9fc5891b859/latlon-ellipsoidal-datum.js#L38
- */
-
-/**
  * The Geodetic Reference System 1980 ellipsoid.
+ *
+ * @see https://github.com/chrisveness/geodesy/blob/761587cd748bd9f7c9825195eba4a9fc5891b859/latlon-ellipsoidal-datum.js#L45
  */
 export const GRS_80: Ellipsoid = {
   a: 6378137,
@@ -12,6 +10,8 @@ export const GRS_80: Ellipsoid = {
 
 /**
  * The World Geodetic System 1972 ellipsoid.
+ *
+ * @see https://github.com/chrisveness/geodesy/blob/761587cd748bd9f7c9825195eba4a9fc5891b859/latlon-ellipsoidal-datum.js#L47
  */
 export const WGS_72: Ellipsoid = {
   a: 6378135,
@@ -20,6 +20,8 @@ export const WGS_72: Ellipsoid = {
 
 /**
  * The World Geodetic System 1984 ellipsoid.
+ *
+ * @see https://github.com/chrisveness/geodesy/blob/761587cd748bd9f7c9825195eba4a9fc5891b859/latlon-ellipsoidal-datum.js#L39
  */
 export const WGS_84: Ellipsoid = {
   a: 6378137,
@@ -28,6 +30,8 @@ export const WGS_84: Ellipsoid = {
 
 /**
  * A sphere with the same semi-major axis as the WGS-84 ellipsoid.
+ *
+ * @see https://github.com/chrisveness/geodesy/blob/761587cd748bd9f7c9825195eba4a9fc5891b859/latlon-ellipsoidal-datum.js#L39
  */
 export const WGS_84_SPHERE: Ellipsoid = {
   a: WGS_84.a,
