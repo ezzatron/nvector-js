@@ -18,7 +18,7 @@ export { p_EB_E2n_EB_E } from "./p_EB_E2n_EB_E.js";
 export { rad } from "./rad.js";
 export { R_Ee_NP_X, R_Ee_NP_Z, rotate } from "./rotation.js";
 export { unit } from "./unit.js";
-export { apply, cross, dot, norm, sub } from "./vector.js";
+export { apply, cross, dot, norm } from "./vector.js";
 export type { Vector3 } from "./vector.js";
 export { xyz2R } from "./xyz2R.js";
 export { zyx2R } from "./zyx2R.js";

@@ -1,11 +1,11 @@
 import { expect, test } from "vitest";
 import {
+  apply,
   cross,
   dot,
   lat_long2n_E,
   norm,
   rad,
-  sub,
   unit,
   type Vector3,
 } from "../../../src/index.js";
@@ -47,7 +47,9 @@ test.each`
       Math.atan2(norm(cross(n_EA_E, n_EB_E)), dot(n_EA_E, n_EB_E)) * r_Earth;
 
     // The Euclidean distance is given by:
-    const d_AB = norm(sub(n_EB_E, n_EA_E)) * r_Earth;
+    const d_AB =
+      norm(apply((n_EB_E, n_EA_E) => n_EB_E - n_EA_E, n_EB_E, n_EA_E)) *
+      r_Earth;
 
     expect(s_AB / 1000).toBeCloseTo(s_AB_expected, 10); // kilometers
     expect(d_AB / 1000).toBeCloseTo(d_AB_expected, 10); // kilometers

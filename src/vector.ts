@@ -83,18 +83,3 @@ export function dot(a: Vector3, b: Vector3): number {
 export function norm(v: Vector3): number {
   return Math.hypot(...v);
 }
-
-/**
- * Subtracts two vectors.
- *
- * @param a - The first vector.
- * @param b - The second vector.
- *
- * @returns The resulting vector.
- */
-export function sub(a: Vector3, b: Vector3): Vector3 {
-  const [a1, a2, a3] = a;
-  const [b1, b2, b3] = b;
-
-  return [a1 - b1, a2 - b2, a3 - b3];
-}
