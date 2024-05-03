@@ -1,23 +1,23 @@
+/**
+ * A 3D vector.
+ */
 export type Vector3 = [x: number, y: number, z: number];
 
 /**
  * Creates a new vector by applying a function component-wise to the components
  * of one or more input vectors.
  *
- * @example
- * // Find the sum of two vectors.
+ * @example Find the sum of two vectors
  * ```typescript
  * apply((a, b) => a + b, [1, 2, 3], [4, 5, 6]); // [5, 7, 9]
  * ```
  *
- * @example
- * // Scale a vector by a scalar.
+ * @example Scale a vector by a scalar
  * ```typescript
  * apply((i) => i * 2, [1, 2, 3]); // [2, 4, 6]
  * ```
  *
- * @example
- * // Interpolate between two vectors.
+ * @example Interpolate between two vectors
  * ```typescript
  * apply((a, b) => a + (b - a) / 2, [1, 2, 3], [4, 5, 6]); // [2.5, 3.5, 4.5]
  * ```

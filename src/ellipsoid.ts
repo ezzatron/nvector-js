@@ -38,7 +38,17 @@ export const WGS_84_SPHERE: Ellipsoid = {
   f: 0,
 } as const;
 
+/**
+ * An ellipsoid.
+ */
 export type Ellipsoid = {
+  /**
+   * The semi-major axis of the ellipsoid.
+   */
   a: number;
+
+  /**
+   * The flattening of the ellipsoid.
+   */
   f: number;
 };

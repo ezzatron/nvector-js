@@ -1,7 +1,10 @@
+/**
+ * A 3x3 matrix.
+ */
 export type Matrix3x3 = [
-  [n00: number, n01: number, n02: number],
-  [n10: number, n11: number, n12: number],
-  [n20: number, n21: number, n22: number],
+  [n11: number, n12: number, n13: number],
+  [n21: number, n22: number, n23: number],
+  [n31: number, n32: number, n33: number],
 ];
 
 /**
