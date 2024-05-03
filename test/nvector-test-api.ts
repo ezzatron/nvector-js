@@ -4,6 +4,7 @@ import type {
   R2xyz,
   R2zyx,
   R_EL2n_E,
+  R_EN2n_E,
   Vector3,
   lat_long2n_E,
   n_E2R_EN,
@@ -27,6 +28,7 @@ export type NvectorTestClient = {
   n_EB_E2p_EB_E: Async<typeof n_EB_E2p_EB_E>;
   p_EB_E2n_EB_E: Async<typeof p_EB_E2n_EB_E>;
   R_EL2n_E: Async<typeof R_EL2n_E>;
+  R_EN2n_E: Async<typeof R_EN2n_E>;
   R2xyz: Async<typeof R2xyz>;
   R2zyx: Async<typeof R2zyx>;
   xyz2R: Async<typeof xyz2R>;
@@ -140,6 +142,10 @@ export async function createNvectorTestClient(): Promise<NvectorTestClient> {
 
     async R_EL2n_E(R_EL) {
       return unwrapVector3(await call<WrappedVector3>("R_EL2n_E", { R_EL }));
+    },
+
+    async R_EN2n_E(R_EN) {
+      return unwrapVector3(await call<WrappedVector3>("R_EN2n_E", { R_EN }));
     },
 
     async R2xyz(R_AB) {

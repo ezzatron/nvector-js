@@ -1,6 +1,7 @@
 export { R2xyz } from "./R2xyz.js";
 export { R2zyx } from "./R2zyx.js";
 export { R_EL2n_E } from "./R_EL2n_E.js";
+export { R_EN2n_E } from "./R_EN2n_E.js";
 export { deg } from "./deg.js";
 export { GRS_80, WGS_72, WGS_84, WGS_84_SPHERE } from "./ellipsoid.js";
 export { lat_long2n_E } from "./lat_long2n_E.js";
