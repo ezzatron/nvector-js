@@ -63,7 +63,7 @@ test("Example 2", () => {
   // Here we also assume that the user wants the output to be height (= -depth):
   const height = -z_EC;
 
-  expect(deg(lat_EC)).toBeCloseTo(53.3264, 4);
-  expect(deg(long_EC)).toBeCloseTo(63.4681, 4);
-  expect(height).toBeCloseTo(406.0072, 4);
+  expect(deg(lat_EC)).toBeCloseTo(53.32637826433107, 13);
+  expect(deg(long_EC)).toBeCloseTo(63.46812343514746, 13);
+  expect(height).toBeCloseTo(406.0071960700098, 15); // meters
 });

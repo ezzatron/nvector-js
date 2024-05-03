@@ -19,9 +19,9 @@ import {
  * @see https://www.ffi.no/en/research/n-vector/#example_5
  */
 test.each`
-  label                             | n_EA_E                           | n_EB_E                              | s_AB_expected | d_AB_expected
-  ${"Enter elements directly:"}     | ${unit([1, 0, -2])}              | ${unit([-1, -2, 0])}                | ${11290.3947} | ${9869.9108}
-  ${"or input as lat/long in deg:"} | ${lat_long2n_E(rad(88), rad(0))} | ${lat_long2n_E(rad(89), rad(-170))} | ${332.4564}   | ${332.4187}
+  label                             | n_EA_E                           | n_EB_E                              | s_AB_expected        | d_AB_expected
+  ${"Enter elements directly:"}     | ${unit([1, 0, -2])}              | ${unit([-1, -2, 0])}                | ${11290.39471136548} | ${9869.91075947498}
+  ${"or input as lat/long in deg:"} | ${lat_long2n_E(rad(88), rad(0))} | ${lat_long2n_E(rad(89), rad(-170))} | ${332.4564441053448} | ${332.4187248568097}
 `(
   "Example 5 ($label)",
   // Position A and B are given as n_EA_E and n_EB_E:
@@ -49,7 +49,7 @@ test.each`
     // The Euclidean distance is given by:
     const d_AB = norm(sub(n_EB_E, n_EA_E)) * r_Earth;
 
-    expect(s_AB / 1000).toBeCloseTo(s_AB_expected, 4);
-    expect(d_AB / 1000).toBeCloseTo(d_AB_expected, 4);
+    expect(s_AB / 1000).toBeCloseTo(s_AB_expected, 10); // kilometers
+    expect(d_AB / 1000).toBeCloseTo(d_AB_expected, 10); // kilometers
   },
 );

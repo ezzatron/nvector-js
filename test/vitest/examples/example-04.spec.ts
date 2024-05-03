@@ -25,7 +25,7 @@ test("Example 4", () => {
   // Step2: Find the ECEF-vector p_EB_E:
   const p_EB_E = n_EB_E2p_EB_E(n_EB_E, -h_EB);
 
-  expect(p_EB_E[0]).toBeCloseTo(6373290.2772, 4);
-  expect(p_EB_E[1]).toBeCloseTo(222560.2007, 4);
-  expect(p_EB_E[2]).toBeCloseTo(110568.8272, 4);
+  expect(p_EB_E[0]).toBeCloseTo(6373290.277218279, 8); // meters
+  expect(p_EB_E[1]).toBeCloseTo(222560.2006747365, 8); // meters
+  expect(p_EB_E[2]).toBeCloseTo(110568.8271817859, 8); // meters
 });

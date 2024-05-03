@@ -20,9 +20,9 @@ import {
  * @see https://www.ffi.no/en/research/n-vector/#example_9
  */
 test.each`
-  label                             | n_EA1_E                            | n_EA2_E                            | n_EB1_E                            | n_EB2_E                             | lat_EC_expected | long_EC_expected
-  ${"Enter elements directly:"}     | ${unit([0, 0, 1])}                 | ${unit([-1, 0, 1])}                | ${unit([-2, -2, 4])}               | ${unit([-2, 2, 2])}                 | ${56.3099}      | ${180}
-  ${"or input as lat/long in deg:"} | ${lat_long2n_E(rad(50), rad(180))} | ${lat_long2n_E(rad(90), rad(180))} | ${lat_long2n_E(rad(60), rad(160))} | ${lat_long2n_E(rad(80), rad(-140))} | ${74.1634}      | ${180}
+  label                             | n_EA1_E                            | n_EA2_E                            | n_EB1_E                            | n_EB2_E                             | lat_EC_expected      | long_EC_expected
+  ${"Enter elements directly:"}     | ${unit([0, 0, 1])}                 | ${unit([-1, 0, 1])}                | ${unit([-2, -2, 4])}               | ${unit([-2, 2, 2])}                 | ${56.30993247402022} | ${180}
+  ${"or input as lat/long in deg:"} | ${lat_long2n_E(rad(50), rad(180))} | ${lat_long2n_E(rad(90), rad(180))} | ${lat_long2n_E(rad(60), rad(160))} | ${lat_long2n_E(rad(80), rad(-140))} | ${74.16344802135536} | ${180}
 `(
   "Example 9 ($label)",
   // Two paths A and B are given by two pairs of positions:
@@ -58,7 +58,7 @@ test.each`
     // to see lat, long:
     const [lat_EC, long_EC] = n_E2lat_long(n_EC_E);
 
-    expect(deg(lat_EC)).toBeCloseTo(lat_EC_expected, 4);
-    expect(deg(long_EC)).toBeCloseTo(long_EC_expected, 4);
+    expect(deg(lat_EC)).toBeCloseTo(lat_EC_expected, 16);
+    expect(deg(long_EC)).toBeCloseTo(long_EC_expected, 16);
   },
 );

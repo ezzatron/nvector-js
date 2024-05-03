@@ -30,7 +30,7 @@ test("Example 3", () => {
   const [lat_EB, long_EB] = n_E2lat_long(n_EB_E);
   const h_EB = -z_EB;
 
-  expect(deg(lat_EB)).toBeCloseTo(5.6851, 4);
-  expect(deg(long_EB)).toBeCloseTo(-45.4007, 4);
-  expect(h_EB).toBeCloseTo(95772.1076, 4);
+  expect(deg(lat_EB)).toBeCloseTo(5.685075734513181, 14);
+  expect(deg(long_EB)).toBeCloseTo(-45.40066325579215, 14);
+  expect(h_EB).toBeCloseTo(95772.10761821801, 15); // meters
 });

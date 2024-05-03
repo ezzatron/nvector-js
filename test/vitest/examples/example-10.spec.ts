@@ -17,9 +17,9 @@ import {
  * @see https://www.ffi.no/en/research/n-vector/#example_10
  */
 test.each`
-  label                             | n_EA1_E                         | n_EA2_E                          | n_EB_E                            | s_xt_expected   | d_xt_expected
-  ${"Enter elements directly:"}     | ${unit([1, 0, -2])}             | ${unit([-1, -2, 0])}             | ${unit([0, -2, 3])}               | ${3834155.5618} | ${3606868.4923}
-  ${"or input as lat/long in deg:"} | ${lat_long2n_E(rad(0), rad(0))} | ${lat_long2n_E(rad(10), rad(0))} | ${lat_long2n_E(rad(1), rad(0.1))} | ${11117.7991}   | ${11117.7935}
+  label                             | n_EA1_E                         | n_EA2_E                          | n_EB_E                            | s_xt_expected        | d_xt_expected
+  ${"Enter elements directly:"}     | ${unit([1, 0, -2])}             | ${unit([-1, -2, 0])}             | ${unit([0, -2, 3])}               | ${3834155.561819959} | ${3606868.49226761}
+  ${"or input as lat/long in deg:"} | ${lat_long2n_E(rad(0), rad(0))} | ${lat_long2n_E(rad(10), rad(0))} | ${lat_long2n_E(rad(1), rad(0.1))} | ${11117.79911014538} | ${11117.79346740667}
 `(
   "Example 10 ($label)",
   // Position A1 and A2 and B are given as n_EA1_E, n_EA2_E, and n_EB_E:
@@ -51,7 +51,7 @@ test.each`
     // Find the Euclidean cross track distance:
     const d_xt = -dot(c_E, n_EB_E) * r_Earth;
 
-    expect(s_xt).toBeCloseTo(s_xt_expected, 4);
-    expect(d_xt).toBeCloseTo(d_xt_expected, 4);
+    expect(s_xt).toBeCloseTo(s_xt_expected, 9); // meters
+    expect(d_xt).toBeCloseTo(d_xt_expected, 9); // meters
   },
 );

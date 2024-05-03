@@ -22,9 +22,9 @@ import {
  * @see https://www.ffi.no/en/research/n-vector/#example_8
  */
 test.each`
-  label                             | n_EA_E                             | lat_EB_expected | long_EB_expected
-  ${"Enter elements directly:"}     | ${unit([1, 0, -2])}                | ${-63.4434}     | ${-0.0068799}
-  ${"or input as lat/long in deg:"} | ${lat_long2n_E(rad(80), rad(-90))} | ${79.9915}      | ${-90.0177}
+  label                             | n_EA_E                             | lat_EB_expected       | long_EB_expected
+  ${"Enter elements directly:"}     | ${unit([1, 0, -2])}                | ${-63.44339951651296} | ${-0.006879863905895194}
+  ${"or input as lat/long in deg:"} | ${lat_long2n_E(rad(80), rad(-90))} | ${79.99154867339445}  | ${-90.01769837291397}
 `(
   "Example 8 ($label)",
   // Position A is given as n_EA_E:
@@ -75,7 +75,7 @@ test.each`
     // to see lat, long:
     const [lat_EB, long_EB] = n_E2lat_long(n_EB_E);
 
-    expect(deg(lat_EB)).toBeCloseTo(lat_EB_expected, 4);
-    expect(deg(long_EB)).toBeCloseTo(long_EB_expected, 4);
+    expect(deg(lat_EB)).toBeCloseTo(lat_EB_expected, 13);
+    expect(deg(long_EB)).toBeCloseTo(long_EB_expected, 13);
   },
 );

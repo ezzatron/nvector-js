@@ -64,8 +64,8 @@ test("Example 1", () => {
   // Step5: Also find the direction (azimuth) to B, relative to north:
   const azimuth = Math.atan2(p_AB_N[1], p_AB_N[0]);
 
-  expect(p_AB_N[0]).toBeCloseTo(331730.2348, 4);
-  expect(p_AB_N[1]).toBeCloseTo(332997.875, 4);
-  expect(p_AB_N[2]).toBeCloseTo(17404.2714, 4);
-  expect(azimuth).toBeCloseTo(rad(45.1093), 4);
+  expect(p_AB_N[0]).toBeCloseTo(331730.2347808944, 8); // meters
+  expect(p_AB_N[1]).toBeCloseTo(332997.8749892695, 8); // meters
+  expect(p_AB_N[2]).toBeCloseTo(17404.27136193635, 8); // meters
+  expect(azimuth).toBeCloseTo(rad(45.10926323826139), 15);
 });
