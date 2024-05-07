@@ -1,7 +1,7 @@
 {
   "name": "nvector-geodesy",
   "version": "0.0.0",
-  "description": "A suite of tools for solving geographical position calculations",
+  "description": "Functions for performing geographical position calculations using n-vectors",
   "keywords": [
     "distance",
     "geodesy",
