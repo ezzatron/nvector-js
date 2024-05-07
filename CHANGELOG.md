@@ -10,6 +10,33 @@ Versioning].
 
 ## Unreleased
 
+## [v0.4.0] - 2024-05-08
+
+[v0.4.0]: https://github.com/ezzatron/nvector-js/releases/tag/v0.4.0
+
+### Added
+
+- Added `n_E_and_wa2R_EL` function.
+- Added `R_EL2n_E` and `R_EN2n_E` functions.
+- Added `R2xyz`, `R2zyx`, `xyz2R`, and `zyx2R` functions.
+- Added `deg` and `rad` functions.
+- Added `apply`, `cross`, `dot`, `norm`, and `unit` functions.
+- Added `multiply` and `transpose` functions.
+- Added `R_Ee_NP_X` and `R_Ee_NP_Z` rotation matrix constants.
+- Added `GRS_80`, `WGS_72`, `WGS_84`, and `WGS_84_SPHERE` ellipsoid constants.
+- Added `Ellipsoid`, `Matrix3x3`, and `Vector3` types.
+
+### Changed
+
+- Renamed `lat_lon2n_E` function to `lat_long2n_E`.
+- Renamed `n_E2lat_lon` function to `n_E2lat_long`.
+- Renamed `rotateVector3` function to `rotate`.
+
+### Removed
+
+- Removed `unrotateVector3` function.
+- Removed `sub` function.
+
 ## [v0.3.0] - 2024-04-28
 
 [v0.3.0]: https://github.com/ezzatron/nvector-js/releases/tag/v0.3.0
