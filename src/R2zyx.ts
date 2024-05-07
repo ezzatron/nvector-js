@@ -40,7 +40,7 @@ export function R2zyx(R_AB: Matrix3x3): Vector3 {
   const n_of_eps_to_define_singularity = 10;
   let z, y, x;
 
-  // Check if (close to) zyx Euler angle singularity:
+  // Check if (close to) Euler angle singularity:
   if (cos_y > n_of_eps_to_define_singularity * Number.EPSILON) {
     // Outside singularity:
     // atan2: [-pi pi]

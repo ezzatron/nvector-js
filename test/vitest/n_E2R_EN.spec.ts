@@ -74,4 +74,12 @@ describe("n_E2R_EN()", () => {
     },
     TEST_DURATION + 1000,
   );
+
+  it("handles the poles", () => {
+    expect(n_E2R_EN([0, 0, 1])).toMatchObject([
+      [-1, 0, 0],
+      [0, 1, -0],
+      [0, 0, -1],
+    ]);
+  });
 });

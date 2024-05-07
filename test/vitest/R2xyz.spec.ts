@@ -46,4 +46,14 @@ describe("R2xyz()", () => {
     },
     TEST_DURATION + 1000,
   );
+
+  it("handles Euler angle singularity", () => {
+    expect(
+      R2xyz([
+        [0, 0, 1],
+        [0, 1, 0],
+        [1, 0, 0],
+      ]),
+    ).toMatchObject([0, Math.PI / 2, 0]);
+  });
 });
