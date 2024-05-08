@@ -44,6 +44,8 @@ using this library.
 
 ### Example 1: A and B to delta
 
+![Illustration of example 1](https://raw.githubusercontent.com/ezzatron/nvector-js/main/assets/img/example-01.png)
+
 > Given two positions _A_ and _B_. Find the exact vector from _A_ to _B_ in
 > meters north, east and down, and find the direction (azimuth/bearing) to _B_,
 > relative to north. Use WGS-84 ellipsoid.
@@ -101,6 +103,8 @@ const azimuth = Math.atan2(p_AB_N[1], p_AB_N[0]);
 ```
 
 ### Example 2: B and delta to C
+
+![Illustration of example 2](https://raw.githubusercontent.com/ezzatron/nvector-js/main/assets/img/example-02.png)
 
 > Given the position of vehicle _B_ and a bearing and distance to an object _C_.
 > Find the exact position of _C_. Use WGS-72 ellipsoid.
@@ -166,6 +170,8 @@ const height = -z_EC;
 
 ### Example 3: ECEF-vector to geodetic latitude
 
+![Illustration of example 3](https://raw.githubusercontent.com/ezzatron/nvector-js/main/assets/img/example-03.png)
+
 > Given an ECEF-vector of a position. Find geodetic latitude, longitude and
 > height (using WGS-84 ellipsoid).
 >
@@ -197,6 +203,8 @@ const h_EB = -z_EB;
 
 ### Example 4: Geodetic latitude to ECEF-vector
 
+![Illustration of example 4](https://raw.githubusercontent.com/ezzatron/nvector-js/main/assets/img/example-04.png)
+
 > Given geodetic latitude, longitude and height. Find the ECEF-vector (using
 > WGS-84 ellipsoid).
 >
@@ -222,6 +230,8 @@ const p_EB_E = n_EB_E2p_EB_E(n_EB_E, -h_EB);
 ```
 
 ### Example 5: Surface distance
+
+![Illustration of example 5](https://raw.githubusercontent.com/ezzatron/nvector-js/main/assets/img/example-05.png)
 
 > Given position _A_ and _B_. Find the surface **distance** (i.e. great circle
 > distance) and the Euclidean distance.
@@ -265,6 +275,8 @@ const d_AB =
 ```
 
 ### Example 6: Interpolated position
+
+![Illustration of example 6](https://raw.githubusercontent.com/ezzatron/nvector-js/main/assets/img/example-06.png)
 
 > Given the position of _B_ at time _t<sub>0</sub>_ and _t<sub>1</sub>_. Find an
 > **interpolated position** at time _t<sub>i</sub>_.
@@ -317,6 +329,8 @@ const [lat_EB_ti, long_EB_ti] = n_E2lat_long(n_EB_E_ti);
 
 ### Example 7: Mean position/center
 
+![Illustration of example 7](https://raw.githubusercontent.com/ezzatron/nvector-js/main/assets/img/example-07.png)
+
 > Given three positions _A_, _B_, and _C_. Find the **mean position**
 > (center/midpoint).
 >
@@ -350,6 +364,8 @@ const n_EM_E = unit(
 ```
 
 ### Example 8: A and azimuth/distance to B
+
+![Illustration of example 8](https://raw.githubusercontent.com/ezzatron/nvector-js/main/assets/img/example-08.png)
 
 > Given position _A_ and an azimuth/bearing and a (great circle) distance. Find
 > the **destination point** _B_.
@@ -417,6 +433,8 @@ const [lat_EB, long_EB] = n_E2lat_long(n_EB_E);
 
 ### Example 9: Intersection of two paths
 
+![Illustration of example 9](https://raw.githubusercontent.com/ezzatron/nvector-js/main/assets/img/example-09.png)
+
 > Given path _A_ going through _A<sub>1</sub>_ and _A<sub>2</sub>_, and path _B_
 > going through _B<sub>1</sub>_ and _B<sub>2</sub>_. Find the **intersection**
 > of the two paths.
@@ -470,6 +488,8 @@ const [lat_EC, long_EC] = n_E2lat_long(n_EC_E);
 ```
 
 ### Example 10: Cross track distance (cross track error)
+
+![Illustration of example 10](https://raw.githubusercontent.com/ezzatron/nvector-js/main/assets/img/example-10.png)
 
 > Given path _A_ going through _A<sub>1</sub>_ and _A<sub>2</sub>_, and a point
 > _B_. Find the **cross track distance**/**cross track error** between _B_ and
