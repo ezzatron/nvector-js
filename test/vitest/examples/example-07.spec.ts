@@ -32,6 +32,8 @@ test.each`
     n_EC_E: Vector3;
     n_EM_E_expected: Vector3;
   }) => {
+    // SOLUTION:
+
     // Find the horizontal mean position, M:
     const n_EM_E = unit(
       apply(

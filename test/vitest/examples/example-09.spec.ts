@@ -12,7 +12,7 @@ import {
 } from "../../../src/index.js";
 
 /**
- * Example 9: Intersection of two paths / triangulation
+ * Example 9: Intersection of two paths
  *
  * Given path A going through A(1) and A(2), and path B going through B(1) and
  * B(2). Find the intersection of the two paths.
@@ -41,6 +41,8 @@ test.each`
     lat_EC_expected: number;
     long_EC_expected: number;
   }) => {
+    // SOLUTION:
+
     // Find the intersection between the two paths, n_EC_E:
     const n_EC_E_tmp = unit(
       cross(cross(n_EA1_E, n_EA2_E), cross(n_EB1_E, n_EB2_E)),
