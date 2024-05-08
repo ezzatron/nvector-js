@@ -520,8 +520,10 @@ const d_xt = -dot(c_E, n_EB_E) * r_Earth;
   Journal of Navigation, Volume 63, Issue 03, pp 395-417, July 2010.
 - [The n-vector page]
 - Ellipsoid data taken from [chrisveness/geodesy]
+- Example images taken from [pbrod/nvector]
 
 [a non-singular horizontal position representation]:
   https://www.navlab.net/Publications/A_Nonsingular_Horizontal_Position_Representation.pdf
 [the n-vector page]: https://www.ffi.no/en/research/n-vector
 [chrisveness/geodesy]: https://github.com/chrisveness/geodesy
+[pbrod/nvector]: https://github.com/pbrod/nvector
