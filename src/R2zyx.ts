@@ -34,7 +34,6 @@ export function R2zyx(R_AB: Matrix3x3): Vector3 {
 
   // cos_y is based on as many elements as possible, to average out numerical
   // errors. It is selected as the positive square root since y: [-pi/2 pi/2]
-  // cos_y = sqrt((R_AB(1,1)^2 + R_AB(2,1)^2 + R_AB(3,2)^2 + R_AB(3,3)^2)/2);
   const cos_y = Math.sqrt((r11 ** 2 + r21 ** 2 + r32 ** 2 + r33 ** 2) / 2);
 
   const n_of_eps_to_define_singularity = 10;
