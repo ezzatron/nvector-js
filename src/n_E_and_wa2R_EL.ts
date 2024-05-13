@@ -31,6 +31,6 @@ export function n_E_and_wa2R_EL(
   // new axes) for R_EL. See also the second paragraph of Section 5.2 in Gade
   // (2010):
 
-  // R_Ee selects correct E-axes, see R_Ee.m for details
+  // R_Ee selects correct E-axes
   return multiply(transpose(R_Ee), xyz2R(longitude, -latitude, wander_azimuth));
 }
