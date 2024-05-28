@@ -47,7 +47,7 @@ Versioning].
 ### Removed
 
 - **\[BREAKING\]** The `WGS_84_SPHERE` constant has been removed. Use the
-  `sphere` function with your chose radius instead.
+  `sphere` function with your chosen radius instead.
 
 ## [v0.4.1] - 2024-05-08
 
