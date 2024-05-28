@@ -1,7 +1,9 @@
+import type { Matrix } from "./matrix.js";
+
 /**
  * A 3D vector.
  */
-export type Vector3 = [x: number, y: number, z: number];
+export type Vector = [x: number, y: number, z: number];
 
 /**
  * Creates a new vector by applying a function component-wise to the components
@@ -29,9 +31,9 @@ export type Vector3 = [x: number, y: number, z: number];
  */
 export function apply<N extends number[]>(
   fn: (...n: N) => number,
-  ...v: { [Property in keyof N]: Vector3 }
-): Vector3 {
-  const result: Vector3 = [0, 0, 0];
+  ...v: { [Property in keyof N]: Vector }
+): Vector {
+  const result: Vector = [0, 0, 0];
 
   for (let i = 0; i < 3; ++i) {
     const n: number[] = [];
@@ -51,10 +53,7 @@ export function apply<N extends number[]>(
  *
  * @returns The resulting vector.
  */
-export function cross(a: Vector3, b: Vector3): Vector3 {
-  const [a1, a2, a3] = a;
-  const [b1, b2, b3] = b;
-
+export function cross([a1, a2, a3]: Vector, [b1, b2, b3]: Vector): Vector {
   return [a2 * b3 - a3 * b2, a3 * b1 - a1 * b3, a1 * b2 - a2 * b1];
 }
 
@@ -66,10 +65,7 @@ export function cross(a: Vector3, b: Vector3): Vector3 {
  *
  * @returns The resulting scalar.
  */
-export function dot(a: Vector3, b: Vector3): number {
-  const [a1, a2, a3] = a;
-  const [b1, b2, b3] = b;
-
+export function dot([a1, a2, a3]: Vector, [b1, b2, b3]: Vector): number {
   return a1 * b1 + a2 * b2 + a3 * b3;
 }
 
@@ -80,6 +76,42 @@ export function dot(a: Vector3, b: Vector3): number {
  *
  * @returns The Euclidean norm.
  */
-export function norm(v: Vector3): number {
+export function norm(v: Vector): number {
   return Math.hypot(...v);
+}
+
+/**
+ * Finds a vector in the same direction as v but with norm 1.
+ *
+ * @see https://github.com/FFI-no/n-vector/blob/f77f43d18ddb6b8ea4e1a8bb23a53700af965abb/nvector/unit.m
+ *
+ * @param v - A vector.
+ *
+ * @returns A normalized vector.
+ */
+export function normalize([x, y, z]: Vector): Vector {
+  const norm = Math.hypot(x, y, z);
+
+  // If the vector has norm == 0, i.e. all elements in the vector are zero, the
+  // unit vector [1 0 0]' is returned.
+  return norm === 0 ? [1, 0, 0] : [x / norm, y / norm, z / norm];
+}
+
+/**
+ * Transforms a vector by a matrix.
+ *
+ * @param r - A transformation matrix.
+ * @param v - A vector.
+ *
+ * @returns The transformed vector.
+ */
+export function transform(
+  [[r11, r12, r13], [r21, r22, r23], [r31, r32, r33]]: Matrix,
+  [x, y, z]: Vector,
+): Vector {
+  return [
+    r11 * x + r12 * y + r13 * z,
+    r21 * x + r22 * y + r23 * z,
+    r31 * x + r32 * y + r33 * z,
+  ];
 }

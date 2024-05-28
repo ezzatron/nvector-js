@@ -1,17 +1,16 @@
-import { expect, test } from "vitest";
 import {
-  R_Ee_NP_Z,
+  Z_AXIS_NORTH,
   apply,
   cross,
-  deg,
-  lat_long2n_E,
-  n_E2lat_long,
-  rad,
-  rotate,
+  degrees,
+  fromGeodeticCoordinates,
+  normalize,
+  radians,
+  toGeodeticCoordinates,
+  transform,
   transpose,
-  unit,
-  type Vector3,
-} from "../../../src/index.js";
+} from "nvector-geodesy";
+import { expect, test } from "vitest";
 
 /**
  * Example 8: A and azimuth/distance to B
@@ -21,61 +20,65 @@ import {
  *
  * @see https://www.ffi.no/en/research/n-vector/#example_8
  */
-test.each`
-  label                             | n_EA_E                             | lat_EB_expected       | long_EB_expected
-  ${"Enter elements directly:"}     | ${unit([1, 0, -2])}                | ${-63.44339951651296} | ${-0.006879863905895194}
-  ${"or input as lat/long in deg:"} | ${lat_long2n_E(rad(80), rad(-90))} | ${79.99154867339445}  | ${-90.01769837291397}
-`(
-  "Example 8 ($label)",
-  // Position A is given as n_EA_E:
-  ({
-    n_EA_E,
-    lat_EB_expected,
-    long_EB_expected,
-  }: {
-    n_EA_E: Vector3;
-    lat_EB_expected: number;
-    long_EB_expected: number;
-  }) => {
-    // The initial azimuth and great circle distance (s_AB), and Earth radius
-    // (r_Earth) are also given:
-    const azimuth = rad(200);
-    const s_AB = 1000; // m
-    const r_Earth = 6371e3; // m, mean Earth radius
+test("Example 8", () => {
+  // PROBLEM:
 
-    // Find the destination point B, as n_EB_E ("The direct/first geodetic
-    // problem" for a sphere)
+  // Position A is given as n-vector:
+  const a = fromGeodeticCoordinates(radians(80), radians(-90));
 
-    // SOLUTION:
+  // We also have an initial direction of travel given as an azimuth (bearing)
+  // relative to north (clockwise), and finally the distance to travel along a
+  // great circle is given:
+  const azimuth = radians(200);
+  const gcd = 1000;
 
-    // Step1: Find unit vectors for north and east (see equations (9) and (10)
-    // in Gade (2010):
-    const k_east_E = unit(
-      cross(rotate(transpose(R_Ee_NP_Z), [1, 0, 0]), n_EA_E),
-    );
-    const k_north_E = cross(n_EA_E, k_east_E);
+  // Use Earth radius r:
+  const r = 6371e3;
 
-    // Step2: Find the initial direction vector d_E:
-    const d_E = apply(
-      (k_north_E, k_east_E) =>
-        k_north_E * Math.cos(azimuth) + k_east_E * Math.sin(azimuth),
-      k_north_E,
-      k_east_E,
-    );
+  // Find the destination point B.
+  //
+  // In geodesy, this is known as "The first geodetic problem" or "The direct
+  // geodetic problem" for a sphere, and we see that this is similar to Example
+  // 2, but now the delta is given as an azimuth and a great circle distance.
+  // "The second/inverse geodetic problem" for a sphere is already solved in
+  // Examples 1 and 5.
 
-    // Step3: Find n_EB_E:
-    const n_EB_E = apply(
-      (n_EA_E, d_E) =>
-        n_EA_E * Math.cos(s_AB / r_Earth) + d_E * Math.sin(s_AB / r_Earth),
-      n_EA_E,
-      d_E,
-    );
+  // SOLUTION:
 
-    // When displaying the resulting position for humans, it is more convenient
-    // to see lat, long:
-    const [lat_EB, long_EB] = n_E2lat_long(n_EB_E);
+  // The azimuth (relative to north) is a singular quantity (undefined at the
+  // Poles), but from this angle we can find a (non-singular) quantity that is
+  // more convenient when working with vector algebra: a vector d that points in
+  // the initial direction. We find this from azimuth by first finding the north
+  // and east vectors at the start point, with unit lengths.
+  //
+  // Here we have assumed that our coordinate frame E has its z-axis along the
+  // rotational axis of the Earth, pointing towards the North Pole. Hence, this
+  // axis is given by [1, 0, 0]:
+  const e = normalize(cross(transform(transpose(Z_AXIS_NORTH), [1, 0, 0]), a));
+  const n = cross(a, e);
 
-    expect(deg(lat_EB)).toBeCloseTo(lat_EB_expected, 13);
-    expect(deg(long_EB)).toBeCloseTo(long_EB_expected, 13);
-  },
-);
+  // The two vectors n and e are horizontal, orthogonal, and span the tangent
+  // plane at the initial position. A unit vector d in the direction of the
+  // azimuth is now given by:
+  const d = apply(
+    (n, e) => n * Math.cos(azimuth) + e * Math.sin(azimuth),
+    n,
+    e,
+  );
+
+  // With the initial direction given as d instead of azimuth, it is now quite
+  // simple to find b. We know that d and a are orthogonal, and they will span
+  // the plane where b will lie. Thus, we can use sin and cos in the same manner
+  // as above, with the angle traveled given by gcd / r:
+  const b = apply(
+    (a, d) => a * Math.cos(gcd / r) + d * Math.sin(gcd / r),
+    a,
+    d,
+  );
+
+  // Use human-friendly outputs:
+  const [lat, lon] = toGeodeticCoordinates(b);
+
+  expect(degrees(lat)).toBeCloseTo(79.99154867339445, 13);
+  expect(degrees(lon)).toBeCloseTo(-90.01769837291397, 13);
+});

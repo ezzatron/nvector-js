@@ -1,12 +1,11 @@
-import { expect, test } from "vitest";
 import {
   cross,
   dot,
-  lat_long2n_E,
-  rad,
-  unit,
-  type Vector3,
-} from "../../../src/index.js";
+  fromGeodeticCoordinates,
+  normalize,
+  radians,
+} from "nvector-geodesy";
+import { expect, test } from "vitest";
 
 /**
  * Example 10: Cross track distance (cross track error)
@@ -16,42 +15,41 @@ import {
  *
  * @see https://www.ffi.no/en/research/n-vector/#example_10
  */
-test.each`
-  label                             | n_EA1_E                         | n_EA2_E                          | n_EB_E                            | s_xt_expected        | d_xt_expected
-  ${"Enter elements directly:"}     | ${unit([1, 0, -2])}             | ${unit([-1, -2, 0])}             | ${unit([0, -2, 3])}               | ${3834155.561819959} | ${3606868.49226761}
-  ${"or input as lat/long in deg:"} | ${lat_long2n_E(rad(0), rad(0))} | ${lat_long2n_E(rad(10), rad(0))} | ${lat_long2n_E(rad(1), rad(0.1))} | ${11117.79911014538} | ${11117.79346740667}
-`(
-  "Example 10 ($label)",
-  // Position A1 and A2 and B are given as n_EA1_E, n_EA2_E, and n_EB_E:
-  ({
-    n_EA1_E,
-    n_EA2_E,
-    n_EB_E,
-    s_xt_expected,
-    d_xt_expected,
-  }: {
-    n_EA1_E: Vector3;
-    n_EA2_E: Vector3;
-    n_EB_E: Vector3;
-    s_xt_expected: number;
-    d_xt_expected: number;
-  }) => {
-    const r_Earth = 6371e3; // m, mean Earth radius
+test("Example 10", () => {
+  // PROBLEM:
 
-    // Find the cross track distance from path A to position B.
+  // Path A is given by the two n-vectors a1 and a2 (as in the previous
+  // example):
+  const a1 = fromGeodeticCoordinates(radians(0), radians(0));
+  const a2 = fromGeodeticCoordinates(radians(10), radians(0));
 
-    // SOLUTION:
+  // And a position B is given by b:
+  const b = fromGeodeticCoordinates(radians(1), radians(0.1));
 
-    // Find the unit normal to the great circle between n_EA1_E and n_EA2_E:
-    const c_E = unit(cross(n_EA1_E, n_EA2_E));
+  // Find the cross track distance between the path A (i.e. the great circle
+  // through a1 and a2) and the position B (i.e. the shortest distance at the
+  // surface, between the great circle and B). Also, find the Euclidean distance
+  // between B and the plane defined by the great circle.
 
-    // Find the great circle cross track distance: (acos(x) - pi/2 = -asin(x))
-    const s_xt = -Math.asin(dot(c_E, n_EB_E)) * r_Earth;
+  // Use Earth radius r:
+  const r = 6371e3;
 
-    // Find the Euclidean cross track distance:
-    const d_xt = -dot(c_E, n_EB_E) * r_Earth;
+  // SOLUTION:
 
-    expect(s_xt).toBeCloseTo(s_xt_expected, 9); // meters
-    expect(d_xt).toBeCloseTo(d_xt_expected, 9); // meters
-  },
-);
+  // First, find the normal to the great circle, with direction given by the
+  // right hand rule and the direction of travel:
+  const c = normalize(cross(a1, a2));
+
+  // Find the great circle cross track distance:
+  const gcd = -Math.asin(dot(c, b)) * r;
+
+  // Finding the Euclidean distance is even simpler, since it is the projection
+  // of b onto c, thus simply the dot product:
+  const ed = -dot(c, b) * r;
+
+  // For both gcd and ed, positive answers means that B is to the right of the
+  // track.
+
+  expect(gcd).toBeCloseTo(11117.79911014538, 9);
+  expect(ed).toBeCloseTo(11117.79346740667, 9);
+});

@@ -1,38 +1,38 @@
-import { WebSocket } from "ws";
 import type {
-  Matrix3x3,
-  R2xyz,
-  R2zyx,
-  R_EL2n_E,
-  R_EN2n_E,
-  Vector3,
-  lat_long2n_E,
-  n_E2R_EN,
-  n_E2lat_long,
-  n_EA_E_and_n_EB_E2p_AB_E,
-  n_EA_E_and_p_AB_E2n_EB_E,
-  n_EB_E2p_EB_E,
-  n_E_and_wa2R_EL,
-  p_EB_E2n_EB_E,
-  xyz2R,
-  zyx2R,
-} from "../src/index.js";
+  Matrix,
+  Vector,
+  delta,
+  destination,
+  eulerXYZToRotationMatrix,
+  eulerZYXToRotationMatrix,
+  fromECEF,
+  fromGeodeticCoordinates,
+  fromRotationMatrix,
+  rotationMatrixToEulerXYZ,
+  rotationMatrixToEulerZYX,
+  toECEF,
+  toGeodeticCoordinates,
+  toRotationMatrix,
+  toRotationMatrixUsingWanderAzimuth,
+} from "nvector-geodesy";
+import { WebSocket } from "ws";
 
 export type NvectorTestClient = {
-  lat_long2n_E: Async<typeof lat_long2n_E>;
-  n_E_and_wa2R_EL: Async<typeof n_E_and_wa2R_EL>;
-  n_E2lat_long: Async<typeof n_E2lat_long>;
-  n_E2R_EN: Async<typeof n_E2R_EN>;
-  n_EA_E_and_n_EB_E2p_AB_E: Async<typeof n_EA_E_and_n_EB_E2p_AB_E>;
-  n_EA_E_and_p_AB_E2n_EB_E: Async<typeof n_EA_E_and_p_AB_E2n_EB_E>;
-  n_EB_E2p_EB_E: Async<typeof n_EB_E2p_EB_E>;
-  p_EB_E2n_EB_E: Async<typeof p_EB_E2n_EB_E>;
-  R_EL2n_E: Async<typeof R_EL2n_E>;
-  R_EN2n_E: Async<typeof R_EN2n_E>;
-  R2xyz: Async<typeof R2xyz>;
-  R2zyx: Async<typeof R2zyx>;
-  xyz2R: Async<typeof xyz2R>;
-  zyx2R: Async<typeof zyx2R>;
+  fromGeodeticCoordinates: Async<typeof fromGeodeticCoordinates>;
+  toRotationMatrixUsingWanderAzimuth: Async<
+    typeof toRotationMatrixUsingWanderAzimuth
+  >;
+  toGeodeticCoordinates: Async<typeof toGeodeticCoordinates>;
+  toRotationMatrix: Async<typeof toRotationMatrix>;
+  delta: Async<typeof delta>;
+  destination: Async<typeof destination>;
+  toECEF: Async<typeof toECEF>;
+  fromECEF: Async<typeof fromECEF>;
+  fromRotationMatrix: Async<typeof fromRotationMatrix>;
+  rotationMatrixToEulerXYZ: Async<typeof rotationMatrixToEulerXYZ>;
+  rotationMatrixToEulerZYX: Async<typeof rotationMatrixToEulerZYX>;
+  eulerXYZToRotationMatrix: Async<typeof eulerXYZToRotationMatrix>;
+  eulerZYXToRotationMatrix: Async<typeof eulerZYXToRotationMatrix>;
 
   close: () => void;
 };
@@ -47,131 +47,129 @@ export async function createNvectorTestClient(): Promise<NvectorTestClient> {
   });
 
   return {
-    async lat_long2n_E(latitude, longitude, R_Ee) {
+    async fromGeodeticCoordinates(latitude, longitude, frame) {
       return unwrapVector3(
         await call<WrappedVector3>("lat_lon2n_E", {
           latitude,
           longitude,
-          R_Ee,
+          R_Ee: frame,
         }),
       );
     },
 
-    async n_E_and_wa2R_EL(n_E, wander_azimuth, R_Ee) {
-      return await call<Matrix3x3>("n_E_and_wa2R_EL", {
-        n_E: wrapVector3(n_E),
-        wander_azimuth,
-        R_Ee,
+    async toRotationMatrixUsingWanderAzimuth(vector, wanderAzimuth, frame) {
+      return await call<Matrix>("n_E_and_wa2R_EL", {
+        n_E: wrapVector3(vector),
+        wander_azimuth: wanderAzimuth,
+        R_Ee: frame,
       });
     },
 
-    async n_E2lat_long(n_E, R_Ee) {
+    async toGeodeticCoordinates(vector, frame) {
       const { latitude, longitude } = await call<{
         latitude: number;
         longitude: number;
       }>("n_E2lat_lon", {
-        n_E: wrapVector3(n_E),
-        R_Ee,
+        n_E: wrapVector3(vector),
+        R_Ee: frame,
       });
 
       return [latitude, longitude];
     },
 
-    async n_E2R_EN(n_E, R_Ee) {
-      return await call<Matrix3x3>("n_E2R_EN", {
-        n_E: wrapVector3(n_E),
-        R_Ee,
+    async toRotationMatrix(vector, frame) {
+      return await call<Matrix>("n_E2R_EN", {
+        n_E: wrapVector3(vector),
+        R_Ee: frame,
       });
     },
 
-    async n_EA_E_and_n_EB_E2p_AB_E(n_EA_E, n_EB_E, z_EA, z_EB, a, f, R_Ee) {
+    async delta(from, to, fromDepth, toDepth, ellipsoid, frame) {
       return unwrapVector3(
         await call<WrappedVector3>("n_EA_E_and_n_EB_E2p_AB_E", {
-          n_EA_E: wrapVector3(n_EA_E),
-          n_EB_E: wrapVector3(n_EB_E),
-          z_EA,
-          z_EB,
-          a,
-          f,
-          R_Ee,
+          n_EA_E: wrapVector3(from),
+          n_EB_E: wrapVector3(to),
+          z_EA: fromDepth,
+          z_EB: toDepth,
+          a: ellipsoid?.a,
+          f: ellipsoid?.f,
+          R_Ee: frame,
         }),
       );
     },
 
-    async n_EA_E_and_p_AB_E2n_EB_E(n_EA_E, p_AB_E, z_EA, a, f, R_Ee) {
+    async destination(from, delta, fromDepth, ellipsoid, frame) {
       const { n_EB_E, z_EB } = await call<{
         n_EB_E: WrappedVector3;
         z_EB: number;
       }>("n_EA_E_and_p_AB_E2n_EB_E", {
-        n_EA_E: wrapVector3(n_EA_E),
-        p_AB_E: wrapVector3(p_AB_E),
-        z_EA,
-        a,
-        f,
-        R_Ee,
+        n_EA_E: wrapVector3(from),
+        p_AB_E: wrapVector3(delta),
+        z_EA: fromDepth,
+        a: ellipsoid?.a,
+        f: ellipsoid?.f,
+        R_Ee: frame,
       });
 
       return [unwrapVector3(n_EB_E), z_EB];
     },
 
-    async n_EB_E2p_EB_E(n_EB_E, depth, a, f, R_Ee) {
+    async toECEF(vector, depth, ellipsoid, frame) {
       return unwrapVector3(
         await call<WrappedVector3>("n_EB_E2p_EB_E", {
-          n_EB_E: wrapVector3(n_EB_E),
+          n_EB_E: wrapVector3(vector),
           depth,
-          a,
-          f,
-          R_Ee,
+          a: ellipsoid?.a,
+          f: ellipsoid?.f,
+          R_Ee: frame,
         }),
       );
     },
 
-    async p_EB_E2n_EB_E(p_EB_E, a, f, R_Ee) {
+    async fromECEF(vector, ellipsoid, frame) {
       const { n_EB_E, depth } = await call<{
         n_EB_E: WrappedVector3;
         depth: number;
       }>("p_EB_E2n_EB_E", {
-        p_EB_E: wrapVector3(p_EB_E),
-        a,
-        f,
-        R_Ee,
+        p_EB_E: wrapVector3(vector),
+        a: ellipsoid?.a,
+        f: ellipsoid?.f,
+        R_Ee: frame,
       });
 
       return [unwrapVector3(n_EB_E), depth];
     },
 
-    async R_EL2n_E(R_EL) {
-      return unwrapVector3(await call<WrappedVector3>("R_EL2n_E", { R_EL }));
+    async fromRotationMatrix(rotation) {
+      return unwrapVector3(
+        await call<WrappedVector3>("R_EN2n_E", { R_EN: rotation }),
+      );
     },
 
-    async R_EN2n_E(R_EN) {
-      return unwrapVector3(await call<WrappedVector3>("R_EN2n_E", { R_EN }));
-    },
-
-    async R2xyz(R_AB) {
+    async rotationMatrixToEulerXYZ(rotation) {
       const { x, y, z } = await call<{ x: number; y: number; z: number }>(
         "R2xyz",
-        { R_AB },
+        { R_AB: rotation },
       );
 
       return [x, y, z];
     },
 
-    async R2zyx(R_AB) {
+    async rotationMatrixToEulerZYX(rotation) {
       const { z, y, x } = await call<{ z: number; y: number; x: number }>(
         "R2zyx",
-        { R_AB },
+        { R_AB: rotation },
       );
 
       return [z, y, x];
     },
 
-    async xyz2R(x, y, z) {
-      return await call<Matrix3x3>("xyz2R", { x, y, z });
+    async eulerXYZToRotationMatrix(x, y, z) {
+      return await call<Matrix>("xyz2R", { x, y, z });
     },
 
-    async zyx2R(z, y, x) {
-      return await call<Matrix3x3>("zyx2R", { z, y, x });
+    async eulerZYXToRotationMatrix(z, y, x) {
+      return await call<Matrix>("zyx2R", { z, y, x });
     },
 
     close: () => ws.close(),
@@ -217,11 +215,11 @@ type ErrorMessage = {
 
 type WrappedVector3 = [[x: number], [y: number], [z: number]];
 
-function wrapVector3([x, y, z]: Vector3): WrappedVector3 {
+function wrapVector3([x, y, z]: Vector): WrappedVector3 {
   return [[x], [y], [z]];
 }
 
-function unwrapVector3([[x], [y], [z]]: WrappedVector3): Vector3 {
+function unwrapVector3([[x], [y], [z]]: WrappedVector3): Vector {
   return [x, y, z];
 }
 

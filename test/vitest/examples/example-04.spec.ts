@@ -1,5 +1,5 @@
+import { fromGeodeticCoordinates, radians, toECEF } from "nvector-geodesy";
 import { expect, test } from "vitest";
-import { lat_long2n_E, n_EB_E2p_EB_E, rad } from "../../../src/index.js";
 
 /**
  * Example 4: Geodetic latitude to ECEF-vector
@@ -10,22 +10,24 @@ import { lat_long2n_E, n_EB_E2p_EB_E, rad } from "../../../src/index.js";
  * @see https://www.ffi.no/en/research/n-vector/#example_4
  */
 test("Example 4", () => {
-  // Position B is given with lat, long and height:
-  const lat_EB_deg = 1;
-  const long_EB_deg = 2;
-  const h_EB = 3;
+  // PROBLEM:
 
-  // Find the vector p_EB_E ("ECEF-vector")
+  // Geodetic latitude, longitude and height are given for position B:
+  const bLat = 1;
+  const bLon = 2;
+  const bHeight = 3;
+
+  // Find the ECEF-vector for this position.
 
   // SOLUTION:
 
-  // Step1: Convert to n-vector:
-  const n_EB_E = lat_long2n_E(rad(lat_EB_deg), rad(long_EB_deg));
+  // Step 1: First, the given latitude and longitude are converted to n-vector:
+  const b = fromGeodeticCoordinates(radians(bLat), radians(bLon));
 
-  // Step2: Find the ECEF-vector p_EB_E:
-  const p_EB_E = n_EB_E2p_EB_E(n_EB_E, -h_EB);
+  // Step 2: Convert to an ECEF-vector:
+  const pb = toECEF(b, -bHeight);
 
-  expect(p_EB_E[0]).toBeCloseTo(6373290.277218279, 8); // meters
-  expect(p_EB_E[1]).toBeCloseTo(222560.2006747365, 8); // meters
-  expect(p_EB_E[2]).toBeCloseTo(110568.8271817859, 8); // meters
+  expect(pb[0]).toBeCloseTo(6373290.277218279, 8);
+  expect(pb[1]).toBeCloseTo(222560.2006747365, 8);
+  expect(pb[2]).toBeCloseTo(110568.8271817859, 8);
 });

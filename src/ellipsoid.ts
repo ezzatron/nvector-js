@@ -5,6 +5,7 @@
  */
 export const GRS_80: Ellipsoid = {
   a: 6378137,
+  b: 6356752.314140356,
   f: 1 / 298.257222101,
 } as const;
 
@@ -15,6 +16,7 @@ export const GRS_80: Ellipsoid = {
  */
 export const WGS_72: Ellipsoid = {
   a: 6378135,
+  b: 6356750.520016094,
   f: 1 / 298.26,
 } as const;
 
@@ -25,27 +27,38 @@ export const WGS_72: Ellipsoid = {
  */
 export const WGS_84: Ellipsoid = {
   a: 6378137,
+  b: 6356752.314245179,
   f: 1 / 298.257223563,
 } as const;
 
 /**
- * A sphere with the same semi-major axis as the WGS-84 ellipsoid.
+ * Create a spherical ellipsoid with the given radius.
  *
- * @see https://github.com/chrisveness/geodesy/blob/761587cd748bd9f7c9825195eba4a9fc5891b859/latlon-ellipsoidal-datum.js#L39
+ * @param radius - A radius in meters.
+ *
+ * @returns A spherical ellipsoid.
  */
-export const WGS_84_SPHERE: Ellipsoid = {
-  a: WGS_84.a,
-  f: 0,
-} as const;
+export function sphere(radius: number): Ellipsoid {
+  return {
+    a: radius,
+    b: radius,
+    f: 0,
+  };
+}
 
 /**
  * An ellipsoid.
  */
 export type Ellipsoid = {
   /**
-   * The semi-major axis of the ellipsoid.
+   * The semi-major axis of the ellipsoid in meters.
    */
   a: number;
+
+  /**
+   * The semi-minor axis of the ellipsoid in meters.
+   */
+  b: number;
 
   /**
    * The flattening of the ellipsoid.

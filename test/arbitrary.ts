@@ -1,16 +1,10 @@
 import { fc } from "@fast-check/vitest";
-import {
-  GRS_80,
-  WGS_72,
-  WGS_84,
-  WGS_84_SPHERE,
-  type Ellipsoid,
-} from "../src/ellipsoid.js";
-import type { Matrix3x3, Vector3 } from "../src/index.js";
+import type { Ellipsoid, Matrix, Vector } from "nvector-geodesy";
+import { GRS_80, WGS_72, WGS_84 } from "nvector-geodesy";
 
 const RADIAN = Math.PI / 180;
 
-export function arbitrary3dRotationMatrix(): fc.Arbitrary<Matrix3x3> {
+export function arbitrary3dRotationMatrix(): fc.Arbitrary<Matrix> {
   return arbitraryQuaternion().map(([x, y, z, w]) => {
     // based on https://github.com/rawify/Quaternion.js/blob/c3834673b502e64e1866dbbf13568c0be93e52cc/quaternion.js#L791
     const wx = w * x;
@@ -33,13 +27,13 @@ export function arbitrary3dRotationMatrix(): fc.Arbitrary<Matrix3x3> {
 
 export function arbitrary3dVector(
   magnitudeConstraints: fc.DoubleConstraints,
-): fc.Arbitrary<Vector3> {
+): fc.Arbitrary<Vector> {
   return fc
     .tuple(arbitrary3dUnitVector(), fc.double(magnitudeConstraints))
     .map(([[x, y, z], m]) => [x * m, y * m, z * m]);
 }
 
-export function arbitrary3dUnitVector(): fc.Arbitrary<Vector3> {
+export function arbitrary3dUnitVector(): fc.Arbitrary<Vector> {
   // based on https://github.com/mrdoob/three.js/blob/a2e9ee8204b67f9dca79f48cf620a34a05aa8126/src/math/Vector3.js#L695
   // https://mathworld.wolfram.com/SpherePointPicking.html
 
@@ -58,29 +52,21 @@ export function arbitrary3dUnitVector(): fc.Arbitrary<Vector3> {
 export function arbitraryEllipsoid(): fc.Arbitrary<Ellipsoid> {
   return fc.oneof(
     fc.constant(WGS_84),
-    fc.constant(WGS_84_SPHERE),
-    fc.constant(WGS_72),
     fc.constant(GRS_80),
+    fc.constant(WGS_72),
   );
 }
 
 export function arbitraryEllipsoidDepth({
-  a,
-  f,
+  b,
 }: Ellipsoid): fc.Arbitrary<number> {
-  // semi-minor axis
-  const b = a * (1 - f);
-
   return fc.double({ min: -b, max: b, noNaN: true });
 }
 
 export function arbitraryEllipsoidECEFVector({
   a,
-  f,
-}: Ellipsoid): fc.Arbitrary<Vector3> {
-  // semi-minor axis
-  const b = a * (1 - f);
-
+  b,
+}: Ellipsoid): fc.Arbitrary<Vector> {
   return arbitrary3dVector({ min: a - b, max: a + b, noNaN: true });
 }
 

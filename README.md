@@ -18,9 +18,11 @@ _Functions for performing geographical position calculations using n-vectors_
 [badge-version-link]: https://npmjs.com/package/nvector-geodesy
 
 This library is a lightweight (&lt;2kB), dependency-free port of the [Matlab
-n-vector library] by [Kenneth Gade]. All original functions are included, plus
-some extras for vector and matrix operations needed to solve the [10 examples
-from the n-vector page].
+n-vector library] by [Kenneth Gade]. All original functions are included,
+although the names of the functions and arguments have been changed in an
+attempt to clarify their purpose. In addition, this library includes some extra
+functions for vector and matrix operations needed to solve the [10 examples from
+the n-vector page].
 
 [matlab n-vector library]: https://github.com/FFI-no/n-vector
 [kenneth gade]: https://github.com/KennethGade
@@ -54,52 +56,92 @@ using this library.
 
 ```ts
 import {
-  lat_long2n_E,
-  n_E2R_EN,
-  n_EA_E_and_n_EB_E2p_AB_E,
-  rad,
-  rotate,
+  delta,
+  fromGeodeticCoordinates,
+  radians,
+  toRotationMatrix,
+  transform,
   transpose,
 } from "nvector-geodesy";
+import { expect, test } from "vitest";
 
-// Positions A and B are given in (decimal) degrees and depths:
+/**
+ * Example 1: A and B to delta
+ *
+ * Given two positions A and B. Find the exact vector from A to B in meters
+ * north, east and down, and find the direction (azimuth/bearing) to B, relative
+ * to north. Use WGS-84 ellipsoid.
+ *
+ * @see https://www.ffi.no/en/research/n-vector/#example_1
+ */
+test("Example 1", () => {
+  // PROBLEM:
 
-// Position A:
-const lat_EA_deg = 1;
-const long_EA_deg = 2;
-const z_EA = 3;
+  // Given two positions, A and B as latitudes, longitudes and depths (relative
+  // to Earth, E):
+  const aLat = 1,
+    aLon = 2,
+    aDepth = 3;
+  const bLat = 4,
+    bLon = 5,
+    bDepth = 6;
 
-// Position B:
-const lat_EB_deg = 4;
-const long_EB_deg = 5;
-const z_EB = 6;
+  // Find the exact vector between the two positions, given in meters north,
+  // east, and down, and find the direction (azimuth) to B, relative to north.
+  //
+  // Details:
+  //
+  // - Assume WGS-84 ellipsoid. The given depths are from the ellipsoid surface.
+  // - Use position A to define north, east, and down directions. (Due to the
+  //   curvature of Earth and different directions to the North Pole, the north,
+  //   east, and down directions will change (relative to Earth) for different
+  //   places. Position A must be outside the poles for the north and east
+  //   directions to be defined.
 
-// Find the exact vector between the two positions, given in meters north,
-// east, and down, i.e. find p_AB_N.
+  // SOLUTION:
 
-// SOLUTION:
+  // Step 1
+  //
+  // First, the given latitudes and longitudes are converted to n-vectors:
+  const a = fromGeodeticCoordinates(radians(aLat), radians(aLon));
+  const b = fromGeodeticCoordinates(radians(bLat), radians(bLon));
 
-// Step1: Convert to n-vectors (rad() converts to radians):
-const n_EA_E = lat_long2n_E(rad(lat_EA_deg), rad(long_EA_deg));
-const n_EB_E = lat_long2n_E(rad(lat_EB_deg), rad(long_EB_deg));
+  // Step 2
+  //
+  // When the positions are given as n-vectors (and depths), it is easy to find
+  // the delta vector decomposed in E. No ellipsoid is specified when calling
+  // the function, thus WGS-84 (default) is used:
+  const abE = delta(a, b, aDepth, bDepth);
 
-// Step2: Find p_AB_E (delta decomposed in E). WGS-84 ellipsoid is default:
-const p_AB_E = n_EA_E_and_n_EB_E2p_AB_E(n_EA_E, n_EB_E, z_EA, z_EB);
+  // Step 3
+  //
+  // We now have the delta vector from A to B, but the three coordinates of the
+  // vector are along the Earth coordinate frame E, while we need the
+  // coordinates to be north, east and down. To get this, we define a
+  // North-East-Down coordinate frame called N, and then we need the rotation
+  // matrix (direction cosine matrix) rEN to go between E and N. We have a
+  // simple function that calculates rEN from an n-vector, and we use this
+  // function (using the n-vector at position A):
+  const rEN = toRotationMatrix(a);
 
-// Step3: Find R_EN for position A:
-const R_EN = n_E2R_EN(n_EA_E);
+  // Step 4
+  //
+  // Now the delta vector is easily decomposed in N. Since the vector is
+  // decomposed in E, we must use rNE (rNE is the transpose of rEN):
+  const abN = transform(transpose(rEN), abE);
 
-// Step4: Find p_AB_N
-const p_AB_N = rotate(transpose(R_EN), p_AB_E);
-// (Note the transpose of R_EN: The "closest-rule" says that when decomposing,
-// the frame in the subscript of the rotation matrix that is closest to the
-// vector, should equal the frame where the vector is decomposed. Thus the
-// calculation R_NE*p_AB_E is correct, since the vector is decomposed in E,
-// and E is closest to the vector. In the above example we only had R_EN, and
-// thus we must transpose it: R_EN' = R_NE)
+  // Step 5
+  //
+  // The three components of abN are the north, east and down displacements from
+  // A to B in meters. The azimuth is simply found from element 1 and 2 of the
+  // vector (the north and east components):
+  const azimuth = Math.atan2(abN[1], abN[0]);
 
-// Step5: Also find the direction (azimuth) to B, relative to north:
-const azimuth = Math.atan2(p_AB_N[1], p_AB_N[0]);
+  expect(abN[0]).toBeCloseTo(331730.2347808944, 8);
+  expect(abN[1]).toBeCloseTo(332997.8749892695, 8);
+  expect(abN[2]).toBeCloseTo(17404.27136193635, 8);
+  expect(azimuth).toBeCloseTo(radians(45.10926323826139), 15);
+});
 ```
 
 ### Example 2: B and delta to C
@@ -114,58 +156,85 @@ const azimuth = Math.atan2(p_AB_N[1], p_AB_N[0]);
 ```ts
 import {
   WGS_72,
-  deg,
+  degrees,
+  destination,
+  eulerZYXToRotationMatrix,
   multiply,
-  n_E2R_EN,
-  n_E2lat_long,
-  n_EA_E_and_p_AB_E2n_EB_E,
-  rad,
-  rotate,
-  unit,
-  zyx2R,
-  type Vector3,
+  normalize,
+  radians,
+  toGeodeticCoordinates,
+  toRotationMatrix,
+  transform,
+  type Vector,
 } from "nvector-geodesy";
+import { expect, test } from "vitest";
 
-// delta vector from B to C, decomposed in B is given:
-const p_BC_B: Vector3 = [3000, 2000, 100];
+/**
+ * Example 2: B and delta to C
+ *
+ * Given the position of vehicle B and a bearing and distance to an object C.
+ * Find the exact position of C. Use WGS-72 ellipsoid.
+ *
+ * @see https://www.ffi.no/en/research/n-vector/#example_2
+ */
+test("Example 2", () => {
+  // PROBLEM:
 
-// Position and orientation of B is given:
-// unit to get unit length of vector
-const n_EB_E = unit([1, 2, 3]);
-const z_EB = -400;
-// the three angles are yaw, pitch, and roll
-const R_NB = zyx2R(rad(10), rad(20), rad(30));
+  // A radar or sonar attached to a vehicle B (Body coordinate frame) measures
+  // the distance and direction to an object C. We assume that the distance and
+  // two angles measured by the sensor (typically bearing and elevation relative
+  // to B) are already converted (by converting from spherical to Cartesian
+  // coordinates) to the vector bcB (i.e. the vector from B to C, decomposed in
+  // B):
+  const bcB: Vector = [3000, 2000, 100];
 
-// A custom reference ellipsoid is given (replacing WGS-84):
-// (WGS-72)
-const a = WGS_72.a;
-const f = WGS_72.f;
+  // The position of B is given as an n-vector and a depth:
+  const b = normalize([1, 2, 3]);
+  const bDepth = -400;
 
-// Find the position of C.
+  // The orientation (attitude) of B is given as rNB, specified as yaw, pitch,
+  // roll:
+  const rNB = eulerZYXToRotationMatrix(radians(10), radians(20), radians(30));
 
-// SOLUTION:
+  // Use the WGS-72 ellipsoid:
+  const e = WGS_72;
 
-// Step1: Find R_EN:
-const R_EN = n_E2R_EN(n_EB_E);
+  // Find the exact position of object C as an n-vector and a depth.
 
-// Step2: Find R_EB, from R_EN and R_NB:
-// Note: closest frames cancel
-const R_EB = multiply(R_EN, R_NB);
+  // SOLUTION:
 
-// Step3: Decompose the delta vector in E:
-// no transpose of R_EB, since the vector is in B
-const p_BC_E = rotate(R_EB, p_BC_B);
+  // Step 1
+  //
+  // The delta vector is given in B. It should be decomposed in E before using
+  // it, and thus we need rEB. This matrix is found from the matrices rEN and
+  // rNB, and we need to find rEN, as in Example 1:
+  const rEN = toRotationMatrix(b);
 
-// Step4: Find the position of C, using the functions that goes from one
-// position and a delta, to a new position:
-const [n_EC_E, z_EC] = n_EA_E_and_p_AB_E2n_EB_E(n_EB_E, p_BC_E, z_EB, a, f);
+  // Step 2
+  //
+  // Now, we can find rEB y using that the closest frames cancel when
+  // multiplying two rotation matrices (i.e. N is cancelled here):
+  const rEB = multiply(rEN, rNB);
 
-// When displaying the resulting position for humans, it is more convenient
-// to see lat, long:
-const [lat_EC, long_EC] = n_E2lat_long(n_EC_E);
+  // Step 3
+  //
+  // The delta vector is now decomposed in E:
+  const bcE = transform(rEB, bcB);
 
-// Here we also assume that the user wants the output to be height (= -depth):
-const height = -z_EC;
+  // Step 4
+  //
+  // It is now easy to find the position of C using destination (with custom
+  // ellipsoid overriding the default WGS-84):
+  const [c, cDepth] = destination(b, bcE, bDepth, e);
+
+  // Use human-friendly outputs:
+  const [lat, lon] = toGeodeticCoordinates(c);
+  const height = -cDepth;
+
+  expect(degrees(lat)).toBeCloseTo(53.32637826433107, 13);
+  expect(degrees(lon)).toBeCloseTo(63.46812343514746, 13);
+  expect(height).toBeCloseTo(406.0071960700098, 15);
+});
 ```
 
 ### Example 3: ECEF-vector to geodetic latitude
@@ -180,25 +249,48 @@ const height = -z_EC;
 ```ts
 import {
   apply,
-  deg,
-  n_E2lat_long,
-  p_EB_E2n_EB_E,
-  type Vector3,
+  degrees,
+  fromECEF,
+  toGeodeticCoordinates,
+  type Vector,
 } from "nvector-geodesy";
+import { expect, test } from "vitest";
 
-// Position B is given as p_EB_E ("ECEF-vector")
-const p_EB_E: Vector3 = apply((n) => n * 6371e3, [0.71, -0.72, 0.1]); // m
+/**
+ * Example 3: ECEF-vector to geodetic latitude
+ *
+ * Given an ECEF-vector of a position. Find geodetic latitude, longitude and
+ * height (using WGS-84 ellipsoid).
+ *
+ * @see https://www.ffi.no/en/research/n-vector/#example_3
+ */
+test("Example 3", () => {
+  // PROBLEM:
 
-// Find position B as geodetic latitude, longitude and height
+  // Position B is given as an “ECEF-vector” pb (i.e. a vector from E, the
+  // center of the Earth, to B, decomposed in E):
+  const pb: Vector = apply((n) => n * 6371e3, [0.71, -0.72, 0.1]);
 
-// SOLUTION:
+  // Find the geodetic latitude, longitude and height, assuming WGS-84
+  // ellipsoid.
 
-// Find n-vector from the p-vector:
-const [n_EB_E, z_EB] = p_EB_E2n_EB_E(p_EB_E);
+  // SOLUTION:
 
-// Convert to lat, long and height:
-const [lat_EB, long_EB] = n_E2lat_long(n_EB_E);
-const h_EB = -z_EB;
+  // Step 1
+  //
+  // We have a function that converts ECEF-vectors to n-vectors:
+  const [b, bDepth] = fromECEF(pb);
+
+  // Step 2
+  //
+  // Find latitude, longitude and height:
+  const [lat, lon] = toGeodeticCoordinates(b);
+  const height = -bDepth;
+
+  expect(degrees(lat)).toBeCloseTo(5.685075734513181, 14);
+  expect(degrees(lon)).toBeCloseTo(-45.40066325579215, 14);
+  expect(height).toBeCloseTo(95772.10761821801, 15);
+});
 ```
 
 ### Example 4: Geodetic latitude to ECEF-vector
@@ -211,22 +303,39 @@ const h_EB = -z_EB;
 > https://www.ffi.no/en/research/n-vector/#example_4
 
 ```ts
-import { lat_long2n_E, n_EB_E2p_EB_E, rad } from "nvector-geodesy";
+import { fromGeodeticCoordinates, radians, toECEF } from "nvector-geodesy";
+import { expect, test } from "vitest";
 
-// Position B is given with lat, long and height:
-const lat_EB_deg = 1;
-const long_EB_deg = 2;
-const h_EB = 3;
+/**
+ * Example 4: Geodetic latitude to ECEF-vector
+ *
+ * Given geodetic latitude, longitude and height. Find the ECEF-vector (using
+ * WGS-84 ellipsoid).
+ *
+ * @see https://www.ffi.no/en/research/n-vector/#example_4
+ */
+test("Example 4", () => {
+  // PROBLEM:
 
-// Find the vector p_EB_E ("ECEF-vector")
+  // Geodetic latitude, longitude and height are given for position B:
+  const bLat = 1;
+  const bLon = 2;
+  const bHeight = 3;
 
-// SOLUTION:
+  // Find the ECEF-vector for this position.
 
-// Step1: Convert to n-vector:
-const n_EB_E = lat_long2n_E(rad(lat_EB_deg), rad(long_EB_deg));
+  // SOLUTION:
 
-// Step2: Find the ECEF-vector p_EB_E:
-const p_EB_E = n_EB_E2p_EB_E(n_EB_E, -h_EB);
+  // Step 1: First, the given latitude and longitude are converted to n-vector:
+  const b = fromGeodeticCoordinates(radians(bLat), radians(bLon));
+
+  // Step 2: Convert to an ECEF-vector:
+  const pb = toECEF(b, -bHeight);
+
+  expect(pb[0]).toBeCloseTo(6373290.277218279, 8);
+  expect(pb[1]).toBeCloseTo(222560.2006747365, 8);
+  expect(pb[2]).toBeCloseTo(110568.8271817859, 8);
+});
 ```
 
 ### Example 5: Surface distance
@@ -243,35 +352,47 @@ import {
   apply,
   cross,
   dot,
-  lat_long2n_E,
+  fromGeodeticCoordinates,
   norm,
-  rad,
-  unit,
-  type Vector3,
+  radians,
 } from "nvector-geodesy";
+import { expect, test } from "vitest";
 
-// Position A and B are given as n_EA_E and n_EB_E:
-// Enter elements directly:
-// const n_EA_E = unit([1, 0, -2]);
-// const n_EB_E = unit([-1, -2, 0]);
+/**
+ * Example 5: Surface distance
+ *
+ * Given position A and B. Find the surface distance (i.e. great circle
+ * distance) and the Euclidean distance.
+ *
+ * @see https://www.ffi.no/en/research/n-vector/#example_5
+ */
+test("Example 5", () => {
+  // PROBLEM:
 
-// or input as lat/long in deg:
-const n_EA_E = lat_long2n_E(rad(88), rad(0));
-const n_EB_E = lat_long2n_E(rad(89), rad(-170));
+  // Given two positions A and B as n-vectors:
+  const a = fromGeodeticCoordinates(radians(88), radians(0));
+  const b = fromGeodeticCoordinates(radians(89), radians(-170));
 
-// m, mean Earth radius
-const r_Earth = 6371e3;
+  // Find the surface distance (i.e. great circle distance). The heights of A
+  // and B are not relevant (i.e. if they do not have zero height, we seek the
+  // distance between the points that are at the surface of the Earth, directly
+  // above/below A and B). The Euclidean distance (chord length) should also be
+  // found.
 
-// SOLUTION:
+  // Use Earth radius r:
+  const r = 6371e3;
 
-// The great circle distance is given by equation (16) in Gade (2010):
-// Well conditioned for all angles:
-const s_AB =
-  Math.atan2(norm(cross(n_EA_E, n_EB_E)), dot(n_EA_E, n_EB_E)) * r_Earth;
+  // SOLUTION:
 
-// The Euclidean distance is given by:
-const d_AB =
-  norm(apply((n_EB_E, n_EA_E) => n_EB_E - n_EA_E, n_EB_E, n_EA_E)) * r_Earth;
+  // Find the great circle distance:
+  const gcd = Math.atan2(norm(cross(a, b)), dot(a, b)) * r;
+
+  // Find the Euclidean distance:
+  const ed = norm(apply((b, a) => b - a, b, a)) * r;
+
+  expect(gcd).toBeCloseTo(332456.4441053448, 9);
+  expect(ed).toBeCloseTo(332418.7248568097, 9);
+});
 ```
 
 ### Example 6: Interpolated position
@@ -286,45 +407,48 @@ const d_AB =
 ```ts
 import {
   apply,
-  deg,
-  lat_long2n_E,
-  n_E2lat_long,
-  rad,
-  unit,
-  type Vector3,
+  degrees,
+  fromGeodeticCoordinates,
+  normalize,
+  radians,
+  toGeodeticCoordinates,
 } from "nvector-geodesy";
+import { expect, test } from "vitest";
 
-// Position B is given at time t0 as n_EB_E_t0 and at time t1 as n_EB_E_t1:
-// Enter elements directly:
-// const n_EB_E_t0 = unit([1, 0, -2]);
-// const n_EB_E_t1 = unit([-1, -2, 0]);
+/**
+ * Example 6: Interpolated position
+ *
+ * Given the position of B at time t(0) and t(1). Find an interpolated position
+ * at time t(i).
+ *
+ * @see https://www.ffi.no/en/research/n-vector/#example_6
+ */
+test("Example 6", () => {
+  // PROBLEM:
 
-// or input as lat/long in deg:
-const n_EB_E_t0 = lat_long2n_E(rad(89.9), rad(-150));
-const n_EB_E_t1 = lat_long2n_E(rad(89.9), rad(150));
+  // Given the position of B at time t0 and t1, pt0 and pt1:
+  const t0 = 10;
+  const t1 = 20;
+  const ti = 16;
+  const pt0 = fromGeodeticCoordinates(radians(89.9), radians(-150));
+  const pt1 = fromGeodeticCoordinates(radians(89.9), radians(150));
 
-// The times are given as:
-const t0 = 10;
-const t1 = 20;
-const ti = 16; // time of interpolation
+  // Find an interpolated position at time ti, pti. All positions are given as
+  // n-vectors.
 
-// Find the interpolated position at time ti, n_EB_E_ti
+  // SOLUTION:
 
-// SOLUTION:
+  // Standard interpolation can be used directly with n-vector:
+  const pti = normalize(
+    apply((pt0, pt1) => pt0 + ((ti - t0) * (pt1 - pt0)) / (t1 - t0), pt0, pt1),
+  );
 
-// Using standard interpolation:
-const n_EB_E_ti = unit(
-  apply(
-    (n_EB_E_t0, n_EB_E_t1) =>
-      n_EB_E_t0 + ((ti - t0) * (n_EB_E_t1 - n_EB_E_t0)) / (t1 - t0),
-    n_EB_E_t0,
-    n_EB_E_t1,
-  ),
-);
+  // Use human-friendly outputs:
+  const [lat, lon] = toGeodeticCoordinates(pti);
 
-// When displaying the resulting position for humans, it is more convenient
-// to see lat, long:
-const [lat_EB_ti, long_EB_ti] = n_E2lat_long(n_EB_E_ti);
+  expect(degrees(lat)).toBeCloseTo(89.91282199988446, 12);
+  expect(degrees(lon)).toBeCloseTo(173.4132244463705, 12);
+});
 ```
 
 ### Example 7: Mean position/center
@@ -337,30 +461,41 @@ const [lat_EB_ti, long_EB_ti] = n_E2lat_long(n_EB_E_ti);
 > https://www.ffi.no/en/research/n-vector/#example_7
 
 ```ts
-import { apply, lat_long2n_E, rad, unit, type Vector3 } from "nvector-geodesy";
+import {
+  apply,
+  fromGeodeticCoordinates,
+  normalize,
+  radians,
+} from "nvector-geodesy";
+import { expect, test } from "vitest";
 
-// Three positions A, B and C are given:
-// Enter elements directly:
-// const n_EA_E = unit([1, 0, -2]);
-// const n_EB_E = unit([-1, -2, 0]);
-// const n_EC_E = unit([0, -2, 3]);
+/**
+ * Example 7: Mean position/center
+ *
+ * Given three positions A, B, and C. Find the mean position (center/midpoint).
+ *
+ * @see https://www.ffi.no/en/research/n-vector/#example_7
+ */
+test("Example 7", () => {
+  // PROBLEM:
 
-// or input as lat/long in degrees:
-const n_EA_E = lat_long2n_E(rad(90), rad(0));
-const n_EB_E = lat_long2n_E(rad(60), rad(10));
-const n_EC_E = lat_long2n_E(rad(50), rad(-20));
+  // Three positions A, B, and C are given as n-vectors:
+  const a = fromGeodeticCoordinates(radians(90), radians(0));
+  const b = fromGeodeticCoordinates(radians(60), radians(10));
+  const c = fromGeodeticCoordinates(radians(50), radians(-20));
 
-// SOLUTION:
+  // Find the mean position, M. Note that the calculation is independent of the
+  // heights/depths of the positions.
 
-// Find the horizontal mean position, M:
-const n_EM_E = unit(
-  apply(
-    (n_EA_E, n_EB_E, n_EC_E) => n_EA_E + n_EB_E + n_EC_E,
-    n_EA_E,
-    n_EB_E,
-    n_EC_E,
-  ),
-);
+  // SOLUTION:
+
+  // The mean position is simply given by the mean n-vector:
+  const m = normalize(apply((a, b, c) => a + b + c, a, b, c));
+
+  expect(m[0]).toBeCloseTo(0.3841171702926, 16);
+  expect(m[1]).toBeCloseTo(-0.04660240548568945, 16);
+  expect(m[2]).toBeCloseTo(0.9221074857571395, 16);
+});
 ```
 
 ### Example 8: A and azimuth/distance to B
@@ -374,61 +509,89 @@ const n_EM_E = unit(
 
 ```ts
 import {
-  R_Ee_NP_Z,
+  Z_AXIS_NORTH,
   apply,
   cross,
-  deg,
-  lat_long2n_E,
-  n_E2lat_long,
-  rad,
-  rotate,
+  degrees,
+  fromGeodeticCoordinates,
+  normalize,
+  radians,
+  toGeodeticCoordinates,
+  transform,
   transpose,
-  unit,
-  type Vector3,
 } from "nvector-geodesy";
+import { expect, test } from "vitest";
 
-// Position A is given as n_EA_E:
-// Enter elements directly:
-// const n_EA_E = unit([1, 0, -2]);
+/**
+ * Example 8: A and azimuth/distance to B
+ *
+ * Given position A and an azimuth/bearing and a (great circle) distance. Find
+ * the destination point B.
+ *
+ * @see https://www.ffi.no/en/research/n-vector/#example_8
+ */
+test("Example 8", () => {
+  // PROBLEM:
 
-// or input as lat/long in deg:
-const n_EA_E = lat_long2n_E(rad(80), rad(-90));
+  // Position A is given as n-vector:
+  const a = fromGeodeticCoordinates(radians(80), radians(-90));
 
-// The initial azimuth and great circle distance (s_AB), and Earth radius
-// (r_Earth) are also given:
-const azimuth = rad(200);
-const s_AB = 1000; // m
-const r_Earth = 6371e3; // m, mean Earth radius
+  // We also have an initial direction of travel given as an azimuth (bearing)
+  // relative to north (clockwise), and finally the distance to travel along a
+  // great circle is given:
+  const azimuth = radians(200);
+  const gcd = 1000;
 
-// Find the destination point B, as n_EB_E ("The direct/first geodetic
-// problem" for a sphere)
+  // Use Earth radius r:
+  const r = 6371e3;
 
-// SOLUTION:
+  // Find the destination point B.
+  //
+  // In geodesy, this is known as "The first geodetic problem" or "The direct
+  // geodetic problem" for a sphere, and we see that this is similar to Example
+  // 2, but now the delta is given as an azimuth and a great circle distance.
+  // "The second/inverse geodetic problem" for a sphere is already solved in
+  // Examples 1 and 5.
 
-// Step1: Find unit vectors for north and east (see equations (9) and (10)
-// in Gade (2010):
-const k_east_E = unit(cross(rotate(transpose(R_Ee_NP_Z), [1, 0, 0]), n_EA_E));
-const k_north_E = cross(n_EA_E, k_east_E);
+  // SOLUTION:
 
-// Step2: Find the initial direction vector d_E:
-const d_E = apply(
-  (k_north_E, k_east_E) =>
-    k_north_E * Math.cos(azimuth) + k_east_E * Math.sin(azimuth),
-  k_north_E,
-  k_east_E,
-);
+  // The azimuth (relative to north) is a singular quantity (undefined at the
+  // Poles), but from this angle we can find a (non-singular) quantity that is
+  // more convenient when working with vector algebra: a vector d that points in
+  // the initial direction. We find this from azimuth by first finding the north
+  // and east vectors at the start point, with unit lengths.
+  //
+  // Here we have assumed that our coordinate frame E has its z-axis along the
+  // rotational axis of the Earth, pointing towards the North Pole. Hence, this
+  // axis is given by [1, 0, 0]:
+  const e = normalize(cross(transform(transpose(Z_AXIS_NORTH), [1, 0, 0]), a));
+  const n = cross(a, e);
 
-// Step3: Find n_EB_E:
-const n_EB_E = apply(
-  (n_EA_E, d_E) =>
-    n_EA_E * Math.cos(s_AB / r_Earth) + d_E * Math.sin(s_AB / r_Earth),
-  n_EA_E,
-  d_E,
-);
+  // The two vectors n and e are horizontal, orthogonal, and span the tangent
+  // plane at the initial position. A unit vector d in the direction of the
+  // azimuth is now given by:
+  const d = apply(
+    (n, e) => n * Math.cos(azimuth) + e * Math.sin(azimuth),
+    n,
+    e,
+  );
 
-// When displaying the resulting position for humans, it is more convenient
-// to see lat, long:
-const [lat_EB, long_EB] = n_E2lat_long(n_EB_E);
+  // With the initial direction given as d instead of azimuth, it is now quite
+  // simple to find b. We know that d and a are orthogonal, and they will span
+  // the plane where b will lie. Thus, we can use sin and cos in the same manner
+  // as above, with the angle traveled given by gcd / r:
+  const b = apply(
+    (a, d) => a * Math.cos(gcd / r) + d * Math.sin(gcd / r),
+    a,
+    d,
+  );
+
+  // Use human-friendly outputs:
+  const [lat, lon] = toGeodeticCoordinates(b);
+
+  expect(degrees(lat)).toBeCloseTo(79.99154867339445, 13);
+  expect(degrees(lon)).toBeCloseTo(-90.01769837291397, 13);
+});
 ```
 
 ### Example 9: Intersection of two paths
@@ -445,46 +608,63 @@ const [lat_EB, long_EB] = n_E2lat_long(n_EB_E);
 import {
   apply,
   cross,
-  deg,
+  degrees,
   dot,
-  lat_long2n_E,
-  n_E2lat_long,
-  rad,
-  unit,
-  type Vector3,
+  fromGeodeticCoordinates,
+  normalize,
+  radians,
+  toGeodeticCoordinates,
 } from "nvector-geodesy";
+import { expect, test } from "vitest";
 
-// Two paths A and B are given by two pairs of positions:
-// Enter elements directly:
-// const n_EA1_E = unit([0, 0, 1]);
-// const n_EA2_E = unit([-1, 0, 1]);
-// const n_EB1_E = unit([-2, -2, 4]);
-// const n_EB2_E = unit([-2, 2, 2]);
+/**
+ * Example 9: Intersection of two paths
+ *
+ * Given path A going through A(1) and A(2), and path B going through B(1) and
+ * B(2). Find the intersection of the two paths.
+ *
+ * @see https://www.ffi.no/en/research/n-vector/#example_9
+ */
+test("Example 9", () => {
+  // PROBLEM:
 
-// or input as lat/long in deg:
-const n_EA1_E = lat_long2n_E(rad(50), rad(180));
-const n_EA2_E = lat_long2n_E(rad(90), rad(180));
-const n_EB1_E = lat_long2n_E(rad(60), rad(160));
-const n_EB2_E = lat_long2n_E(rad(80), rad(-140));
+  // Define a path from two given positions (at the surface of a spherical
+  // Earth), as the great circle that goes through the two points (assuming that
+  // the two positions are not antipodal).
 
-// SOLUTION:
+  // Path A is given by a1 and a2:
+  const a1 = fromGeodeticCoordinates(radians(50), radians(180));
+  const a2 = fromGeodeticCoordinates(radians(90), radians(180));
 
-// Find the intersection between the two paths, n_EC_E:
-const n_EC_E_tmp = unit(
-  cross(cross(n_EA1_E, n_EA2_E), cross(n_EB1_E, n_EB2_E)),
-);
+  // While path B is given by b1 and b2:
+  const b1 = fromGeodeticCoordinates(radians(60), radians(160));
+  const b2 = fromGeodeticCoordinates(radians(80), radians(-140));
 
-// n_EC_E_tmp is one of two solutions, the other is -n_EC_E_tmp. Select the
-// one that is closest to n_EA1_E, by selecting sign from the dot product
-// between n_EC_E_tmp and n_EA1_E:
-const n_EC_E = apply(
-  (n) => Math.sign(dot(n_EC_E_tmp, n_EA1_E)) * n,
-  n_EC_E_tmp,
-);
+  // Find the position C where the two paths intersect.
 
-// When displaying the resulting position for humans, it is more convenient
-// to see lat, long:
-const [lat_EC, long_EC] = n_E2lat_long(n_EC_E);
+  // SOLUTION:
+
+  // A convenient way to represent a great circle is by its normal vector (i.e.
+  // the normal vector to the plane containing the great circle). This normal
+  // vector is simply found by taking the cross product of the two n-vectors
+  // defining the great circle (path). Having the normal vectors to both paths,
+  // the intersection is now simply found by taking the cross product of the two
+  // normal vectors:
+  const cTmp = normalize(cross(cross(a1, a2), cross(b1, b2)));
+
+  // Note that there will be two places where the great circles intersect, and
+  // thus two solutions are found. Selecting the solution that is closest to
+  // e.g. a1 can be achieved by selecting the solution that has a positive dot
+  // product with a1 (or the mean position from Example 7 could be used instead
+  // of a1):
+  const c = apply((n) => Math.sign(dot(cTmp, a1)) * n, cTmp);
+
+  // Use human-friendly outputs:
+  const [lat, lon] = toGeodeticCoordinates(c);
+
+  expect(degrees(lat)).toBeCloseTo(74.16344802135536, 16);
+  expect(degrees(lon)).toBeCloseTo(180, 16);
+});
 ```
 
 ### Example 10: Cross track distance (cross track error)
@@ -501,37 +681,58 @@ const [lat_EC, long_EC] = n_E2lat_long(n_EC_E);
 import {
   cross,
   dot,
-  lat_long2n_E,
-  rad,
-  unit,
-  type Vector3,
+  fromGeodeticCoordinates,
+  normalize,
+  radians,
 } from "nvector-geodesy";
+import { expect, test } from "vitest";
 
-// Position A1 and A2 and B are given as n_EA1_E, n_EA2_E, and n_EB_E:
-// Enter elements directly:
-// const n_EA1_E = unit([1, 0, -2]);
-// const n_EA2_E = unit([-1, -2, 0]);
-// const n_EB_E = unit([0, -2, 3]);
+/**
+ * Example 10: Cross track distance (cross track error)
+ *
+ * Given path A going through A(1) and A(2), and a point B. Find the cross track
+ * distance/cross track error between B and the path.
+ *
+ * @see https://www.ffi.no/en/research/n-vector/#example_10
+ */
+test("Example 10", () => {
+  // PROBLEM:
 
-// or input as lat/long in deg:
-const n_EA1_E = lat_long2n_E(rad(0), rad(0));
-const n_EA2_E = lat_long2n_E(rad(10), rad(0));
-const n_EB_E = lat_long2n_E(rad(1), rad(0.1));
+  // Path A is given by the two n-vectors a1 and a2 (as in the previous
+  // example):
+  const a1 = fromGeodeticCoordinates(radians(0), radians(0));
+  const a2 = fromGeodeticCoordinates(radians(10), radians(0));
 
-const r_Earth = 6371e3; // m, mean Earth radius
+  // And a position B is given by b:
+  const b = fromGeodeticCoordinates(radians(1), radians(0.1));
 
-// Find the cross track distance from path A to position B.
+  // Find the cross track distance between the path A (i.e. the great circle
+  // through a1 and a2) and the position B (i.e. the shortest distance at the
+  // surface, between the great circle and B). Also, find the Euclidean distance
+  // between B and the plane defined by the great circle.
 
-// SOLUTION:
+  // Use Earth radius r:
+  const r = 6371e3;
 
-// Find the unit normal to the great circle between n_EA1_E and n_EA2_E:
-const c_E = unit(cross(n_EA1_E, n_EA2_E));
+  // SOLUTION:
 
-// Find the great circle cross track distance: (acos(x) - pi/2 = -asin(x))
-const s_xt = -Math.asin(dot(c_E, n_EB_E)) * r_Earth;
+  // First, find the normal to the great circle, with direction given by the
+  // right hand rule and the direction of travel:
+  const c = normalize(cross(a1, a2));
 
-// Find the Euclidean cross track distance:
-const d_xt = -dot(c_E, n_EB_E) * r_Earth;
+  // Find the great circle cross track distance:
+  const gcd = -Math.asin(dot(c, b)) * r;
+
+  // Finding the Euclidean distance is even simpler, since it is the projection
+  // of b onto c, thus simply the dot product:
+  const ed = -dot(c, b) * r;
+
+  // For both gcd and ed, positive answers means that B is to the right of the
+  // track.
+
+  expect(gcd).toBeCloseTo(11117.79911014538, 9);
+  expect(ed).toBeCloseTo(11117.79346740667, 9);
+});
 ```
 
 ## Methodology

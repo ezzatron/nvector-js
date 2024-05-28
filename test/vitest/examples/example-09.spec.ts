@@ -1,15 +1,14 @@
-import { expect, test } from "vitest";
 import {
   apply,
   cross,
-  deg,
+  degrees,
   dot,
-  lat_long2n_E,
-  n_E2lat_long,
-  rad,
-  unit,
-  type Vector3,
-} from "../../../src/index.js";
+  fromGeodeticCoordinates,
+  normalize,
+  radians,
+  toGeodeticCoordinates,
+} from "nvector-geodesy";
+import { expect, test } from "vitest";
 
 /**
  * Example 9: Intersection of two paths
@@ -19,48 +18,43 @@ import {
  *
  * @see https://www.ffi.no/en/research/n-vector/#example_9
  */
-test.each`
-  label                             | n_EA1_E                            | n_EA2_E                            | n_EB1_E                            | n_EB2_E                             | lat_EC_expected      | long_EC_expected
-  ${"Enter elements directly:"}     | ${unit([0, 0, 1])}                 | ${unit([-1, 0, 1])}                | ${unit([-2, -2, 4])}               | ${unit([-2, 2, 2])}                 | ${56.30993247402022} | ${180}
-  ${"or input as lat/long in deg:"} | ${lat_long2n_E(rad(50), rad(180))} | ${lat_long2n_E(rad(90), rad(180))} | ${lat_long2n_E(rad(60), rad(160))} | ${lat_long2n_E(rad(80), rad(-140))} | ${74.16344802135536} | ${180}
-`(
-  "Example 9 ($label)",
-  // Two paths A and B are given by two pairs of positions:
-  ({
-    n_EA1_E,
-    n_EA2_E,
-    n_EB1_E,
-    n_EB2_E,
-    lat_EC_expected,
-    long_EC_expected,
-  }: {
-    n_EA1_E: Vector3;
-    n_EA2_E: Vector3;
-    n_EB1_E: Vector3;
-    n_EB2_E: Vector3;
-    lat_EC_expected: number;
-    long_EC_expected: number;
-  }) => {
-    // SOLUTION:
+test("Example 9", () => {
+  // PROBLEM:
 
-    // Find the intersection between the two paths, n_EC_E:
-    const n_EC_E_tmp = unit(
-      cross(cross(n_EA1_E, n_EA2_E), cross(n_EB1_E, n_EB2_E)),
-    );
+  // Define a path from two given positions (at the surface of a spherical
+  // Earth), as the great circle that goes through the two points (assuming that
+  // the two positions are not antipodal).
 
-    // n_EC_E_tmp is one of two solutions, the other is -n_EC_E_tmp. Select the
-    // one that is closest to n_EA1_E, by selecting sign from the dot product
-    // between n_EC_E_tmp and n_EA1_E:
-    const n_EC_E = apply(
-      (n) => Math.sign(dot(n_EC_E_tmp, n_EA1_E)) * n,
-      n_EC_E_tmp,
-    );
+  // Path A is given by a1 and a2:
+  const a1 = fromGeodeticCoordinates(radians(50), radians(180));
+  const a2 = fromGeodeticCoordinates(radians(90), radians(180));
 
-    // When displaying the resulting position for humans, it is more convenient
-    // to see lat, long:
-    const [lat_EC, long_EC] = n_E2lat_long(n_EC_E);
+  // While path B is given by b1 and b2:
+  const b1 = fromGeodeticCoordinates(radians(60), radians(160));
+  const b2 = fromGeodeticCoordinates(radians(80), radians(-140));
 
-    expect(deg(lat_EC)).toBeCloseTo(lat_EC_expected, 16);
-    expect(deg(long_EC)).toBeCloseTo(long_EC_expected, 16);
-  },
-);
+  // Find the position C where the two paths intersect.
+
+  // SOLUTION:
+
+  // A convenient way to represent a great circle is by its normal vector (i.e.
+  // the normal vector to the plane containing the great circle). This normal
+  // vector is simply found by taking the cross product of the two n-vectors
+  // defining the great circle (path). Having the normal vectors to both paths,
+  // the intersection is now simply found by taking the cross product of the two
+  // normal vectors:
+  const cTmp = normalize(cross(cross(a1, a2), cross(b1, b2)));
+
+  // Note that there will be two places where the great circles intersect, and
+  // thus two solutions are found. Selecting the solution that is closest to
+  // e.g. a1 can be achieved by selecting the solution that has a positive dot
+  // product with a1 (or the mean position from Example 7 could be used instead
+  // of a1):
+  const c = apply((n) => Math.sign(dot(cTmp, a1)) * n, cTmp);
+
+  // Use human-friendly outputs:
+  const [lat, lon] = toGeodeticCoordinates(c);
+
+  expect(degrees(lat)).toBeCloseTo(74.16344802135536, 16);
+  expect(degrees(lon)).toBeCloseTo(180, 16);
+});

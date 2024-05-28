@@ -1,17 +1,17 @@
-import { expect, test } from "vitest";
 import {
   WGS_72,
-  deg,
+  degrees,
+  destination,
+  eulerZYXToRotationMatrix,
   multiply,
-  n_E2R_EN,
-  n_E2lat_long,
-  n_EA_E_and_p_AB_E2n_EB_E,
-  rad,
-  rotate,
-  unit,
-  zyx2R,
-  type Vector3,
-} from "../../../src/index.js";
+  normalize,
+  radians,
+  toGeodeticCoordinates,
+  toRotationMatrix,
+  transform,
+  type Vector,
+} from "nvector-geodesy";
+import { expect, test } from "vitest";
 
 /**
  * Example 2: B and delta to C
@@ -22,48 +22,60 @@ import {
  * @see https://www.ffi.no/en/research/n-vector/#example_2
  */
 test("Example 2", () => {
-  // delta vector from B to C, decomposed in B is given:
-  const p_BC_B: Vector3 = [3000, 2000, 100];
+  // PROBLEM:
 
-  // Position and orientation of B is given:
-  // unit to get unit length of vector
-  const n_EB_E = unit([1, 2, 3]);
-  const z_EB = -400;
-  // the three angles are yaw, pitch, and roll
-  const R_NB = zyx2R(rad(10), rad(20), rad(30));
+  // A radar or sonar attached to a vehicle B (Body coordinate frame) measures
+  // the distance and direction to an object C. We assume that the distance and
+  // two angles measured by the sensor (typically bearing and elevation relative
+  // to B) are already converted (by converting from spherical to Cartesian
+  // coordinates) to the vector bcB (i.e. the vector from B to C, decomposed in
+  // B):
+  const bcB: Vector = [3000, 2000, 100];
 
-  // A custom reference ellipsoid is given (replacing WGS-84):
-  // (WGS-72)
-  const a = WGS_72.a;
-  const f = WGS_72.f;
+  // The position of B is given as an n-vector and a depth:
+  const b = normalize([1, 2, 3]);
+  const bDepth = -400;
 
-  // Find the position of C.
+  // The orientation (attitude) of B is given as rNB, specified as yaw, pitch,
+  // roll:
+  const rNB = eulerZYXToRotationMatrix(radians(10), radians(20), radians(30));
+
+  // Use the WGS-72 ellipsoid:
+  const e = WGS_72;
+
+  // Find the exact position of object C as an n-vector and a depth.
 
   // SOLUTION:
 
-  // Step1: Find R_EN:
-  const R_EN = n_E2R_EN(n_EB_E);
+  // Step 1
+  //
+  // The delta vector is given in B. It should be decomposed in E before using
+  // it, and thus we need rEB. This matrix is found from the matrices rEN and
+  // rNB, and we need to find rEN, as in Example 1:
+  const rEN = toRotationMatrix(b);
 
-  // Step2: Find R_EB, from R_EN and R_NB:
-  // Note: closest frames cancel
-  const R_EB = multiply(R_EN, R_NB);
+  // Step 2
+  //
+  // Now, we can find rEB y using that the closest frames cancel when
+  // multiplying two rotation matrices (i.e. N is cancelled here):
+  const rEB = multiply(rEN, rNB);
 
-  // Step3: Decompose the delta vector in E:
-  // no transpose of R_EB, since the vector is in B
-  const p_BC_E = rotate(R_EB, p_BC_B);
+  // Step 3
+  //
+  // The delta vector is now decomposed in E:
+  const bcE = transform(rEB, bcB);
 
-  // Step4: Find the position of C, using the functions that goes from one
-  // position and a delta, to a new position:
-  const [n_EC_E, z_EC] = n_EA_E_and_p_AB_E2n_EB_E(n_EB_E, p_BC_E, z_EB, a, f);
+  // Step 4
+  //
+  // It is now easy to find the position of C using destination (with custom
+  // ellipsoid overriding the default WGS-84):
+  const [c, cDepth] = destination(b, bcE, bDepth, e);
 
-  // When displaying the resulting position for humans, it is more convenient
-  // to see lat, long:
-  const [lat_EC, long_EC] = n_E2lat_long(n_EC_E);
+  // Use human-friendly outputs:
+  const [lat, lon] = toGeodeticCoordinates(c);
+  const height = -cDepth;
 
-  // Here we also assume that the user wants the output to be height (= -depth):
-  const height = -z_EC;
-
-  expect(deg(lat_EC)).toBeCloseTo(53.32637826433107, 13);
-  expect(deg(long_EC)).toBeCloseTo(63.46812343514746, 13);
-  expect(height).toBeCloseTo(406.0071960700098, 15); // meters
+  expect(degrees(lat)).toBeCloseTo(53.32637826433107, 13);
+  expect(degrees(lon)).toBeCloseTo(63.46812343514746, 13);
+  expect(height).toBeCloseTo(406.0071960700098, 15);
 });

@@ -1,14 +1,12 @@
-import { expect, test } from "vitest";
 import {
   apply,
   cross,
   dot,
-  lat_long2n_E,
+  fromGeodeticCoordinates,
   norm,
-  rad,
-  unit,
-  type Vector3,
-} from "../../../src/index.js";
+  radians,
+} from "nvector-geodesy";
+import { expect, test } from "vitest";
 
 /**
  * Example 5: Surface distance
@@ -18,40 +16,30 @@ import {
  *
  * @see https://www.ffi.no/en/research/n-vector/#example_5
  */
-test.each`
-  label                             | n_EA_E                           | n_EB_E                              | s_AB_expected        | d_AB_expected
-  ${"Enter elements directly:"}     | ${unit([1, 0, -2])}              | ${unit([-1, -2, 0])}                | ${11290.39471136548} | ${9869.91075947498}
-  ${"or input as lat/long in deg:"} | ${lat_long2n_E(rad(88), rad(0))} | ${lat_long2n_E(rad(89), rad(-170))} | ${332.4564441053448} | ${332.4187248568097}
-`(
-  "Example 5 ($label)",
-  // Position A and B are given as n_EA_E and n_EB_E:
-  ({
-    n_EA_E,
-    n_EB_E,
-    s_AB_expected,
-    d_AB_expected,
-  }: {
-    n_EA_E: Vector3;
-    n_EB_E: Vector3;
-    s_AB_expected: number;
-    d_AB_expected: number;
-  }) => {
-    // m, mean Earth radius
-    const r_Earth = 6371e3;
+test("Example 5", () => {
+  // PROBLEM:
 
-    // SOLUTION:
+  // Given two positions A and B as n-vectors:
+  const a = fromGeodeticCoordinates(radians(88), radians(0));
+  const b = fromGeodeticCoordinates(radians(89), radians(-170));
 
-    // The great circle distance is given by equation (16) in Gade (2010):
-    // Well conditioned for all angles:
-    const s_AB =
-      Math.atan2(norm(cross(n_EA_E, n_EB_E)), dot(n_EA_E, n_EB_E)) * r_Earth;
+  // Find the surface distance (i.e. great circle distance). The heights of A
+  // and B are not relevant (i.e. if they do not have zero height, we seek the
+  // distance between the points that are at the surface of the Earth, directly
+  // above/below A and B). The Euclidean distance (chord length) should also be
+  // found.
 
-    // The Euclidean distance is given by:
-    const d_AB =
-      norm(apply((n_EB_E, n_EA_E) => n_EB_E - n_EA_E, n_EB_E, n_EA_E)) *
-      r_Earth;
+  // Use Earth radius r:
+  const r = 6371e3;
 
-    expect(s_AB / 1000).toBeCloseTo(s_AB_expected, 10); // kilometers
-    expect(d_AB / 1000).toBeCloseTo(d_AB_expected, 10); // kilometers
-  },
-);
+  // SOLUTION:
+
+  // Find the great circle distance:
+  const gcd = Math.atan2(norm(cross(a, b)), dot(a, b)) * r;
+
+  // Find the Euclidean distance:
+  const ed = norm(apply((b, a) => b - a, b, a)) * r;
+
+  expect(gcd).toBeCloseTo(332456.4441053448, 9);
+  expect(ed).toBeCloseTo(332418.7248568097, 9);
+});

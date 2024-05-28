@@ -1,11 +1,11 @@
-import { expect, test } from "vitest";
 import {
   apply,
-  deg,
-  n_E2lat_long,
-  p_EB_E2n_EB_E,
-  type Vector3,
-} from "../../../src/index.js";
+  degrees,
+  fromECEF,
+  toGeodeticCoordinates,
+  type Vector,
+} from "nvector-geodesy";
+import { expect, test } from "vitest";
 
 /**
  * Example 3: ECEF-vector to geodetic latitude
@@ -16,21 +16,29 @@ import {
  * @see https://www.ffi.no/en/research/n-vector/#example_3
  */
 test("Example 3", () => {
-  // Position B is given as p_EB_E ("ECEF-vector")
-  const p_EB_E: Vector3 = apply((n) => n * 6371e3, [0.71, -0.72, 0.1]); // m
+  // PROBLEM:
 
-  // Find position B as geodetic latitude, longitude and height
+  // Position B is given as an “ECEF-vector” pb (i.e. a vector from E, the
+  // center of the Earth, to B, decomposed in E):
+  const pb: Vector = apply((n) => n * 6371e3, [0.71, -0.72, 0.1]);
+
+  // Find the geodetic latitude, longitude and height, assuming WGS-84
+  // ellipsoid.
 
   // SOLUTION:
 
-  // Find n-vector from the p-vector:
-  const [n_EB_E, z_EB] = p_EB_E2n_EB_E(p_EB_E);
+  // Step 1
+  //
+  // We have a function that converts ECEF-vectors to n-vectors:
+  const [b, bDepth] = fromECEF(pb);
 
-  // Convert to lat, long and height:
-  const [lat_EB, long_EB] = n_E2lat_long(n_EB_E);
-  const h_EB = -z_EB;
+  // Step 2
+  //
+  // Find latitude, longitude and height:
+  const [lat, lon] = toGeodeticCoordinates(b);
+  const height = -bDepth;
 
-  expect(deg(lat_EB)).toBeCloseTo(5.685075734513181, 14);
-  expect(deg(long_EB)).toBeCloseTo(-45.40066325579215, 14);
-  expect(h_EB).toBeCloseTo(95772.10761821801, 15); // meters
+  expect(degrees(lat)).toBeCloseTo(5.685075734513181, 14);
+  expect(degrees(lon)).toBeCloseTo(-45.40066325579215, 14);
+  expect(height).toBeCloseTo(95772.10761821801, 15);
 });

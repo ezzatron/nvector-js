@@ -1,12 +1,12 @@
-import { expect, test } from "vitest";
 import {
-  lat_long2n_E,
-  n_E2R_EN,
-  n_EA_E_and_n_EB_E2p_AB_E,
-  rad,
-  rotate,
+  delta,
+  fromGeodeticCoordinates,
+  radians,
+  toRotationMatrix,
+  transform,
   transpose,
-} from "../../../src/index.js";
+} from "nvector-geodesy";
+import { expect, test } from "vitest";
 
 /**
  * Example 1: A and B to delta
@@ -15,57 +15,73 @@ import {
  * north, east and down, and find the direction (azimuth/bearing) to B, relative
  * to north. Use WGS-84 ellipsoid.
  *
- * - Assume WGS-84 ellipsoid. The given depths are from the ellipsoid surface.
- * - Use position A to define north, east, and down directions. (Due to the
- *   curvature of Earth and different directions to the North Pole, the north,
- *   east, and down directions will change (relative to Earth) for different
- *   places. Position A must be outside the poles for the north and east
- *   directions to be defined.
- *
  * @see https://www.ffi.no/en/research/n-vector/#example_1
  */
 test("Example 1", () => {
-  // Positions A and B are given in (decimal) degrees and depths:
+  // PROBLEM:
 
-  // Position A:
-  const lat_EA_deg = 1;
-  const long_EA_deg = 2;
-  const z_EA = 3;
-
-  // Position B:
-  const lat_EB_deg = 4;
-  const long_EB_deg = 5;
-  const z_EB = 6;
+  // Given two positions, A and B as latitudes, longitudes and depths (relative
+  // to Earth, E):
+  const aLat = 1,
+    aLon = 2,
+    aDepth = 3;
+  const bLat = 4,
+    bLon = 5,
+    bDepth = 6;
 
   // Find the exact vector between the two positions, given in meters north,
-  // east, and down, i.e. find p_AB_N.
+  // east, and down, and find the direction (azimuth) to B, relative to north.
+  //
+  // Details:
+  //
+  // - Assume WGS-84 ellipsoid. The given depths are from the ellipsoid surface.
+  // - Use position A to define north, east, and down directions. (Due to the
+  //   curvature of Earth and different directions to the North Pole, the north,
+  //   east, and down directions will change (relative to Earth) for different
+  //   places. Position A must be outside the poles for the north and east
+  //   directions to be defined.
 
   // SOLUTION:
 
-  // Step1: Convert to n-vectors (rad() converts to radians):
-  const n_EA_E = lat_long2n_E(rad(lat_EA_deg), rad(long_EA_deg));
-  const n_EB_E = lat_long2n_E(rad(lat_EB_deg), rad(long_EB_deg));
+  // Step 1
+  //
+  // First, the given latitudes and longitudes are converted to n-vectors:
+  const a = fromGeodeticCoordinates(radians(aLat), radians(aLon));
+  const b = fromGeodeticCoordinates(radians(bLat), radians(bLon));
 
-  // Step2: Find p_AB_E (delta decomposed in E). WGS-84 ellipsoid is default:
-  const p_AB_E = n_EA_E_and_n_EB_E2p_AB_E(n_EA_E, n_EB_E, z_EA, z_EB);
+  // Step 2
+  //
+  // When the positions are given as n-vectors (and depths), it is easy to find
+  // the delta vector decomposed in E. No ellipsoid is specified when calling
+  // the function, thus WGS-84 (default) is used:
+  const abE = delta(a, b, aDepth, bDepth);
 
-  // Step3: Find R_EN for position A:
-  const R_EN = n_E2R_EN(n_EA_E);
+  // Step 3
+  //
+  // We now have the delta vector from A to B, but the three coordinates of the
+  // vector are along the Earth coordinate frame E, while we need the
+  // coordinates to be north, east and down. To get this, we define a
+  // North-East-Down coordinate frame called N, and then we need the rotation
+  // matrix (direction cosine matrix) rEN to go between E and N. We have a
+  // simple function that calculates rEN from an n-vector, and we use this
+  // function (using the n-vector at position A):
+  const rEN = toRotationMatrix(a);
 
-  // Step4: Find p_AB_N
-  const p_AB_N = rotate(transpose(R_EN), p_AB_E);
-  // (Note the transpose of R_EN: The "closest-rule" says that when decomposing,
-  // the frame in the subscript of the rotation matrix that is closest to the
-  // vector, should equal the frame where the vector is decomposed. Thus the
-  // calculation R_NE*p_AB_E is correct, since the vector is decomposed in E,
-  // and E is closest to the vector. In the above example we only had R_EN, and
-  // thus we must transpose it: R_EN' = R_NE)
+  // Step 4
+  //
+  // Now the delta vector is easily decomposed in N. Since the vector is
+  // decomposed in E, we must use rNE (rNE is the transpose of rEN):
+  const abN = transform(transpose(rEN), abE);
 
-  // Step5: Also find the direction (azimuth) to B, relative to north:
-  const azimuth = Math.atan2(p_AB_N[1], p_AB_N[0]);
+  // Step 5
+  //
+  // The three components of abN are the north, east and down displacements from
+  // A to B in meters. The azimuth is simply found from element 1 and 2 of the
+  // vector (the north and east components):
+  const azimuth = Math.atan2(abN[1], abN[0]);
 
-  expect(p_AB_N[0]).toBeCloseTo(331730.2347808944, 8); // meters
-  expect(p_AB_N[1]).toBeCloseTo(332997.8749892695, 8); // meters
-  expect(p_AB_N[2]).toBeCloseTo(17404.27136193635, 8); // meters
-  expect(azimuth).toBeCloseTo(rad(45.10926323826139), 15);
+  expect(abN[0]).toBeCloseTo(331730.2347808944, 8);
+  expect(abN[1]).toBeCloseTo(332997.8749892695, 8);
+  expect(abN[2]).toBeCloseTo(17404.27136193635, 8);
+  expect(azimuth).toBeCloseTo(radians(45.10926323826139), 15);
 });
