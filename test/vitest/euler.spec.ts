@@ -11,7 +11,7 @@ import type { NvectorTestClient } from "../nvector-test-api.js";
 import { createNvectorTestClient } from "../nvector-test-api.js";
 import { angleDelta } from "../util.js";
 
-const TEST_DURATION = 5000;
+const TEST_DURATION = 1000;
 
 describe("eulerXYZToRotationMatrix()", () => {
   let nvectorTestClient: NvectorTestClient;

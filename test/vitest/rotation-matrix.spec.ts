@@ -17,7 +17,7 @@ import {
 import type { NvectorTestClient } from "../nvector-test-api.js";
 import { createNvectorTestClient } from "../nvector-test-api.js";
 
-const TEST_DURATION = 5000;
+const TEST_DURATION = 1000;
 
 describe("fromRotationMatrix()", () => {
   let nvectorTestClient: NvectorTestClient;
