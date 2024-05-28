@@ -10,6 +10,45 @@ Versioning].
 
 ## Unreleased
 
+## [v0.5.0] - 2024-05-28
+
+[v0.5.0]: https://github.com/ezzatron/nvector-js/releases/tag/v0.5.0
+
+### Added
+
+- Added a `sphere` function for creating spherical ellipsoids.
+
+### Changed
+
+- **\[BREAKING\]** All exports have been renamed to clarify their purpose:
+  - `deg` -> `degrees`
+  - `lat_long2n_E` -> `fromGeodeticCoordinates`
+  - `Matrix3x3` -> `Matrix`
+  - `n_E_and_wa2R_EL` -> `toRotationMatrixUsingWanderAzimuth`
+  - `n_E2lat_long` -> `toGeodeticCoordinates`
+  - `n_E2R_EN` -> `toRotationMatrix`
+  - `n_EA_E_and_n_EB_E2p_AB_E` -> `delta`
+  - `n_EA_E_and_p_AB_E2n_EB_E` -> `destination`
+  - `n_EB_E2p_EB_E` -> `toECEF`
+  - `p_EB_E2n_EB_E` -> `fromECEF`
+  - `R_Ee_NP_X` -> `X_AXIS_NORTH`
+  - `R_Ee_NP_Z` -> `Z_AXIS_NORTH`
+  - `R_EL2n_E` -> `fromRotationMatrix`
+  - `R_EN2n_E` -> `fromRotationMatrix`
+  - `R2xyz` -> `rotationMatrixToEulerXYZ`
+  - `R2zyx` -> `rotationMatrixToEulerZYX`
+  - `rad` -> `radians`
+  - `rotate` -> `transform`
+  - `unit` -> `normalize`
+  - `Vector3` -> `Vector`
+  - `xyz2R` -> `eulerXYZToRotationMatrix`
+  - `zyx2R` -> `eulerZYXToRotationMatrix`
+
+### Removed
+
+- **\[BREAKING\]** The `WGS_84_SPHERE` constant has been removed. Use the
+  `sphere` function with your chose radius instead.
+
 ## [v0.4.1] - 2024-05-08
 
 [v0.4.1]: https://github.com/ezzatron/nvector-js/releases/tag/v0.4.1
