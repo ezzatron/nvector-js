@@ -20,9 +20,9 @@ test("Example 6", () => {
   // PROBLEM:
 
   // Given the position of B at time t0 and t1, pt0 and pt1:
-  const t0 = 10;
-  const t1 = 20;
-  const ti = 16;
+  const t0 = 10,
+    t1 = 20,
+    ti = 16;
   const pt0 = fromGeodeticCoordinates(radians(89.9), radians(-150));
   const pt1 = fromGeodeticCoordinates(radians(89.9), radians(150));
 
@@ -31,7 +31,7 @@ test("Example 6", () => {
 
   // SOLUTION:
 
-  // Standard interpolation can be used directly with n-vector:
+  // Standard interpolation can be used directly with n-vectors:
   const pti = normalize(
     apply((pt0, pt1) => pt0 + ((ti - t0) * (pt1 - pt0)) / (t1 - t0), pt0, pt1),
   );
