@@ -10,6 +10,21 @@ Versioning].
 
 ## Unreleased
 
+## [v0.6.0] - 2024-05-31
+
+[v0.6.0]: https://github.com/ezzatron/nvector-js/releases/tag/v0.6.0
+
+### Changed
+
+- **\[BREAKING\]** Geodetic coordinates are now accepted and returned in
+  longitude, latitude order instead of latitude, longitude order. This change
+  brings the library in line with GeoJSON, Turf.js, and Mapbox. It's also more
+  intuitive for most users, since the longitude can be thought of as the
+  x-coordinate and the latitude as the y-coordinate. The following functions are
+  affected:
+  - `fromGeodeticCoordinates`
+  - `toGeodeticCoordinates`
+
 ## [v0.5.0] - 2024-05-28
 
 [v0.5.0]: https://github.com/ezzatron/nvector-js/releases/tag/v0.5.0
