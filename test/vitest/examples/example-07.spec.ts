@@ -17,9 +17,9 @@ test("Example 7", () => {
   // PROBLEM:
 
   // Three positions A, B, and C are given as n-vectors:
-  const a = fromGeodeticCoordinates(radians(90), radians(0));
-  const b = fromGeodeticCoordinates(radians(60), radians(10));
-  const c = fromGeodeticCoordinates(radians(50), radians(-20));
+  const a = fromGeodeticCoordinates(radians(0), radians(90));
+  const b = fromGeodeticCoordinates(radians(10), radians(60));
+  const c = fromGeodeticCoordinates(radians(-20), radians(50));
 
   // Find the mean position, M. Note that the calculation is independent of the
   // heights/depths of the positions.

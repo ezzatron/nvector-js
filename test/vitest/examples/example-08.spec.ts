@@ -24,7 +24,7 @@ test("Example 8", () => {
   // PROBLEM:
 
   // Position A is given as n-vector:
-  const a = fromGeodeticCoordinates(radians(80), radians(-90));
+  const a = fromGeodeticCoordinates(radians(-90), radians(80));
 
   // We also have an initial direction of travel given as an azimuth (bearing)
   // relative to north (clockwise), and finally the distance to travel along a
@@ -77,7 +77,7 @@ test("Example 8", () => {
   );
 
   // Use human-friendly outputs:
-  const [lat, lon] = toGeodeticCoordinates(b);
+  const [lon, lat] = toGeodeticCoordinates(b);
 
   expect(degrees(lat)).toBeCloseTo(79.99154867339445, 13);
   expect(degrees(lon)).toBeCloseTo(-90.01769837291397, 13);

@@ -22,7 +22,7 @@ test("Example 4", () => {
   // SOLUTION:
 
   // Step 1: First, the given latitude and longitude are converted to n-vector:
-  const b = fromGeodeticCoordinates(radians(bLat), radians(bLon));
+  const b = fromGeodeticCoordinates(radians(bLon), radians(bLat));
 
   // Step 2: Convert to an ECEF-vector:
   const pb = toECEF(b, -bHeight);

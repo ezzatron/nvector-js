@@ -94,7 +94,7 @@ export function toRotationMatrixUsingWanderAzimuth(
   wanderAzimuth: number,
   frame: Matrix = Z_AXIS_NORTH,
 ): Matrix {
-  const [latitude, longitude] = toGeodeticCoordinates(vector, frame);
+  const [longitude, latitude] = toGeodeticCoordinates(vector, frame);
 
   // Longitude, -latitude, and wander azimuth are the x-y-z Euler angles (about
   // new axes) for rotation. See also the second paragraph of Section 5.2 in

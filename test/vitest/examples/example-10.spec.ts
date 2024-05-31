@@ -21,10 +21,10 @@ test("Example 10", () => {
   // Path A is given by the two n-vectors a1 and a2 (as in the previous
   // example):
   const a1 = fromGeodeticCoordinates(radians(0), radians(0));
-  const a2 = fromGeodeticCoordinates(radians(10), radians(0));
+  const a2 = fromGeodeticCoordinates(radians(0), radians(10));
 
   // And a position B is given by b:
-  const b = fromGeodeticCoordinates(radians(1), radians(0.1));
+  const b = fromGeodeticCoordinates(radians(0.1), radians(1));
 
   // Find the cross track distance between the path A (i.e. the great circle
   // through a1 and a2) and the position B (i.e. the shortest distance at the

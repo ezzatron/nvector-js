@@ -70,16 +70,16 @@ export function arbitraryEllipsoidECEFVector({
   return arbitrary3dVector({ min: a - b, max: a + b, noNaN: true });
 }
 
-export function arbitraryLatLon(): fc.Arbitrary<[number, number]> {
+export function arbitraryGeodeticCoordinates(): fc.Arbitrary<[number, number]> {
   return fc.tuple(
-    fc.double({
-      min: -90 * RADIAN,
-      max: 90 * RADIAN,
-      noNaN: true,
-    }),
     fc.double({
       min: -180 * RADIAN,
       max: 180 * RADIAN,
+      noNaN: true,
+    }),
+    fc.double({
+      min: -90 * RADIAN,
+      max: 90 * RADIAN,
       noNaN: true,
     }),
   );

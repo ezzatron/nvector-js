@@ -47,11 +47,11 @@ export async function createNvectorTestClient(): Promise<NvectorTestClient> {
   });
 
   return {
-    async fromGeodeticCoordinates(latitude, longitude, frame) {
+    async fromGeodeticCoordinates(longitude, latitude, frame) {
       return unwrapVector3(
         await call<WrappedVector3>("lat_lon2n_E", {
-          latitude,
           longitude,
+          latitude,
           R_Ee: frame,
         }),
       );
@@ -66,15 +66,15 @@ export async function createNvectorTestClient(): Promise<NvectorTestClient> {
     },
 
     async toGeodeticCoordinates(vector, frame) {
-      const { latitude, longitude } = await call<{
-        latitude: number;
+      const { longitude, latitude } = await call<{
         longitude: number;
+        latitude: number;
       }>("n_E2lat_lon", {
         n_E: wrapVector3(vector),
         R_Ee: frame,
       });
 
-      return [latitude, longitude];
+      return [longitude, latitude];
     },
 
     async toRotationMatrix(vector, frame) {

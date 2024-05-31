@@ -20,8 +20,8 @@ test("Example 5", () => {
   // PROBLEM:
 
   // Given two positions A and B as n-vectors:
-  const a = fromGeodeticCoordinates(radians(88), radians(0));
-  const b = fromGeodeticCoordinates(radians(89), radians(-170));
+  const a = fromGeodeticCoordinates(radians(0), radians(88));
+  const b = fromGeodeticCoordinates(radians(-170), radians(89));
 
   // Find the surface distance (i.e. great circle distance). The heights of A
   // and B are not relevant (i.e. if they do not have zero height, we seek the

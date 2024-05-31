@@ -35,7 +35,7 @@ test("Example 3", () => {
   // Step 2
   //
   // Find latitude, longitude and height:
-  const [lat, lon] = toGeodeticCoordinates(b);
+  const [lon, lat] = toGeodeticCoordinates(b);
   const height = -bDepth;
 
   expect(degrees(lat)).toBeCloseTo(5.685075734513181, 14);

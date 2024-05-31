@@ -158,7 +158,7 @@ describe("toRotationMatrixUsingWanderAzimuth()", () => {
           // Avoid situations where components of the xyz2R matrix are close
           // to zero. The Python implementation rounds to zero in these cases,
           // which produces very different results.
-          const [latitude, longitude] = toGeodeticCoordinates(vector, frame);
+          const [longitude, latitude] = toGeodeticCoordinates(vector, frame);
           const rotation = eulerXYZToRotationMatrix(
             longitude,
             -latitude,

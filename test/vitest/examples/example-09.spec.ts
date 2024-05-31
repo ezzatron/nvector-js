@@ -26,12 +26,12 @@ test("Example 9", () => {
   // the two positions are not antipodal).
 
   // Path A is given by a1 and a2:
-  const a1 = fromGeodeticCoordinates(radians(50), radians(180));
-  const a2 = fromGeodeticCoordinates(radians(90), radians(180));
+  const a1 = fromGeodeticCoordinates(radians(180), radians(50));
+  const a2 = fromGeodeticCoordinates(radians(180), radians(90));
 
   // While path B is given by b1 and b2:
-  const b1 = fromGeodeticCoordinates(radians(60), radians(160));
-  const b2 = fromGeodeticCoordinates(radians(80), radians(-140));
+  const b1 = fromGeodeticCoordinates(radians(160), radians(60));
+  const b2 = fromGeodeticCoordinates(radians(-140), radians(80));
 
   // Find the position C where the two paths intersect.
 
@@ -53,7 +53,7 @@ test("Example 9", () => {
   const c = apply((n) => Math.sign(dot(cTmp, a1)) * n, cTmp);
 
   // Use human-friendly outputs:
-  const [lat, lon] = toGeodeticCoordinates(c);
+  const [lon, lat] = toGeodeticCoordinates(c);
 
   expect(degrees(lat)).toBeCloseTo(74.16344802135536, 16);
   expect(degrees(lon)).toBeCloseTo(180, 16);

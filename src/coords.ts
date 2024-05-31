@@ -9,15 +9,15 @@ import { transform } from "./vector.js";
  *
  * @see https://github.com/FFI-no/n-vector/blob/82d749a67cc9f332f48c51aa969cdc277b4199f2/nvector/lat_long2n_E.m
  *
- * @param latitude - Geodetic latitude in radians.
  * @param longitude - Geodetic longitude in radians.
+ * @param latitude - Geodetic latitude in radians.
  * @param frame - Coordinate frame in which the n-vector is decomposed.
  *
  * @returns An n-vector.
  */
 export function fromGeodeticCoordinates(
-  latitude: number,
   longitude: number,
+  latitude: number,
   frame: Matrix = Z_AXIS_NORTH,
 ): Vector {
   // Equation (3) from Gade (2010):
@@ -39,12 +39,12 @@ export function fromGeodeticCoordinates(
  * @param vector - An n-vector.
  * @param frame - Coordinate frame in which the n-vector is decomposed.
  *
- * @returns Geodetic latitude and longitude in radians.
+ * @returns Geodetic longitude and latitude in radians.
  */
 export function toGeodeticCoordinates(
   vector: Vector,
   frame: Matrix = Z_AXIS_NORTH,
-): [latitude: number, longitude: number] {
+): [longitude: number, latitude: number] {
   // Equation (5) in Gade (2010):
   const [x, y, z] = transform(frame, vector);
   const longitude = Math.atan2(y, -z);
@@ -59,5 +59,5 @@ export function toGeodeticCoordinates(
   // ill-conditioned which may lead to numerical inaccuracies (and it will give
   // imaginary results for norm(vector)>1)
 
-  return [latitude, longitude];
+  return [longitude, latitude];
 }

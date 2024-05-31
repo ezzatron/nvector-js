@@ -46,8 +46,8 @@ test("Example 1", () => {
   // Step 1
   //
   // First, the given latitudes and longitudes are converted to n-vectors:
-  const a = fromGeodeticCoordinates(radians(aLat), radians(aLon));
-  const b = fromGeodeticCoordinates(radians(bLat), radians(bLon));
+  const a = fromGeodeticCoordinates(radians(aLon), radians(aLat));
+  const b = fromGeodeticCoordinates(radians(bLon), radians(bLat));
 
   // Step 2
   //

@@ -72,7 +72,7 @@ test("Example 2", () => {
   const [c, cDepth] = destination(b, bcE, bDepth, e);
 
   // Use human-friendly outputs:
-  const [lat, lon] = toGeodeticCoordinates(c);
+  const [lon, lat] = toGeodeticCoordinates(c);
   const height = -cDepth;
 
   expect(degrees(lat)).toBeCloseTo(53.32637826433107, 13);

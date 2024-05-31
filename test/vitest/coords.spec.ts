@@ -7,7 +7,7 @@ import { afterAll, beforeAll, describe, expect } from "vitest";
 import {
   arbitrary3dRotationMatrix,
   arbitrary3dUnitVector,
-  arbitraryLatLon,
+  arbitraryGeodeticCoordinates,
 } from "../arbitrary.js";
 import type { NvectorTestClient } from "../nvector-test-api.js";
 import { createNvectorTestClient } from "../nvector-test-api.js";
@@ -27,16 +27,16 @@ describe("fromGeodeticCoordinates()", () => {
 
   it.prop(
     [
-      arbitraryLatLon(),
+      arbitraryGeodeticCoordinates(),
       fc.option(arbitrary3dRotationMatrix(), { nil: undefined }),
     ],
     { interruptAfterTimeLimit: TEST_DURATION, numRuns: Infinity },
   )(
     "matches the reference implementation",
-    async ([latitude, longitude], frame) => {
+    async ([longitude, latitude], frame) => {
       const expected = await nvectorTestClient.fromGeodeticCoordinates(
-        latitude,
         longitude,
+        latitude,
         frame,
       );
 
@@ -46,7 +46,7 @@ describe("fromGeodeticCoordinates()", () => {
         expect.any(Number),
       ]);
 
-      const actual = fromGeodeticCoordinates(latitude, longitude, frame);
+      const actual = fromGeodeticCoordinates(longitude, latitude, frame);
 
       expect(actual).toMatchObject([
         expect.any(Number),

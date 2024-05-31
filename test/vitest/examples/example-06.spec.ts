@@ -23,8 +23,8 @@ test("Example 6", () => {
   const t0 = 10,
     t1 = 20,
     ti = 16;
-  const pt0 = fromGeodeticCoordinates(radians(89.9), radians(-150));
-  const pt1 = fromGeodeticCoordinates(radians(89.9), radians(150));
+  const pt0 = fromGeodeticCoordinates(radians(-150), radians(89.9));
+  const pt1 = fromGeodeticCoordinates(radians(150), radians(89.9));
 
   // Find an interpolated position at time ti, pti. All positions are given as
   // n-vectors.
@@ -37,7 +37,7 @@ test("Example 6", () => {
   );
 
   // Use human-friendly outputs:
-  const [lat, lon] = toGeodeticCoordinates(pti);
+  const [lon, lat] = toGeodeticCoordinates(pti);
 
   expect(degrees(lat)).toBeCloseTo(89.91282199988446, 12);
   expect(degrees(lon)).toBeCloseTo(173.4132244463705, 12);

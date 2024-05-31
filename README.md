@@ -103,8 +103,8 @@ test("Example 1", () => {
   // Step 1
   //
   // First, the given latitudes and longitudes are converted to n-vectors:
-  const a = fromGeodeticCoordinates(radians(aLat), radians(aLon));
-  const b = fromGeodeticCoordinates(radians(bLat), radians(bLon));
+  const a = fromGeodeticCoordinates(radians(aLon), radians(aLat));
+  const b = fromGeodeticCoordinates(radians(bLon), radians(bLat));
 
   // Step 2
   //
@@ -228,7 +228,7 @@ test("Example 2", () => {
   const [c, cDepth] = destination(b, bcE, bDepth, e);
 
   // Use human-friendly outputs:
-  const [lat, lon] = toGeodeticCoordinates(c);
+  const [lon, lat] = toGeodeticCoordinates(c);
   const height = -cDepth;
 
   expect(degrees(lat)).toBeCloseTo(53.32637826433107, 13);
@@ -284,7 +284,7 @@ test("Example 3", () => {
   // Step 2
   //
   // Find latitude, longitude and height:
-  const [lat, lon] = toGeodeticCoordinates(b);
+  const [lon, lat] = toGeodeticCoordinates(b);
   const height = -bDepth;
 
   expect(degrees(lat)).toBeCloseTo(5.685075734513181, 14);
@@ -327,7 +327,7 @@ test("Example 4", () => {
   // SOLUTION:
 
   // Step 1: First, the given latitude and longitude are converted to n-vector:
-  const b = fromGeodeticCoordinates(radians(bLat), radians(bLon));
+  const b = fromGeodeticCoordinates(radians(bLon), radians(bLat));
 
   // Step 2: Convert to an ECEF-vector:
   const pb = toECEF(b, -bHeight);
@@ -370,8 +370,8 @@ test("Example 5", () => {
   // PROBLEM:
 
   // Given two positions A and B as n-vectors:
-  const a = fromGeodeticCoordinates(radians(88), radians(0));
-  const b = fromGeodeticCoordinates(radians(89), radians(-170));
+  const a = fromGeodeticCoordinates(radians(0), radians(88));
+  const b = fromGeodeticCoordinates(radians(-170), radians(89));
 
   // Find the surface distance (i.e. great circle distance). The heights of A
   // and B are not relevant (i.e. if they do not have zero height, we seek the
@@ -430,8 +430,8 @@ test("Example 6", () => {
   const t0 = 10,
     t1 = 20,
     ti = 16;
-  const pt0 = fromGeodeticCoordinates(radians(89.9), radians(-150));
-  const pt1 = fromGeodeticCoordinates(radians(89.9), radians(150));
+  const pt0 = fromGeodeticCoordinates(radians(-150), radians(89.9));
+  const pt1 = fromGeodeticCoordinates(radians(150), radians(89.9));
 
   // Find an interpolated position at time ti, pti. All positions are given as
   // n-vectors.
@@ -444,7 +444,7 @@ test("Example 6", () => {
   );
 
   // Use human-friendly outputs:
-  const [lat, lon] = toGeodeticCoordinates(pti);
+  const [lon, lat] = toGeodeticCoordinates(pti);
 
   expect(degrees(lat)).toBeCloseTo(89.91282199988446, 12);
   expect(degrees(lon)).toBeCloseTo(173.4132244463705, 12);
@@ -480,9 +480,9 @@ test("Example 7", () => {
   // PROBLEM:
 
   // Three positions A, B, and C are given as n-vectors:
-  const a = fromGeodeticCoordinates(radians(90), radians(0));
-  const b = fromGeodeticCoordinates(radians(60), radians(10));
-  const c = fromGeodeticCoordinates(radians(50), radians(-20));
+  const a = fromGeodeticCoordinates(radians(0), radians(90));
+  const b = fromGeodeticCoordinates(radians(10), radians(60));
+  const c = fromGeodeticCoordinates(radians(-20), radians(50));
 
   // Find the mean position, M. Note that the calculation is independent of the
   // heights/depths of the positions.
@@ -534,7 +534,7 @@ test("Example 8", () => {
   // PROBLEM:
 
   // Position A is given as n-vector:
-  const a = fromGeodeticCoordinates(radians(80), radians(-90));
+  const a = fromGeodeticCoordinates(radians(-90), radians(80));
 
   // We also have an initial direction of travel given as an azimuth (bearing)
   // relative to north (clockwise), and finally the distance to travel along a
@@ -587,7 +587,7 @@ test("Example 8", () => {
   );
 
   // Use human-friendly outputs:
-  const [lat, lon] = toGeodeticCoordinates(b);
+  const [lon, lat] = toGeodeticCoordinates(b);
 
   expect(degrees(lat)).toBeCloseTo(79.99154867339445, 13);
   expect(degrees(lon)).toBeCloseTo(-90.01769837291397, 13);
@@ -633,12 +633,12 @@ test("Example 9", () => {
   // the two positions are not antipodal).
 
   // Path A is given by a1 and a2:
-  const a1 = fromGeodeticCoordinates(radians(50), radians(180));
-  const a2 = fromGeodeticCoordinates(radians(90), radians(180));
+  const a1 = fromGeodeticCoordinates(radians(180), radians(50));
+  const a2 = fromGeodeticCoordinates(radians(180), radians(90));
 
   // While path B is given by b1 and b2:
-  const b1 = fromGeodeticCoordinates(radians(60), radians(160));
-  const b2 = fromGeodeticCoordinates(radians(80), radians(-140));
+  const b1 = fromGeodeticCoordinates(radians(160), radians(60));
+  const b2 = fromGeodeticCoordinates(radians(-140), radians(80));
 
   // Find the position C where the two paths intersect.
 
@@ -660,7 +660,7 @@ test("Example 9", () => {
   const c = apply((n) => Math.sign(dot(cTmp, a1)) * n, cTmp);
 
   // Use human-friendly outputs:
-  const [lat, lon] = toGeodeticCoordinates(c);
+  const [lon, lat] = toGeodeticCoordinates(c);
 
   expect(degrees(lat)).toBeCloseTo(74.16344802135536, 16);
   expect(degrees(lon)).toBeCloseTo(180, 16);
@@ -701,10 +701,10 @@ test("Example 10", () => {
   // Path A is given by the two n-vectors a1 and a2 (as in the previous
   // example):
   const a1 = fromGeodeticCoordinates(radians(0), radians(0));
-  const a2 = fromGeodeticCoordinates(radians(10), radians(0));
+  const a2 = fromGeodeticCoordinates(radians(0), radians(10));
 
   // And a position B is given by b:
-  const b = fromGeodeticCoordinates(radians(1), radians(0.1));
+  const b = fromGeodeticCoordinates(radians(0.1), radians(1));
 
   // Find the cross track distance between the path A (i.e. the great circle
   // through a1 and a2) and the position B (i.e. the shortest distance at the
