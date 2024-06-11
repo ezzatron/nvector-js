@@ -10,6 +10,15 @@ Versioning].
 
 ## Unreleased
 
+## [v0.6.5] - 2024-06-11
+
+[v0.6.5]: https://github.com/ezzatron/nvector-js/releases/tag/v0.6.5
+
+### Fixed
+
+- Updated the `package.json` `repository` property so that NPM provenance will
+  hopefully STFU and work.
+
 ## [v0.6.4] - 2024-06-11
 
 [v0.6.4]: https://github.com/ezzatron/nvector-js/releases/tag/v0.6.4
