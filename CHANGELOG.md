@@ -10,6 +10,16 @@ Versioning].
 
 ## Unreleased
 
+## [v0.6.2] - 2024-06-11
+
+[v0.6.2]: https://github.com/ezzatron/nvector-js/releases/tag/v0.6.2
+
+### Fixed
+
+- Excluded unnecessary files from the JSR published package.
+- Restricted the Prettier version to avoid
+  https://github.com/prettier/prettier/issues/16351
+
 ## [v0.6.1] - 2024-06-11
 
 [v0.6.1]: https://github.com/ezzatron/nvector-js/releases/tag/v0.6.1
