@@ -1,5 +1,8 @@
 {
   "name": "@ezzatron/nvector",
   "version": "0.0.0",
-  "exports": "./src/index.ts"
+  "exports": "./src/index.ts",
+  "publish": {
+    "include": ["LICENSE", "README.md", "src/**/*.ts"]
+  }
 }
