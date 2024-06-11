@@ -16,8 +16,8 @@ Versioning].
 
 ### Fixed
 
-- Added --allow-dirty to JSR publishing command because it doesn't like that
-  the version number is set as part of the publishing workflow.
+- Added --allow-dirty to JSR publishing command because it doesn't like that the
+  version number is set as part of the publishing workflow.
 
 ## [v0.6.2] - 2024-06-11
 
