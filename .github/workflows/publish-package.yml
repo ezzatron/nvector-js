@@ -42,7 +42,7 @@ jobs:
       - name: Publish package
         if: success()
         run: |
-          npm publish --access public
+          npm publish --provenance --access public
           npx --yes jsr publish --allow-dirty
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
