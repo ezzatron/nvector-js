@@ -43,6 +43,6 @@ jobs:
         if: success()
         run: |
           npm publish --access public
-          npx --yes jsr publish
+          npx --yes jsr publish --allow-dirty
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
