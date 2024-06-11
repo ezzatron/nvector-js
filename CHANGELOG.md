@@ -10,6 +10,15 @@ Versioning].
 
 ## Unreleased
 
+## [v0.6.3] - 2024-06-11
+
+[v0.6.3]: https://github.com/ezzatron/nvector-js/releases/tag/v0.6.3
+
+### Fixed
+
+- Added --allow-dirty to JSR publishing command because it doesn't like that
+  the version number is set as part of the publishing workflow.
+
 ## [v0.6.2] - 2024-06-11
 
 [v0.6.2]: https://github.com/ezzatron/nvector-js/releases/tag/v0.6.2
