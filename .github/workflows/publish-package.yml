@@ -10,6 +10,10 @@ jobs:
     runs-on: ubuntu-latest
     name: Publish package
 
+    permissions:
+      contents: read
+      id-token: write
+
     services:
       nvector-test-api:
         image: ghcr.io/ezzatron/nvector-test-api
@@ -37,6 +41,8 @@ jobs:
 
       - name: Publish package
         if: success()
-        run: npm publish --access public
+        run: |
+          npm publish --access public
+          npx --yes jsr publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

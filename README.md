@@ -2,7 +2,8 @@
 
 _Functions for performing geographical position calculations using n-vectors_
 
-[![Current version][badge-version-image]][badge-version-link]
+[![Current NPM version][badge-npm-version-image]][badge-npm-version-link]
+[![Current JSR version][badge-jsr-version-image]][badge-jsr-version-link]
 [![Build status][badge-build-image]][badge-build-link]
 [![Test coverage][badge-coverage-image]][badge-coverage-link]
 
@@ -13,9 +14,12 @@ _Functions for performing geographical position calculations using n-vectors_
 [badge-coverage-image]:
   https://img.shields.io/codecov/c/gh/ezzatron/nvector-js?style=for-the-badge
 [badge-coverage-link]: https://codecov.io/gh/ezzatron/nvector-js
-[badge-version-image]:
+[badge-jsr-version-image]:
+  https://jsr.io/badges/@ezzatron/nvector?label=@ezzatron/nvector&style=for-the-badge
+[badge-jsr-version-link]: https://jsr.io/@ezzatron/nvector
+[badge-npm-version-image]:
   https://img.shields.io/npm/v/nvector-geodesy?label=nvector-geodesy&logo=npm&style=for-the-badge
-[badge-version-link]: https://npmjs.com/package/nvector-geodesy
+[badge-npm-version-link]: https://npmjs.com/package/nvector-geodesy
 
 This library is a lightweight (&lt;2kB), dependency-free port of the [Matlab
 n-vector library] by [Kenneth Gade]. All original functions are included,
