@@ -12,7 +12,7 @@
     "vector",
     "wgs84"
   ],
-  "repository": "https://github.com/ezzatron/nvector-js",
+  "repository": "ezzatron/nvector-js",
   "bugs": "https://github.com/ezzatron/nvector/issues",
   "homepage": "https://ezzatron.com/nvector-js",
   "author": "Erin Millard <contact@erin.id.au>",
@@ -38,7 +38,7 @@
     "prepublishOnly": "tsc -p tsconfig.build.json"
   },
   "devDependencies": {
-    "@arethetypeswrong/cli": "^0.15.3",
+    "@arethetypeswrong/cli": "^0.16.0",
     "@fast-check/vitest": "^0.1.0",
     "@size-limit/preset-small-lib": "^11.1.2",
     "@skypack/package-check": "^0.2.2",
