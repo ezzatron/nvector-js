@@ -12,7 +12,7 @@
     "vector",
     "wgs84"
   ],
-  "repository": "https://github.com/ezzatron/nvector-js",
+  "repository": "ezzatron/nvector-js",
   "bugs": "https://github.com/ezzatron/nvector/issues",
   "homepage": "https://ezzatron.com/nvector-js",
   "author": "Erin Millard <contact@erin.id.au>",
