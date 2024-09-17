@@ -13,7 +13,7 @@
     "wgs84"
   ],
   "repository": "ezzatron/nvector-js",
-  "bugs": "https://github.com/ezzatron/nvector/issues",
+  "bugs": "https://github.com/ezzatron/nvector-js/issues",
   "homepage": "https://ezzatron.com/nvector-js",
   "author": "Erin Millard <contact@erin.id.au>",
   "license": "MIT",
