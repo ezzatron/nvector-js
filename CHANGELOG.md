@@ -10,6 +10,14 @@ Versioning].
 
 ## Unreleased
 
+## [v0.6.7] - 2024-09-18
+
+[v0.6.7]: https://github.com/ezzatron/nvector-js/releases/tag/v0.6.7
+
+### Fixed
+
+- Fixed an incorrect bugs URL in the `package.json` file.
+
 ## [v0.6.6] - 2024-09-14
 
 [v0.6.6]: https://github.com/ezzatron/nvector-js/releases/tag/v0.6.6
