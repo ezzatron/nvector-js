@@ -39,7 +39,7 @@
   },
   "devDependencies": {
     "@arethetypeswrong/cli": "^0.17.0",
-    "@fast-check/vitest": "^0.1.0",
+    "@fast-check/vitest": "^0.2.0",
     "@size-limit/preset-small-lib": "^11.1.2",
     "@skypack/package-check": "^0.2.2",
     "@types/ws": "^8.5.5",
