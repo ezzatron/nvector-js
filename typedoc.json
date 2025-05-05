@@ -1,8 +1,15 @@
 {
   "entryPoints": ["src"],
 
-  "excludeNotDocumented": true,
+  "excludeInternal": true,
   "navigationLinks": {
     "GitHub": "https://github.com/ezzatron/nvector-js"
+  },
+  "validation": {
+    "notExported": true,
+    "invalidLink": true,
+    "rewrittenLink": true,
+    "notDocumented": true,
+    "unusedMergeModuleWith": true
   }
 }
