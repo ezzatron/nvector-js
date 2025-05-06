@@ -21,7 +21,7 @@ JS_SKYPACK_PACKAGE_CHECK_REQ += artifacts/dist
 
 ################################################################################
 
-artifacts/dist: tsconfig.json tsconfig.build.json artifacts/link-dependencies.touch $(JS_SOURCE_FILES)
+artifacts/dist: tsconfig.build.json tsconfig.json artifacts/link-dependencies.touch $(JS_SOURCE_FILES)
 	@rm -rf "$@"
 	$(JS_EXEC) tsc -p "$<"
 	@touch "$@"
