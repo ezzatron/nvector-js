@@ -1,4 +1,6 @@
 {
+  "entryPoints": ["src"],
+
   "excludeInternal": true,
   "navigationLinks": {
     "GitHub": "https://github.com/ezzatron/nvector-js"

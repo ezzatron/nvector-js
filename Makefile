@@ -4,7 +4,6 @@ JS_ARETHETYPESWRONG_REQ += artifacts/dist
 JS_PUBLINT_REQ += artifacts/dist
 JS_SIZE_LIMIT_REQ += artifacts/dist
 JS_SKYPACK_PACKAGE_CHECK_REQ += artifacts/dist
-JS_TYPEDOC_REQ += artifacts/dist
 
 ################################################################################
 
