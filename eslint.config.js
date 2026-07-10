@@ -1,5 +1,4 @@
 import js from "@eslint/js";
-import import_ from "eslint-plugin-import";
 import node from "eslint-plugin-n";
 import promise from "eslint-plugin-promise";
 import globals from "globals";
@@ -10,11 +9,8 @@ export default ts.config(
     ignores: [".makefiles", "artifacts"],
   },
   js.configs.recommended,
-  // eslint-disable-next-line import/no-named-as-default-member
   ...ts.configs.recommended,
   node.configs["flat/recommended-module"],
-  import_.flatConfigs.recommended,
-  import_.flatConfigs.typescript,
   promise.configs["flat/recommended"],
   {
     languageOptions: {
@@ -25,12 +21,6 @@ export default ts.config(
         ...globals.node,
       },
     },
-    settings: {
-      "import/resolver": {
-        typescript: true,
-        node: true,
-      },
-    },
     rules: {
       "@typescript-eslint/no-unused-vars": [
         "error",
@@ -39,7 +29,7 @@ export default ts.config(
           argsIgnorePattern: "^_",
         },
       ],
-      // handled by import/no-unresolved
+      // handled by typescript-eslint
       "n/no-missing-import": "off",
       // don't check for unsupported features - too much config to make this work
       "n/no-unsupported-features/es-builtins": "off",
