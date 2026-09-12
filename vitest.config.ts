@@ -5,6 +5,7 @@ export default defineConfig({
     tsconfigPaths: true,
   },
   test: {
+    attachmentsDir: "artifacts/vitest/attachments",
     include: ["test/vitest/**/*.spec.ts"],
     coverage: {
       include: ["src/**/*.ts"],

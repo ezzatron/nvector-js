@@ -37,6 +37,11 @@
   "scripts": {
     "prepublishOnly": "tsc -p tsconfig.build.json"
   },
+  "overrides": {
+    "@fast-check/vitest": {
+      "vitest": "$vitest"
+    }
+  },
   "devDependencies": {
     "@arethetypeswrong/cli": "^0.18.3",
     "@eslint/js": "^10.0.1",
@@ -45,7 +50,7 @@
     "@skypack/package-check": "^0.2.2",
     "@types/ws": "^8.5.5",
     "@typescript/native": "npm:typescript@^7.0.2",
-    "@vitest/coverage-v8": "^4.0.14",
+    "@vitest/coverage-v8": "^5.0.0",
     "@vitest/eslint-plugin": "^1.6.22",
     "eslint": "^10.6.0",
     "eslint-config-prettier": "^10.1.1",
@@ -59,7 +64,7 @@
     "typedoc": "^0.28.0",
     "typescript": "npm:@typescript/typescript6@^6.0.2",
     "typescript-eslint": "^8.63.0",
-    "vitest": "^4.0.14",
+    "vitest": "^5.0.0",
     "ws": "^8.14.2"
   }
 }
