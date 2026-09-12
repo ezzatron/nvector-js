@@ -37,6 +37,11 @@
   "scripts": {
     "prepublishOnly": "tsc -p tsconfig.build.json"
   },
+  "overrides": {
+    "@fast-check/vitest": {
+      "vitest": "$vitest"
+    }
+  },
   "devDependencies": {
     "@arethetypeswrong/cli": "^0.18.3",
     "@eslint/js": "^10.0.1",
