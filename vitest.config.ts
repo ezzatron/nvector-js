@@ -6,6 +6,7 @@ export default defineConfig({
   },
   test: {
     attachmentsDir: "artifacts/vitest/attachments",
+    globalSetup: ["test/vitest/global-setup.ts"],
     include: ["test/vitest/**/*.spec.ts"],
     coverage: {
       include: ["src/**/*.ts"],

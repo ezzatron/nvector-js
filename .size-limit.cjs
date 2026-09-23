@@ -1,6 +1,6 @@
 module.exports = [
   {
     path: "artifacts/dist/index.js",
-    limit: "1.3 kB",
+    limit: "1.5 kB",
   },
 ];

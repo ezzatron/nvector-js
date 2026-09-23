@@ -15,6 +15,7 @@ import type {
   toRotationMatrix,
   toRotationMatrixUsingWanderAzimuth,
 } from "nvector-geodesy";
+import { inject } from "vitest";
 import { WebSocket } from "ws";
 
 export type NvectorTestClient = {
@@ -38,7 +39,7 @@ export type NvectorTestClient = {
 };
 
 export async function createNvectorTestClient(): Promise<NvectorTestClient> {
-  const ws = new WebSocket("ws://localhost:17357");
+  const ws = new WebSocket(inject("testApiUrl"));
   let seq = 0;
 
   await new Promise((resolve, reject) => {
