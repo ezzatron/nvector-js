@@ -61,6 +61,7 @@
     "prettier-plugin-organize-imports": "^4.0.0",
     "publint": "^0.3.0",
     "size-limit": "^14.0.0",
+    "testcontainers": "^12.1.0",
     "typedoc": "^0.28.0",
     "typescript": "npm:@typescript/typescript6@^6.0.2",
     "typescript-eslint": "^8.63.0",
