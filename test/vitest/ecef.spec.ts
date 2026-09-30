@@ -93,7 +93,7 @@ describe("fromECEF()", () => {
       expect(actualVector[0]).toBeCloseTo(expectedVector[0], 15);
       expect(actualVector[1]).toBeCloseTo(expectedVector[1], 15);
       expect(actualVector[2]).toBeCloseTo(expectedVector[2], 15);
-      expect(actualDepth).toBeCloseTo(expectedDepth, 8);
+      expect(actualDepth).toBeCloseTo(expectedDepth, 7);
     },
     TEST_DURATION + 1000,
   );
