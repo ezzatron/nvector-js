@@ -143,7 +143,7 @@ export function rotationMatrixToEulerZYX([
   } else {
     // In singularity (or close to), i.e. y = +pi/2 or -pi/2:
     // Selecting y = +-pi/2, with correct sign
-    y = (Math.sign(r31) * Math.PI) / 2;
+    y = (-Math.sign(r31) * Math.PI) / 2;
 
     // Only the sum/difference of x and z is now given, choosing x = 0:
     x = 0;

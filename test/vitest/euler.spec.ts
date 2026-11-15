@@ -153,14 +153,17 @@ describe("rotationMatrixToEulerXYZ()", () => {
     TEST_DURATION + 1000,
   );
 
-  it("handles Euler angle singularity", () => {
-    expect(
-      rotationMatrixToEulerXYZ([
-        [0, 0, 1],
-        [0, 1, 0],
-        [1, 0, 0],
-      ]),
-    ).toMatchObject([0, Math.PI / 2, 0]);
+  it.each`
+    label           | y
+    ${"positive y"} | ${Math.PI / 2}
+    ${"negative y"} | ${-Math.PI / 2}
+  `("handles the Euler angle singularity ($label)", ({ y }: { y: number }) => {
+    const rotation = eulerXYZToRotationMatrix(0, y, 0.3);
+    const [x, actualY, z] = rotationMatrixToEulerXYZ(rotation);
+
+    expect(angleDelta(x, 0)).toBeCloseTo(0, 15);
+    expect(angleDelta(actualY, y)).toBeCloseTo(0, 15);
+    expect(angleDelta(z, 0.3)).toBeCloseTo(0, 15);
   });
 });
 
@@ -204,13 +207,16 @@ describe("rotationMatrixToEulerZYX()", () => {
     TEST_DURATION + 1000,
   );
 
-  it("handles Euler angle singularity", () => {
-    expect(
-      rotationMatrixToEulerZYX([
-        [0, 0, 1],
-        [0, 1, 0],
-        [1, 0, 0],
-      ]),
-    ).toMatchObject([-0, Math.PI / 2, 0]);
+  it.each`
+    label           | y
+    ${"positive y"} | ${Math.PI / 2}
+    ${"negative y"} | ${-Math.PI / 2}
+  `("handles the Euler angle singularity ($label)", ({ y }: { y: number }) => {
+    const rotation = eulerZYXToRotationMatrix(0.3, y, 0);
+    const [z, actualY, x] = rotationMatrixToEulerZYX(rotation);
+
+    expect(angleDelta(z, 0.3)).toBeCloseTo(0, 15);
+    expect(angleDelta(actualY, y)).toBeCloseTo(0, 15);
+    expect(angleDelta(x, 0)).toBeCloseTo(0, 15);
   });
 });
