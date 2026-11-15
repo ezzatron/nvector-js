@@ -12,7 +12,7 @@ export {
   rotationMatrixToEulerZYX,
 } from "./euler.js";
 export { multiply, transpose } from "./matrix.js";
-export type { Matrix } from "./matrix.js";
+export type { Matrix, ReadonlyMatrix } from "./matrix.js";
 export {
   fromRotationMatrix,
   toRotationMatrix,

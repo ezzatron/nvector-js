@@ -1,6 +1,6 @@
 import { Z_AXIS_NORTH } from "./coord-frame.js";
 import { WGS_84, type Ellipsoid } from "./ellipsoid.js";
-import type { Matrix } from "./matrix.js";
+import type { ReadonlyMatrix } from "./matrix.js";
 import { transpose } from "./matrix.js";
 import type { Vector } from "./vector.js";
 import { normalize, transform } from "./vector.js";
@@ -20,7 +20,7 @@ import { normalize, transform } from "./vector.js";
 export function fromECEF(
   vector: Vector,
   { a, f }: Ellipsoid = WGS_84,
-  frame: Matrix = Z_AXIS_NORTH,
+  frame: ReadonlyMatrix = Z_AXIS_NORTH,
 ): [vector: Vector, depth: number] {
   // frame selects correct E-axes
   const [x, y, z] = transform(frame, vector);
@@ -84,7 +84,7 @@ export function toECEF(
   vector: Vector,
   depth: number = 0,
   { b, f }: Ellipsoid = WGS_84,
-  frame: Matrix = Z_AXIS_NORTH,
+  frame: ReadonlyMatrix = Z_AXIS_NORTH,
 ): Vector {
   // frame selects correct E-axes
   const [x, y, z] = transform(frame, vector);

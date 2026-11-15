@@ -1,7 +1,7 @@
 import { Z_AXIS_NORTH } from "./coord-frame.js";
 import { fromECEF, toECEF } from "./ecef.js";
 import { WGS_84, type Ellipsoid } from "./ellipsoid.js";
-import type { Matrix } from "./matrix.js";
+import type { ReadonlyMatrix } from "./matrix.js";
 import type { Vector } from "./vector.js";
 
 /**
@@ -25,7 +25,7 @@ export function delta(
   fromDepth: number = 0,
   toDepth: number = 0,
   ellipsoid: Ellipsoid = WGS_84,
-  frame: Matrix = Z_AXIS_NORTH,
+  frame: ReadonlyMatrix = Z_AXIS_NORTH,
 ): Vector {
   // Function 1. in Section 5.4 in Gade (2010):
   const [ax, ay, az] = toECEF(from, fromDepth, ellipsoid, frame);
@@ -53,7 +53,7 @@ export function destination(
   [dx, dy, dz]: Vector,
   fromDepth: number = 0,
   ellipsoid: Ellipsoid = WGS_84,
-  frame: Matrix = Z_AXIS_NORTH,
+  frame: ReadonlyMatrix = Z_AXIS_NORTH,
 ): [to: Vector, toDepth: number] {
   // Function 2. in Section 5.4 in Gade (2010):
   const [ax, ay, az] = toECEF(from, fromDepth, ellipsoid, frame);

@@ -8,6 +8,15 @@ export type Matrix = [
 ];
 
 /**
+ * A read-only 3x3 matrix.
+ */
+export type ReadonlyMatrix = readonly [
+  readonly [n11: number, n12: number, n13: number],
+  readonly [n21: number, n22: number, n23: number],
+  readonly [n31: number, n32: number, n33: number],
+];
+
+/**
  * Multiplies two matrices.
  *
  * @param a - The first matrix.
@@ -16,8 +25,8 @@ export type Matrix = [
  * @returns The resulting matrix.
  */
 export function multiply(
-  [[a11, a12, a13], [a21, a22, a23], [a31, a32, a33]]: Matrix,
-  [[b11, b12, b13], [b21, b22, b23], [b31, b32, b33]]: Matrix,
+  [[a11, a12, a13], [a21, a22, a23], [a31, a32, a33]]: ReadonlyMatrix,
+  [[b11, b12, b13], [b21, b22, b23], [b31, b32, b33]]: ReadonlyMatrix,
 ): Matrix {
   return [
     [
@@ -49,7 +58,7 @@ export function transpose([
   [a11, a12, a13],
   [a21, a22, a23],
   [a31, a32, a33],
-]: Matrix): Matrix {
+]: ReadonlyMatrix): Matrix {
   return [
     [a11, a21, a31],
     [a12, a22, a32],

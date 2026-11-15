@@ -1,5 +1,5 @@
 import { Z_AXIS_NORTH } from "./coord-frame.js";
-import type { Matrix } from "./matrix.js";
+import type { ReadonlyMatrix } from "./matrix.js";
 import { transpose } from "./matrix.js";
 import type { Vector } from "./vector.js";
 import { transform } from "./vector.js";
@@ -18,7 +18,7 @@ import { transform } from "./vector.js";
 export function fromGeodeticCoordinates(
   longitude: number,
   latitude: number,
-  frame: Matrix = Z_AXIS_NORTH,
+  frame: ReadonlyMatrix = Z_AXIS_NORTH,
 ): Vector {
   // Equation (3) from Gade (2010):
   const cosLat = Math.cos(latitude);
@@ -43,7 +43,7 @@ export function fromGeodeticCoordinates(
  */
 export function toGeodeticCoordinates(
   vector: Vector,
-  frame: Matrix = Z_AXIS_NORTH,
+  frame: ReadonlyMatrix = Z_AXIS_NORTH,
 ): [longitude: number, latitude: number] {
   // Equation (5) in Gade (2010):
   const [x, y, z] = transform(frame, vector);

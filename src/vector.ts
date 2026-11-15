@@ -1,4 +1,4 @@
-import type { Matrix } from "./matrix.js";
+import type { ReadonlyMatrix } from "./matrix.js";
 
 /**
  * A 3D vector.
@@ -106,7 +106,7 @@ export function normalize([x, y, z]: Vector): Vector {
  * @returns The transformed vector.
  */
 export function transform(
-  [[r11, r12, r13], [r21, r22, r23], [r31, r32, r33]]: Matrix,
+  [[r11, r12, r13], [r21, r22, r23], [r31, r32, r33]]: ReadonlyMatrix,
   [x, y, z]: Vector,
 ): Vector {
   return [

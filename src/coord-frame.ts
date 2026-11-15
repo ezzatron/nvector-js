@@ -1,4 +1,4 @@
-import type { Matrix } from "./matrix.js";
+import type { ReadonlyMatrix } from "./matrix.js";
 
 /**
  * Axes of the coordinate frame E (Earth-Centred, Earth-Fixed, ECEF) when the
@@ -9,7 +9,7 @@ import type { Matrix } from "./matrix.js";
  *
  * @see https://github.com/FFI-no/n-vector/blob/f77f43d18ddb6b8ea4e1a8bb23a53700af965abb/nvector/R_Ee.m#L48
  */
-export const Z_AXIS_NORTH: Matrix = [
+export const Z_AXIS_NORTH: ReadonlyMatrix = [
   [0, 0, 1],
   [0, 1, 0],
   [-1, 0, 0],
@@ -28,7 +28,7 @@ export const Z_AXIS_NORTH: Matrix = [
  *
  * @see https://github.com/FFI-no/n-vector/blob/f77f43d18ddb6b8ea4e1a8bb23a53700af965abb/nvector/R_Ee.m#L55
  */
-export const X_AXIS_NORTH: Matrix = [
+export const X_AXIS_NORTH: ReadonlyMatrix = [
   [1, 0, 0],
   [0, 1, 0],
   [0, 0, 1],

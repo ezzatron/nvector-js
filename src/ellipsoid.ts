@@ -3,7 +3,7 @@
  *
  * @see https://github.com/chrisveness/geodesy/blob/761587cd748bd9f7c9825195eba4a9fc5891b859/latlon-ellipsoidal-datum.js#L45
  */
-export const GRS_80: Ellipsoid = {
+export const GRS_80: Readonly<Ellipsoid> = {
   a: 6378137,
   b: 6356752.314140356,
   f: 1 / 298.257222101,
@@ -14,7 +14,7 @@ export const GRS_80: Ellipsoid = {
  *
  * @see https://github.com/chrisveness/geodesy/blob/761587cd748bd9f7c9825195eba4a9fc5891b859/latlon-ellipsoidal-datum.js#L47
  */
-export const WGS_72: Ellipsoid = {
+export const WGS_72: Readonly<Ellipsoid> = {
   a: 6378135,
   b: 6356750.520016094,
   f: 1 / 298.26,
@@ -25,7 +25,7 @@ export const WGS_72: Ellipsoid = {
  *
  * @see https://github.com/chrisveness/geodesy/blob/761587cd748bd9f7c9825195eba4a9fc5891b859/latlon-ellipsoidal-datum.js#L39
  */
-export const WGS_84: Ellipsoid = {
+export const WGS_84: Readonly<Ellipsoid> = {
   a: 6378137,
   b: 6356752.314245179,
   f: 1 / 298.257223563,

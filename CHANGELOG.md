@@ -10,6 +10,11 @@ Versioning].
 
 ## Unreleased
 
+### Changed
+
+- The exported coordinate frame and ellipsoid constants are now read-only at the
+  type level.
+
 ### Fixed
 
 - Fixed the sign of the Y Euler angle returned by `rotationMatrixToEulerZYX()`

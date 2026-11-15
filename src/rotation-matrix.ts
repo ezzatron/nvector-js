@@ -1,7 +1,12 @@
 import { Z_AXIS_NORTH } from "./coord-frame.js";
 import { toGeodeticCoordinates } from "./coords.js";
 import { eulerXYZToRotationMatrix } from "./euler.js";
-import { multiply, transpose, type Matrix } from "./matrix.js";
+import {
+  multiply,
+  transpose,
+  type Matrix,
+  type ReadonlyMatrix,
+} from "./matrix.js";
 import type { Vector } from "./vector.js";
 import { transform } from "./vector.js";
 
@@ -15,7 +20,7 @@ import { transform } from "./vector.js";
  *
  * @returns An n-vector.
  */
-export function fromRotationMatrix(rotation: Matrix): Vector {
+export function fromRotationMatrix(rotation: ReadonlyMatrix): Vector {
   return transform(rotation, [0, 0, -1]);
 }
 
@@ -31,7 +36,7 @@ export function fromRotationMatrix(rotation: Matrix): Vector {
  */
 export function toRotationMatrix(
   vector: Vector,
-  frame: Matrix = Z_AXIS_NORTH,
+  frame: ReadonlyMatrix = Z_AXIS_NORTH,
 ): Matrix {
   // frame selects correct E-axes
   const [x, y, z] = transform(frame, vector);
@@ -92,7 +97,7 @@ export function toRotationMatrix(
 export function toRotationMatrixUsingWanderAzimuth(
   vector: Vector,
   wanderAzimuth: number,
-  frame: Matrix = Z_AXIS_NORTH,
+  frame: ReadonlyMatrix = Z_AXIS_NORTH,
 ): Matrix {
   const [longitude, latitude] = toGeodeticCoordinates(vector, frame);
 

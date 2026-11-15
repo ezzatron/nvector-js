@@ -1,4 +1,4 @@
-import type { Matrix } from "./matrix.js";
+import type { Matrix, ReadonlyMatrix } from "./matrix.js";
 import type { Vector } from "./vector.js";
 
 // A small number used to avoid Euler angle singularities.
@@ -77,7 +77,7 @@ export function rotationMatrixToEulerXYZ([
   [r11, r12, r13],
   [r21, r22, r23],
   [, , r33],
-]: Matrix): Vector {
+]: ReadonlyMatrix): Vector {
   // cy is based on as many elements as possible, to average out numerical
   // errors. It is selected as the positive square root since y: [-pi/2 pi/2]
   const cy = Math.sqrt((r11 ** 2 + r12 ** 2 + r23 ** 2 + r33 ** 2) / 2);
@@ -123,7 +123,7 @@ export function rotationMatrixToEulerZYX([
   [r11, r12],
   [r21, r22],
   [r31, r32, r33],
-]: Matrix): Vector {
+]: ReadonlyMatrix): Vector {
   // cy is based on as many elements as possible, to average out numerical
   // errors. It is selected as the positive square root since y: [-pi/2 pi/2]
   const cy = Math.sqrt((r11 ** 2 + r21 ** 2 + r32 ** 2 + r33 ** 2) / 2);
