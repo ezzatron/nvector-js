@@ -73,7 +73,7 @@ export function fromECEF(
  *
  * @see https://github.com/FFI-no/n-vector/blob/f77f43d18ddb6b8ea4e1a8bb23a53700af965abb/nvector/n_EB_E2p_EB_E.m
  *
- * @param vector - An n-vector.
+ * @param vector - An n-vector. Must have unit length.
  * @param depth - Depth of the position in meters, relative to the ellipsoid.
  * @param ellipsoid - A reference ellipsoid.
  * @param frame - Coordinate frame in which the n-vector is decomposed.

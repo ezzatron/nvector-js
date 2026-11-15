@@ -14,6 +14,8 @@ Versioning].
 
 - The exported coordinate frame and ellipsoid constants are now read-only at the
   type level.
+- Documented that n-vectors passed to the ECEF and rotation matrix conversion
+  functions must have unit length.
 
 ### Fixed
 

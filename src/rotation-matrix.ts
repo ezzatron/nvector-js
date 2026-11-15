@@ -29,7 +29,7 @@ export function fromRotationMatrix(rotation: ReadonlyMatrix): Vector {
  *
  * @see https://github.com/FFI-no/n-vector/blob/82d749a67cc9f332f48c51aa969cdc277b4199f2/nvector/n_E2R_EN.m
  *
- * @param vector - An n-vector.
+ * @param vector - An n-vector. Must have unit length.
  * @param frame - Coordinate frame in which the n-vector is decomposed.
  *
  * @returns A rotation matrix.
