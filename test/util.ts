@@ -1,3 +1,5 @@
 export function angleDelta(a: number, b: number): number {
-  return Math.PI - Math.abs(Math.abs(a - b) - Math.PI);
+  const delta = Math.abs(a - b) % (2 * Math.PI);
+
+  return Math.min(delta, 2 * Math.PI - delta);
 }
