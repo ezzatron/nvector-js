@@ -8,7 +8,9 @@ Versioning].
 [keep a changelog]: https://keepachangelog.com/en/1.0.0/
 [semantic versioning]: https://semver.org/spec/v2.0.0.html
 
-## Unreleased
+## [v1.0.0] - 2026-11-15
+
+[v1.0.0]: https://github.com/ezzatron/nvector-js/releases/tag/v1.0.0
 
 ### Changed
 
