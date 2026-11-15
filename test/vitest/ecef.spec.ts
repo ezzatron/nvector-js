@@ -54,9 +54,9 @@ describe("fromECEF()", () => {
           // not sure why this happens, the math is beyond me
           const s = (() => {
             const e2 = (2.0 - f) * f;
-            const R2 = from[1] ** 2 + from[2] ** 2;
+            const R2 = y ** 2 + z ** 2;
             const p = R2 / a ** 2;
-            const q = ((1 - e2) / a ** 2) * from[0] ** 2;
+            const q = ((1 - e2) / a ** 2) * x ** 2;
             const r = (p + q - e2 ** 2) / 6;
 
             return (e2 ** 2 * p * q) / (4 * r ** 3);
